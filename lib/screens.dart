@@ -33,11 +33,14 @@ class FeedState extends State<FeedScreen>{
   
   String api_url = 'http://grothe.ddns.net:8090/api/';
   List croaks;
+  var lastUpdated;
 
   //NOTE: croaks are currently redownloaded upon every time going back to screen
   @override
   void initState(){
     super.initState();
+    print(lastUpdated);
+    lastUpdated = DateTime.now();
     getCroaks();
   }
 
@@ -138,7 +141,7 @@ class ComposeScreen extends StatelessWidget {
   final fk = GlobalKey<FormState>();// form key
   final croakText = TextEditingController();
   final tagsText = TextEditingController();
-
+  bool anon = true;
 
  @override
   Widget build(BuildContext context){
@@ -174,13 +177,19 @@ class ComposeScreen extends StatelessWidget {
                       labelText: 'Tags'
                     ),
                   ),
+                  Switch(
+                    value: true,
+                    onChanged: (val){
+                      anon = val;
+                    },
+                  ),
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 12.0),
                     child: RaisedButton(
                       onPressed: (){
                         if (fk.currentState.validate()){
                           Scaffold.of(context).showSnackBar(SnackBar(content: Text('Croaking...')));
-                          submitCroak(croakText.text, tagsText.text);
+                          submitCroak(croakText.text, tagsText.text, anon);
                         }
                       },
                       child: Text('Croak')
@@ -199,15 +208,17 @@ class ComposeScreen extends StatelessWidget {
     );
   }
 
-  void submitCroak(String croak, String tags){
-    Croak c = new Croak({0, croak, new DateTime.now().toString() , tags, 0});
+  void submitCroak(String croak, String tags, anon){
+    Croak c = new Croak({0-anon, croak, new DateTime.now().toString() , tags, 0});
     
   }
 
+  /*
   Future<String> postCroak() async {
     var res = await http.post(api_url+'croaks', ); //TODO 
     print(res.body);
 
   }
+  */
 }
 
