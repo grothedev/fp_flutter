@@ -9,30 +9,86 @@ class FrogPondApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'FrogPond',
-      initialRoute: '/',
+      /*initialRoute: '/',
       routes: {
         '/': (context) => HomeScreen(),
         '/feed': (context) => FeedScreen(),
-      },
+      },*/
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-        primaryColor: Colors.green
+        primarySwatch: Colors.green,
       ),
-      //home: HomeScreen(), //TODO pass in title or other info to this?
+      home: RootView(),
     );
   }
+}
+
+class RootView extends StatefulWidget{
+  @override
+  RootState createState() => new RootState();
+}
+
+class RootState extends State<RootView> with SingleTickerProviderStateMixin{
+  TabController controller;
+
+  @override
+  void initState(){
+    super.initState();
+    controller = new TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose(){
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+      appBar: new AppBar(
+        title: new Text("FrogPond")
+      ),
+      body: new TabBarView(
+        children: <Widget>[new HomeScreen(), new FeedScreen()],
+        controller: controller,
+      ),
+      bottomNavigationBar: new Material(
+        child: new TabBar(
+          tabs: <Tab>[
+            new Tab(icon: new Icon(Icons.home)),
+            new Tab(icon: new Icon(Icons.rss_feed))
+          ],
+          controller: controller,
+          labelColor: Colors.green,
+        ),
+      ),
+    );
+  }
+
+  
 }
 
 class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context){
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Welcome')
       ),
       body: Center(
-        child: RandomWords()
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            RandomWords(),
+            RaisedButton(
+              child: Text('Feed Screen'),
+              onPressed: () {Navigator.pushNamed(context, '/second');}
+            ),
+          ],
+        )
+        
       )
     );
   }
@@ -142,6 +198,7 @@ class FeedScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context){
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Tha Pond')
