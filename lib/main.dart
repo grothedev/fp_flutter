@@ -27,7 +27,7 @@ class RootState extends State<RootView> with SingleTickerProviderStateMixin{
   @override
   void initState(){
     super.initState();
-    controller = new TabController(length: 2, vsync: this);
+    controller = new TabController(length: 3, vsync: this);
   }
 
   @override
@@ -43,14 +43,15 @@ class RootState extends State<RootView> with SingleTickerProviderStateMixin{
         title: new Text("FrogPond")
       ),
       body: new TabBarView(
-        children: <Widget>[new HomeScreen(), new FeedScreen()],
+        children: <Widget>[new HomeScreen(), new FeedScreen(), new ComposeScreen()],
         controller: controller,
       ),
       bottomNavigationBar: new Material(
         child: new TabBar(
           tabs: <Tab>[
             new Tab(icon: new Icon(Icons.home)),
-            new Tab(icon: new Icon(Icons.rss_feed))
+            new Tab(icon: new Icon(Icons.rss_feed)),
+            new Tab(icon: new Icon(Icons.add_box))
           ],
           controller: controller,
           labelColor: Colors.green,

@@ -96,8 +96,7 @@ class FeedState extends State<FeedScreen>{
   }
 
 
-  //TODO come up with way to properly deal with caching
-  //https://flutter.dev/docs/cookbook/persistence/sqlite
+  //TODO is sqlite caching as clean as it can be?
   Future<String> getCroaks() async {
     var res = await http.get(api_url+'croaks');
     print(res.body);
@@ -132,3 +131,83 @@ class FeedState extends State<FeedScreen>{
 
 
 }
+
+//for making a croak
+class ComposeScreen extends StatelessWidget {
+
+  final fk = GlobalKey<FormState>();// form key
+  final croakText = TextEditingController();
+  final tagsText = TextEditingController();
+
+
+ @override
+  Widget build(BuildContext context){
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Croak with your fellow tadpoles')
+      ),
+      body: Container(
+        child: Column(
+          children: [
+            Form(
+              key: fk,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextFormField(
+                    controller: croakText,
+                    validator: (value){
+                      if (value.isEmpty) return 'Enter some text';
+                    },
+                    decoration: InputDecoration(
+                      icon: Icon(Icons.message),
+                      labelText: 'Post'
+                    ),
+                  ),
+                  TextFormField(
+                    controller: tagsText,
+                    validator: (value){
+                      if (value.isEmpty) return 'Enter some tags, seperated by spaces';
+                    },
+                    decoration: InputDecoration(
+                      icon: Icon(Icons.category),
+                      labelText: 'Tags'
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 12.0),
+                    child: RaisedButton(
+                      onPressed: (){
+                        if (fk.currentState.validate()){
+                          Scaffold.of(context).showSnackBar(SnackBar(content: Text('Croaking...')));
+                          submitCroak(croakText.text, tagsText.text);
+                        }
+                      },
+                      child: Text('Croak')
+                    ),
+                  )
+
+                ],
+              )
+            ),
+            //Text('Text'),
+            //EditableText(),
+
+          ]
+        )
+      )
+    );
+  }
+
+  void submitCroak(String croak, String tags){
+    Croak c = new Croak({0, croak, new DateTime.now().toString() , tags, 0});
+    
+  }
+
+  Future<String> postCroak() async {
+    var res = await http.post(api_url+'croaks', ); //TODO 
+    print(res.body);
+
+  }
+}
+

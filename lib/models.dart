@@ -2,7 +2,7 @@ import 'package:sqflite/sqflite.dart';
 import 'dart:async';
 
 class Croak{
-  final int id;
+  int id;
   final String content;
   final String timestamp;
   final String tags;
@@ -18,5 +18,9 @@ class Croak{
       'tags': tags,
       'timestamp': timestamp
     };
+  }
+
+  String toJSON(){
+    
   }
 }
