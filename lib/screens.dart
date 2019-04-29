@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
+import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart';
+import 'models.dart';
 
 class HomeScreen extends StatelessWidget {
 
@@ -10,20 +13,9 @@ class HomeScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Welcome')
+        title: Text('Welcome to FrogPond')
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            RaisedButton(
-              child: Text('Feed Screen'),
-              onPressed: () {Navigator.pushNamed(context, '/second');}
-            ),
-          ],
-        )
-        
-      )
+      body: Container()
     );
   }
 }
@@ -79,8 +71,22 @@ class FeedState extends State<FeedScreen>{
   }
 
   Widget feedItem(i){
+    var tags = [];
+    for (int j = 0; j < croaks[i]['tags'].length; j++){
+      tags.add(croaks[i]['tags'][j]['label']);
+      //tags.add('asdf');
+    }
     return new ListTile(
-        title: Text(croaks[i]['content'])
+        title: Text(croaks[i]['content']),
+        trailing: Icon(Icons.favorite),
+        subtitle: Row(
+          children: <Widget>[
+            Text(croaks[i]['created_at']),
+            Text(tags.toString())
+          ]
+        ),
+        onTap: (){}, //TODO croak screen
+
       );
   }
   
@@ -89,7 +95,9 @@ class FeedState extends State<FeedScreen>{
     //TODO figure out best way to implement this
   }
 
-  //TODO update sqlite
+
+  //TODO come up with way to properly deal with caching
+  //https://flutter.dev/docs/cookbook/persistence/sqlite
   Future<String> getCroaks() async {
     var res = await http.get(api_url+'croaks');
     print(res.body);
@@ -97,6 +105,30 @@ class FeedState extends State<FeedScreen>{
     setState((){
       croaks = json.decode(res.body);
     });
+
+    saveCroaks(croaks);
+
   }
+
+  void saveCroaks(croaks) async{
+    var c = [];
+
+    final Future<Database> dbFuture = openDatabase(
+      join(await getDatabasesPath(), 'fp.db'),
+      onCreate: (db, v){
+        db.execute('CREATE TABLE croaks(id INTEGER PRIMARY KEY, timestamp DATE, content TEXT, score INTEGER, tags TEXT)');
+      },
+      version: 1
+    );
+    final Database db = await dbFuture;
+
+    for (int i = 0; i < croaks.length; i++){
+      c.add(new Croak({croaks[i]['id'], croaks[i]['content'], croaks[i]['timestamp'], croaks[i]['tags'], croaks[i]['score']}));
+      db.insert('croaks', c[i].toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
+    }
+    
+  }
+
+
 
 }
