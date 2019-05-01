@@ -13,6 +13,9 @@ class FrogPondApp extends StatelessWidget {
         primarySwatch: Colors.green,
       ),
       home: RootView(),
+      routes: {
+        'croakdetail': (context) => CroakDetailScreen(),
+      }
     );
   }
 }

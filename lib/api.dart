@@ -11,19 +11,13 @@ Future<List> getCroaks() async {
   var res = await http.get(api_url+'croaks');
   print(res.body);
 
-  //saveCroaks(croaks);
-
   return json.decode(res.body);
 
 }
 
 Future<String> postCroak(Map<String, dynamic> req) async {
-  //req.addAll({'x': -1, 'y': -1, 'type': 0});
   
-  //print('posting: ' + req.toString());
-  
-  await http.post(api_url+'croaks', body: req).then((res){print(res.body);});
+  var res = await http.post(api_url+'croaks', body: req).then((r){print(r.body);});
 
-  //return json.decode(res.body);
-  return 'todo';
+  return json.decode(res.body);
 }

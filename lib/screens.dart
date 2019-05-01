@@ -1,4 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
@@ -7,8 +10,11 @@ import 'package:path/path.dart';
 import 'models.dart';
 import 'db.dart' as db;
 import 'api.dart' as api;
+import 'package:location/location.dart';
 
 class HomeScreen extends StatelessWidget {
+
+  TextEditingController dbgTC;
 
   @override
   Widget build(BuildContext context){
@@ -17,8 +23,15 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text('Welcome to FrogPond')
       ),
-      body: Container()
-    );
+      body: Container(
+        child: Text(
+          'location data',
+          key: Key('dbgT'),
+          
+          ),
+        ),
+      );
+    
   }
 }
 
@@ -35,20 +48,23 @@ class FeedState extends State<FeedScreen>{
   
   List croaks;
   var lastUpdated;
+  var location;
 
   //NOTE: croaks are currently redownloaded upon every time going back to screen
   @override
   void initState(){
     super.initState();
     print(lastUpdated);
-    lastUpdated = DateTime.now();
+    lastUpdated = DateTime.now(); //TODO deal with caching and sqlite stuff properly
+
+    initLocation();
 
     api.getCroaks().then((res){
       setState(() {
         croaks = res;
       });
+      db.saveCroaks(croaks);
     });
-    //TODO how best to deal with sqlite state and api calls 
   
   }
 
@@ -61,11 +77,13 @@ class FeedState extends State<FeedScreen>{
         body: Container(
           child: feedBuilder()
         ),
-           
+
+        /* 
         floatingActionButton: FloatingActionButton(
               child: new Icon(Icons.add),
               onPressed: makeCroak,
             ),
+        */
         );
         
   }
@@ -85,7 +103,6 @@ class FeedState extends State<FeedScreen>{
     var tags = [];
     for (int j = 0; j < croaks[i]['tags'].length; j++){
       tags.add(croaks[i]['tags'][j]['label']);
-      //tags.add('asdf');
     }
     return new ListTile(
         title: Text(croaks[i]['content']),
@@ -96,37 +113,52 @@ class FeedState extends State<FeedScreen>{
             Text(tags.toString())
           ]
         ),
-        onTap: (){}, //TODO croak screen
+        onTap: (){
+          Navigator.pushNamed(this.context, 'croakdetail');
+        }, //TODO croak screen
 
       );
   }
-  
-  //presents UI elems to allow user to compose a new croak
-  void makeCroak(){
-    
-  }
 
-  void saveCroaks(croaks) async{
-    var c = [];
+  void initLocation() async{
 
-    final Future<Database> dbFuture = openDatabase(
-      join(await getDatabasesPath(), 'fp.db'),
-      onCreate: (db, v){
-        db.execute('CREATE TABLE croaks(id INTEGER PRIMARY KEY, timestamp DATE, content TEXT, score INTEGER, tags TEXT)');
-      },
-      version: 1
-    );
-    final Database db = await dbFuture;
+    Location().serviceEnabled().then((s){
+      if (!s) Location().requestService().then((r){
+        initLocation();
+        return;
+      });
+    });
+   
+    Location().hasPermission().then((p){
+      if (!p) Location().requestPermission().then((r){
+        initLocation();
+        return;
+      });
+    });
 
-    for (int i = 0; i < croaks.length; i++){
-      c.add(Croak(id: croaks[i]['id'], content: croaks[i]['content'], timestamp: croaks[i]['timestamp'], tags: croaks[i]['tags'], score: croaks[i]['score']));
-      db.insert('croaks', c[i].toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
+    var loc = new Location();
+    try{
+      await loc.getLocation().then((l){
+        location = l;
+      });
+    } on PlatformException catch (e){
+      if (e.code == 'PERMISSION_DENIED'){
+        print('permission denied');
+      }
+      location = null;
     }
-    
+
+    print(location.toString());
+    showDialog(
+      builder: (BuildContext context){
+      return AlertDialog(
+        title: Text('location'),
+        content: Text(location.toString()),
+      );
+      }, context: this.context
+    );
+      
   }
-
-
-
 }
 
 //for making a croak
@@ -194,9 +226,6 @@ class ComposeScreen extends StatelessWidget {
                 ],
               )
             ),
-            //Text('Text'),
-            //EditableText(),
-
           ]
         )
       )
@@ -206,8 +235,21 @@ class ComposeScreen extends StatelessWidget {
   void submitCroak(String croak, String tags, anon){
     
     Croak c = new Croak(id: anon ? -1 : 0 , content: croak, timestamp: new DateTime.now().toString() , tags: tags, score: 0);
-    print('clicked to submit croak: ' + c.toMap().toString());
+
     api.postCroak(c.toMap());
   }
 }
 
+class CroakDetailScreen extends StatelessWidget{
+
+  //TODO pass in data, probably will need to be stateful widget
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold( 
+      appBar: AppBar(title: Text('Detail of Croak c')),
+      body: Container(),
+      bottomSheet: Form(),
+    );
+  }
+  
+}
