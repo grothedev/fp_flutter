@@ -11,7 +11,11 @@ import 'models.dart';
 import 'db.dart' as db;
 import 'api.dart' as api;
 import 'package:location/location.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'consts.dart';
 
+
+//this screen should show a UI to set feed filter, user account pref, notifications
 class HomeScreen extends StatelessWidget {
 
   TextEditingController dbgTC;
@@ -48,24 +52,40 @@ class FeedState extends State<FeedScreen>{
   
   List croaks;
   var lastUpdated;
-  var location;
+  LocationData location;
 
-  //NOTE: croaks are currently redownloaded upon every time going back to screen
   @override
   void initState(){
     super.initState();
-    print(lastUpdated);
-    lastUpdated = DateTime.now(); //TODO deal with caching and sqlite stuff properly
+    
+    SharedPreferences.getInstance().then((p){
+      lastUpdated = p.getInt('last_croaks_get');
+      if (DateTime.now().millisecondsSinceEpoch - lastUpdated > CROAKS_GET_TIMEOUT){
+        initLocation().then((l){
 
-    initLocation();
+          double x, y;
+          if (l){
+            x = location.longitude;
+            y = location.latitude;
+          } else {
+            x = y = null;
+          }
 
-    api.getCroaks().then((res){
-      setState(() {
-        croaks = res;
-      });
-      db.saveCroaks(croaks);
+          api.getCroaks(x, y).then((res){
+            setState(() {
+              croaks = res;
+            });
+            db.saveCroaks(croaks);
+            p.setInt('last_croaks_get', DateTime.now().millisecondsSinceEpoch);
+          });
+
+        });
+      } else {
+        db.loadCroaks().then((crks){
+          croaks = crks;
+        });
+      }
     });
-  
   }
 
   @override
@@ -120,26 +140,23 @@ class FeedState extends State<FeedScreen>{
       );
   }
 
-  void initLocation() async{
+  Future<bool> initLocation() async{
 
     Location().serviceEnabled().then((s){
       if (!s) Location().requestService().then((r){
-        initLocation();
-        return;
+        if (!r) return false; //service denied
       });
     });
    
     Location().hasPermission().then((p){
       if (!p) Location().requestPermission().then((r){
-        initLocation();
-        return;
+        if (!r) return false; //permission denied
       });
     });
 
-    var loc = new Location();
     try{
-      await loc.getLocation().then((l){
-        location = l;
+      new Location().getLocation().then((loc){
+        location = loc;
       });
     } on PlatformException catch (e){
       if (e.code == 'PERMISSION_DENIED'){
@@ -149,6 +166,8 @@ class FeedState extends State<FeedScreen>{
     }
 
     print(location.toString());
+    
+    //TODO dbging, remove
     showDialog(
       builder: (BuildContext context){
       return AlertDialog(

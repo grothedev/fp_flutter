@@ -1,16 +1,16 @@
-# fp
+FrogPond mobile application, made with flutter. https://flutter.dev/
 
-A new Flutter project.
 
-## Getting Started
+4/30
+	flutter is actually pretty awesome, so using it now.
+	croak detail screen
+		should probably be a MaterialPageRoute
+	account for geolocation in getCroaks (and make sure it's working in API)
+	refine the croak data and add support for other data types (img, vid, sound, file)
+		https://github.com/miguelpruivo/plugins_flutter_file_picker
+	finish a basic UI with elegance in mind
+	notifications
+	preferences as home screen UI
+	about page
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.io/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.io/docs/cookbook)
-
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.io/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+TODO: put entire roadmap and feature plans and vision here
