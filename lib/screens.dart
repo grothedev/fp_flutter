@@ -5,6 +5,8 @@ import 'dart:convert';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'models.dart';
+import 'db.dart' as db;
+import 'api.dart' as api;
 
 class HomeScreen extends StatelessWidget {
 
@@ -31,7 +33,6 @@ class FeedScreen extends StatefulWidget {
 
 class FeedState extends State<FeedScreen>{
   
-  String api_url = 'http://grothe.ddns.net:8090/api/';
   List croaks;
   var lastUpdated;
 
@@ -41,7 +42,14 @@ class FeedState extends State<FeedScreen>{
     super.initState();
     print(lastUpdated);
     lastUpdated = DateTime.now();
-    getCroaks();
+
+    api.getCroaks().then((res){
+      setState(() {
+        croaks = res;
+      });
+    });
+    //TODO how best to deal with sqlite state and api calls 
+  
   }
 
   @override
@@ -95,21 +103,7 @@ class FeedState extends State<FeedScreen>{
   
   //presents UI elems to allow user to compose a new croak
   void makeCroak(){
-    //TODO figure out best way to implement this
-  }
-
-
-  //TODO is sqlite caching as clean as it can be?
-  Future<String> getCroaks() async {
-    var res = await http.get(api_url+'croaks');
-    print(res.body);
-
-    setState((){
-      croaks = json.decode(res.body);
-    });
-
-    saveCroaks(croaks);
-
+    
   }
 
   void saveCroaks(croaks) async{
@@ -125,7 +119,7 @@ class FeedState extends State<FeedScreen>{
     final Database db = await dbFuture;
 
     for (int i = 0; i < croaks.length; i++){
-      c.add(new Croak({croaks[i]['id'], croaks[i]['content'], croaks[i]['timestamp'], croaks[i]['tags'], croaks[i]['score']}));
+      c.add(Croak(id: croaks[i]['id'], content: croaks[i]['content'], timestamp: croaks[i]['timestamp'], tags: croaks[i]['tags'], score: croaks[i]['score']));
       db.insert('croaks', c[i].toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
     }
     
@@ -150,6 +144,7 @@ class ComposeScreen extends StatelessWidget {
         title: Text('Croak with your fellow tadpoles')
       ),
       body: Container(
+        padding: EdgeInsets.all(8.0),
         child: Column(
           children: [
             Form(
@@ -209,16 +204,10 @@ class ComposeScreen extends StatelessWidget {
   }
 
   void submitCroak(String croak, String tags, anon){
-    Croak c = new Croak({0-anon, croak, new DateTime.now().toString() , tags, 0});
     
+    Croak c = new Croak(id: anon ? -1 : 0 , content: croak, timestamp: new DateTime.now().toString() , tags: tags, score: 0);
+    print('clicked to submit croak: ' + c.toMap().toString());
+    api.postCroak(c.toMap());
   }
-
-  /*
-  Future<String> postCroak() async {
-    var res = await http.post(api_url+'croaks', ); //TODO 
-    print(res.body);
-
-  }
-  */
 }
 

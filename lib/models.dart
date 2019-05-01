@@ -7,16 +7,18 @@ class Croak{
   final String timestamp;
   final String tags;
   final int score;
+  final int type = 0;
 
-  Croak(croak, {this.id, this.content, this.timestamp, this.tags, this.score});
+  Croak({this.id, this.content, this.timestamp, this.tags, this.score});
 
   Map<String, dynamic> toMap(){
     return {
-      'id': id,
-      'score': score,
+      'id': id.toString(),
+      'score': score.toString(),
       'content': content,
       'tags': tags,
-      'timestamp': timestamp
+      'timestamp': timestamp,
+      'type': type.toString()
     };
   }
 
