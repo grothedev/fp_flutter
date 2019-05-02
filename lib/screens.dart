@@ -78,8 +78,10 @@ class FeedState extends State<FeedScreen>{
 
           api.getCroaks(x, y).then((res){
             setState(() {
+              //res is json decoded already
               for (int i = 0; i < res.length; i++){
-                var r = json.decode(res[i]);
+                var r = res[i];
+                print(r);
                 croaks.add( Croak(id: r['id'] , content: r['content'], timestamp: r['created_at'] , tags: r['tags'], score: r['score']) );
               }
               croaks = res;
