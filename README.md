@@ -14,3 +14,6 @@ FrogPond mobile application, made with flutter. https://flutter.dev/
 	about page
 
 TODO: put entire roadmap and feature plans and vision here
+
+features:
+	Get url of any croak file etc

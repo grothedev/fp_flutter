@@ -9,7 +9,7 @@ class Croak{
   int lat, lon;
   final String content;
   final String timestamp;
-  final List<String> tags; //in the future, tags might have to be more aligned with the data structure on the server
+  final String tags; //in the future, tags might have to be more aligned with the data structure on the server
   final List<File> files = null;
   final int score;
   final int type = 0;

@@ -50,39 +50,53 @@ class FeedScreen extends StatefulWidget {
 
 class FeedState extends State<FeedScreen>{
   
-  List croaks;
-  var lastUpdated;
+  List<Croak> croaks;
+  int lastUpdated;
   LocationData location;
+  SharedPreferences prefs;
 
   @override
   void initState(){
     super.initState();
-    
+
     SharedPreferences.getInstance().then((p){
-      lastUpdated = p.getInt('last_croaks_get');
-      if (DateTime.now().millisecondsSinceEpoch - lastUpdated > CROAKS_GET_TIMEOUT){
+      prefs = p;
+      lastUpdated = prefs.getInt('last_croaks_get');
+      //TODO remove dbg true
+      if (true || lastUpdated == null || DateTime.now().millisecondsSinceEpoch - lastUpdated > CROAKS_GET_TIMEOUT){
         initLocation().then((l){
 
           double x, y;
-          if (l){
-            x = location.longitude;
-            y = location.latitude;
+          if (l != null){
+            x = l.longitude;
+            y = l.latitude;
+            prefs.setDouble('lat', y);
+            prefs.setDouble('lon', x);
           } else {
             x = y = null;
           }
 
           api.getCroaks(x, y).then((res){
             setState(() {
+              for (int i = 0; i < res.length; i++){
+                var r = json.decode(res[i]);
+                croaks.add( Croak(id: r['id'] , content: r['content'], timestamp: r['created_at'] , tags: r['tags'], score: r['score']) );
+              }
               croaks = res;
             });
+            print('passing to db: ' + croaks.toString());
             db.saveCroaks(croaks);
             p.setInt('last_croaks_get', DateTime.now().millisecondsSinceEpoch);
           });
 
         });
       } else {
+        print('loading croaks from sqlite');
         db.loadCroaks().then((crks){
-          croaks = crks;
+          print('croaks loaded: ' + crks.toString());
+          setState(() {
+            croaks = crks.toList();
+          });
         });
       }
     });
@@ -120,16 +134,18 @@ class FeedState extends State<FeedScreen>{
   }
 
   Widget feedItem(i){
-    var tags = [];
-    for (int j = 0; j < croaks[i]['tags'].length; j++){
+    var tags = croaks[i].tags.split(', ');
+    
+    /*for (int j = 0; j < croaks[i]['tags'].length; j++){
       tags.add(croaks[i]['tags'][j]['label']);
-    }
+    }*/
+
     return new ListTile(
-        title: Text(croaks[i]['content']),
+        title: Text(croaks[i].content),
         trailing: Icon(Icons.favorite),
         subtitle: Row(
           children: <Widget>[
-            Text(croaks[i]['created_at']),
+            Text(croaks[i].timestamp),
             Text(tags.toString())
           ]
         ),
@@ -140,33 +156,32 @@ class FeedState extends State<FeedScreen>{
       );
   }
 
-  Future<bool> initLocation() async{
+  Future<LocationData> initLocation() async{
 
     Location().serviceEnabled().then((s){
       if (!s) Location().requestService().then((r){
-        if (!r) return false; //service denied
+        if (!r) return null; //service denied
       });
     });
    
     Location().hasPermission().then((p){
       if (!p) Location().requestPermission().then((r){
-        if (!r) return false; //permission denied
+        if (!r) return null; //permission denied
       });
     });
 
     try{
       new Location().getLocation().then((loc){
-        location = loc;
+        return loc;
       });
     } on PlatformException catch (e){
       if (e.code == 'PERMISSION_DENIED'){
         print('permission denied');
       }
       location = null;
+      return null;
     }
 
-    print(location.toString());
-    
     //TODO dbging, remove
     showDialog(
       builder: (BuildContext context){
