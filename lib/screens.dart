@@ -50,7 +50,7 @@ class FeedScreen extends StatefulWidget {
 
 class FeedState extends State<FeedScreen>{
   
-  List<Croak> croaks;
+  List croaks; //this is the same json data structure that is returned by api call 
   int lastUpdated;
   LocationData location;
   SharedPreferences prefs;
@@ -78,12 +78,7 @@ class FeedState extends State<FeedScreen>{
 
           api.getCroaks(x, y).then((res){
             setState(() {
-              //res is json decoded already
-              for (int i = 0; i < res.length; i++){
-                var r = res[i];
-                print(r);
-                croaks.add( Croak(id: r['id'] , content: r['content'], timestamp: r['created_at'] , tags: r['tags'], score: r['score']) );
-              }
+              //res is a list decoded from json 
               croaks = res;
             });
             print('passing to db: ' + croaks.toString());
@@ -136,18 +131,18 @@ class FeedState extends State<FeedScreen>{
   }
 
   Widget feedItem(i){
-    var tags = croaks[i].tags.split(', ');
+    var tags = [];
     
-    /*for (int j = 0; j < croaks[i]['tags'].length; j++){
+    for (int j = 0; j < tags.length; j++){
       tags.add(croaks[i]['tags'][j]['label']);
-    }*/
+    }
 
     return new ListTile(
-        title: Text(croaks[i].content),
+        title: Text(croaks[i]['content']),
         trailing: Icon(Icons.favorite),
         subtitle: Row(
           children: <Widget>[
-            Text(croaks[i].timestamp),
+            Text(croaks[i]['created_at']),
             Text(tags.toString())
           ]
         ),

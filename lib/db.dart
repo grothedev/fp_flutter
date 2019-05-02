@@ -25,7 +25,15 @@ void saveCroaks(croaks) async{
     //something feels wrong about this. i should make a fromMap() function 
     //c.add(Croak(id: croaks[i]['id'], content: croaks[i]['content'], timestamp: croaks[i]['timestamp'], tags: croaks[i]['tags'], score: croaks[i]['score']));
     print('saving: ' + croaks[i].toString());
-    database.insert('croaks', croaks[i].toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
+    database.insert('croaks', {
+      'id': croaks[i]['id'],
+      'timestamp': croaks[i]['create_at'],
+      'content': croaks[i]['content'],
+      'score': croaks[i]['score'],
+      'tags': croaks[i]['tags'],
+      
+      }, conflictAlgorithm: ConflictAlgorithm.replace);
+    
   }
   
 }
