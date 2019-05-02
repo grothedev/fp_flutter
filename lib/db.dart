@@ -30,7 +30,7 @@ void saveCroaks(croaks) async{
       'timestamp': croaks[i]['create_at'],
       'content': croaks[i]['content'],
       'score': croaks[i]['score'],
-      'tags': croaks[i]['tags'],
+      'tags': 'TODO',
       
       }, conflictAlgorithm: ConflictAlgorithm.replace);
     

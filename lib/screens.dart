@@ -51,6 +51,7 @@ class FeedScreen extends StatefulWidget {
 class FeedState extends State<FeedScreen>{
   
   List croaks; //this is the same json data structure that is returned by api call 
+  bool loading = true;
   int lastUpdated;
   LocationData location;
   SharedPreferences prefs;
@@ -58,7 +59,6 @@ class FeedState extends State<FeedScreen>{
   @override
   void initState(){
     super.initState();
-
     SharedPreferences.getInstance().then((p){
       prefs = p;
       lastUpdated = prefs.getInt('last_croaks_get');
@@ -79,6 +79,7 @@ class FeedState extends State<FeedScreen>{
           api.getCroaks(x, y).then((res){
             setState(() {
               //res is a list decoded from json 
+              loading = false;
               croaks = res;
             });
             print('passing to db: ' + croaks.toString());
@@ -101,6 +102,20 @@ class FeedState extends State<FeedScreen>{
 
   @override
   Widget build(BuildContext context) {
+    if (loading){
+      return Center(
+        child: Container(
+          width: 120, 
+          height: 120,
+          padding: EdgeInsets.all(24.0),
+          child: CircularProgressIndicator(
+              value: null,
+              semanticsLabel: 'Retreiving Croaks...',
+              semanticsValue: 'Retreiving Croaks...',
+          )
+        )
+      );
+    }
       return Scaffold(
         appBar: AppBar(
           title: Text('Tha Pond')
@@ -147,8 +162,10 @@ class FeedState extends State<FeedScreen>{
           ]
         ),
         onTap: (){
-          Navigator.pushNamed(this.context, 'croakdetail');
-        }, //TODO croak screen
+          Navigator.push(this.context, MaterialPageRoute(
+            builder: (context) => CroakDetailScreen(croaks[i])
+          ));
+        },
 
       );
   }
@@ -273,13 +290,29 @@ class ComposeScreen extends StatelessWidget {
 
 class CroakDetailScreen extends StatelessWidget{
 
+  Map c;
+
+  CroakDetailScreen(Map c){
+    this.c = c;
+  }
+
   //TODO pass in data, probably will need to be stateful widget
   @override
   Widget build(BuildContext context) {
     return Scaffold( 
-      appBar: AppBar(title: Text('Detail of Croak c')),
-      body: Container(),
-      bottomSheet: Form(),
+      appBar: AppBar(title: Text(c['created_at'])),
+      body: Container(
+        child: Text(c['content']),
+        padding: EdgeInsets.all(12.0),
+      ),
+      bottomSheet: Container(
+        padding: EdgeInsets.all(8.0),
+        child: Form(
+         child: Text('reply input here'),
+        
+        ),
+      )
+      
     );
   }
   
