@@ -9,13 +9,14 @@ class Croak{
   int lat, lon;
   final String content;
   final String timestamp;
-  final List<Tag> tags; //in the future, tags might have to be more aligned with the data structure on the server
-  final List<File> files = null;
+  List<Tag> tags; //in the future, tags might have to be more aligned with the data structure on the server
+  List<File> files = null;
   final int score;
-  final int type = 0;
+  final int type;
 
   
-  Croak({this.id, this.content, this.timestamp, this.tags, this.score});
+  Croak({this.id, this.content, this.timestamp, this.score, this.lat, this.lon, this.type});
+
 
   Map<String, dynamic> toMap(){
     return {

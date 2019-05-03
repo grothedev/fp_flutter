@@ -9,8 +9,11 @@ void initDB() async{
   openDatabase(
     join(await getDatabasesPath(), 'fp.db'),
     onCreate: (db, v){
+      //NOTE: the PK ids on these tables are not the same as on server
       db.execute('CREATE TABLE croaks(id INTEGER PRIMARY KEY, timestamp TEXT, content TEXT, score INTEGER, tags TEXT)');
       //db.execute('CREATE TABLE prefs()'); //use shared prefs, but maybe saved tags/users could be saved here because there could be a lot
+      db.execute('CREATE TABLE tags(id INTEGER PRIMARY KEY, label TEXT)');
+      db.execute('CREATE TABLE croaks_tags(croak_id INTEGER, tag_id INTEGER)');
     },
     version: 1
   ).then((db){
@@ -30,7 +33,6 @@ void saveCroaks(croaks) async{
       'timestamp': croaks[i]['create_at'],
       'content': croaks[i]['content'],
       'score': croaks[i]['score'],
-      'tags': 'TODO',
       
       }, conflictAlgorithm: ConflictAlgorithm.replace);
     
@@ -40,4 +42,12 @@ void saveCroaks(croaks) async{
 
 Future<List> loadCroaks() async{
   return await database.query('croaks');
+}
+
+void saveTags(tags) async{
+
+}
+
+Future<List> loadTags() async{
+  
 }

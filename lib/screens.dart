@@ -50,7 +50,8 @@ class FeedScreen extends StatefulWidget {
 
 class FeedState extends State<FeedScreen>{
   
-  List croaks; //this is the same json data structure that is returned by api call 
+  List croaksJSON; //this is the same json data structure that is returned by api call 
+  List<Croak> croaks;
   bool loading = true;
   int lastUpdated;
   LocationData location;
@@ -63,7 +64,7 @@ class FeedState extends State<FeedScreen>{
       prefs = p;
       lastUpdated = prefs.getInt('last_croaks_get');
       //TODO remove dbg true
-      if (true || lastUpdated == null || DateTime.now().millisecondsSinceEpoch - lastUpdated > CROAKS_GET_TIMEOUT){
+      if (lastUpdated == null || DateTime.now().millisecondsSinceEpoch - lastUpdated > CROAKS_GET_TIMEOUT){
         initLocation().then((l){
 
           double x, y;
@@ -80,7 +81,15 @@ class FeedState extends State<FeedScreen>{
             setState(() {
               //res is a list decoded from json 
               loading = false;
-              croaks = res;
+              croaksJSON = res;
+              for (int i = 0; i < croaksJSON.length; i++){
+                var cj = croaksJSON[i];
+                croaks.add(Croak(id: cj['id'], content: cj['content'], timestamp: cj['created_at'], score: cj['score'], lat: cj['y'], lon: cj['x'], type: cj['type']));
+                /*for (int j = 0; j < cj['tags']; j++){
+
+                }*/
+                print(cj['tags']);
+              }
             });
             print('passing to db: ' + croaks.toString());
             db.saveCroaks(croaks);
@@ -93,7 +102,7 @@ class FeedState extends State<FeedScreen>{
         db.loadCroaks().then((crks){
           print('croaks loaded: ' + crks.toString());
           setState(() {
-            croaks = crks.toList();
+            croaksJSON = crks.toList();
           });
         });
       }
@@ -149,21 +158,21 @@ class FeedState extends State<FeedScreen>{
     var tags = [];
     
     for (int j = 0; j < tags.length; j++){
-      tags.add(croaks[i]['tags'][j]['label']);
+      tags.add(croaksJSON[i]['tags'][j]['label']);
     }
 
     return new ListTile(
-        title: Text(croaks[i]['content']),
+        title: Text(croaksJSON[i]['content']),
         trailing: Icon(Icons.favorite),
         subtitle: Row(
           children: <Widget>[
-            Text(croaks[i]['created_at']),
+            Text(croaksJSON[i]['created_at']),
             Text(tags.toString())
           ]
         ),
         onTap: (){
           Navigator.push(this.context, MaterialPageRoute(
-            builder: (context) => CroakDetailScreen(croaks[i])
+            builder: (context) => CroakDetailScreen(croaksJSON[i])
           ));
         },
 
@@ -297,7 +306,7 @@ class ComposeScreen extends StatelessWidget {
 
   void submitCroak(String croak, String tags, anon){
     
-    Croak c = new Croak(id: anon ? -1 : 0 , content: croak, timestamp: new DateTime.now().toString() , tags: tags, score: 0);
+    Croak c = new Croak(id: anon ? -1 : 0 , content: croak, timestamp: new DateTime.now().toString() , score: 0);
 
     api.postCroak(c.toMap());
   }
