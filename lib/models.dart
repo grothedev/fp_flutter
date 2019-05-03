@@ -9,7 +9,7 @@ class Croak{
   int lat, lon;
   final String content;
   final String timestamp;
-  final String tags; //in the future, tags might have to be more aligned with the data structure on the server
+  final List<Tag> tags; //in the future, tags might have to be more aligned with the data structure on the server
   final List<File> files = null;
   final int score;
   final int type = 0;
@@ -30,5 +30,25 @@ class Croak{
 
   String toJSON(){
     
+  }
+}
+
+class Tag{
+  int id;
+  String label;
+  List<Croak> croaks;
+
+  Tag({this.id, this.label, this.croaks});
+
+  Map<String, dynamic> toMap(){
+    return {
+      'id': id,
+      'label': label,
+      'croaks': croaks
+    };
+  }
+
+  String toString(){
+    return label;
   }
 }

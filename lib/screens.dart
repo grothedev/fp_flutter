@@ -229,49 +229,64 @@ class ComposeScreen extends StatelessWidget {
           children: [
             Form(
               key: fk,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  TextFormField(
-                    controller: croakText,
-                    validator: (value){
-                      if (value.isEmpty) return 'Enter some text';
-                    },
-                    decoration: InputDecoration(
-                      icon: Icon(Icons.message),
-                      labelText: 'Post'
-                    ),
-                  ),
-                  TextFormField(
-                    controller: tagsText,
-                    validator: (value){
-                      if (value.isEmpty) return 'Enter some tags, seperated by spaces';
-                    },
-                    decoration: InputDecoration(
-                      icon: Icon(Icons.category),
-                      labelText: 'Tags'
-                    ),
-                  ),
-                  Switch(
-                    value: true,
-                    onChanged: (val){
-                      anon = val;
-                    },
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: 12.0),
-                    child: RaisedButton(
-                      onPressed: (){
-                        if (fk.currentState.validate()){
-                          Scaffold.of(context).showSnackBar(SnackBar(content: Text('Croaking...')));
-                          submitCroak(croakText.text, tagsText.text, anon);
-                        }
+              child: Center(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TextFormField(
+                      controller: croakText,
+                      validator: (value){
+                        if (value.isEmpty) return 'Enter some text';
                       },
-                      child: Text('Croak')
+                      decoration: InputDecoration(
+                        icon: Icon(Icons.message),
+                        labelText: 'Post'
+                      ),
+                      maxLines: 8,
+                      minLines: 3, 
                     ),
-                  )
+                    TextFormField(
+                      controller: tagsText,
+                      validator: (value){
+                        if (value.isEmpty) return 'Enter some tags, seperated by spaces';
+                      },
+                      decoration: InputDecoration(
+                        icon: Icon(Icons.category),
+                        labelText: 'Tags'
+                      ),
+                      maxLines: 3,
+                      minLines: 2,
+                      
+                    ),
+                    Row(
+                      children: <Widget>[
+                        Text('anon'),
+                        Checkbox(
+                          value: true,
+                          onChanged: (val){
+                            anon = val;
+                          },
+                          materialTapTargetSize: MaterialTapTargetSize.padded,
+                        ),
 
-                ],
+                      ],
+                    ),
+                    
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 12.0),
+                      child: RaisedButton(
+                        onPressed: (){
+                          if (fk.currentState.validate()){
+                            Scaffold.of(context).showSnackBar(SnackBar(content: Text('Croaking...')));
+                            submitCroak(croakText.text, tagsText.text, anon);
+                          }
+                        },
+                        child: Text('Croak')
+                      ),
+                    )
+
+                  ],
+                )
               )
             ),
           ]
