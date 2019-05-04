@@ -67,34 +67,7 @@ class FeedState extends State<FeedScreen>{
       if (true || lastUpdated == null || DateTime.now().millisecondsSinceEpoch - lastUpdated > CROAKS_GET_TIMEOUT){
         initLocation().then((l){
 
-          double x, y;
-          if (l != null){
-            x = l.longitude;
-            y = l.latitude;
-            prefs.setDouble('lat', y);
-            prefs.setDouble('lon', x);
-          } else {
-            x = y = null;
-          }
-
-          api.getCroaks(x, y).then((res){
-            setState(() {
-              //res is a list decoded from json 
-              loading = false;
-              croaksJSON = res;
-              for (int i = 0; i < croaksJSON.length; i++){
-                var cj = croaksJSON[i];
-                //croaks.add(Croak(id: cj['id'], content: cj['content'], timestamp: cj['created_at'], score: cj['score'], lat: cj['y'], lon: cj['x'], type: cj['type']));
-                //var tl = json.decode(cj['tags'].toString());
-                for (int j = 0; j < cj['tags'].length; j++){
-                  //cj['tags'][j] = tl[j]['label'];
-                  print(cj['tags'][j]['label']);
-                }
-              }
-            });
-            db.saveCroaks(croaksJSON);
-            p.setInt('last_croaks_get', DateTime.now().millisecondsSinceEpoch);
-          });
+          getCroaks(l);
 
         });
       } else {
@@ -128,7 +101,14 @@ class FeedState extends State<FeedScreen>{
     }
       return Scaffold(
         appBar: AppBar(
-          title: Text('Tha Pond')
+          title: Text('Tha Pond'),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.refresh),
+              onPressed: () => getCroaks(location),
+
+            ),
+          ],
         ),
         body: Container(
           child: feedBuilder()
@@ -156,10 +136,11 @@ class FeedState extends State<FeedScreen>{
   }
 
   Widget feedItem(i){
-    var tags = [];
+    List tags = [];
     
-    for (int j = 0; j < tags.length; j++){
+    for (int j = 0; j < croaksJSON[i]['tags'].length; j++){
       tags.add(croaksJSON[i]['tags'][j]['label']);
+      print(tags[j]);
     }
 
     return new ListTile(
@@ -168,7 +149,10 @@ class FeedState extends State<FeedScreen>{
         subtitle: Row(
           children: <Widget>[
             Text(croaksJSON[i]['created_at']),
-            Text(tags.toString())
+            Spacer(
+              flex: 2
+            ),
+            Text(tags.join(', '))
           ]
         ),
         onTap: (){
@@ -178,6 +162,40 @@ class FeedState extends State<FeedScreen>{
         },
 
       );
+
+      
+  }
+
+  void getCroaks(loc){
+    
+    double x, y;
+    if (loc != null){
+      x = loc.longitude;
+      y = loc.latitude;
+      prefs.setDouble('lat', y);
+      prefs.setDouble('lon', x);
+    } else {
+      x = y = null;
+    }
+
+    api.getCroaks(x, y).then((res){
+            setState(() {
+              //res is a list decoded from json 
+              loading = false;
+              croaksJSON = res;
+              for (int i = 0; i < croaksJSON.length; i++){
+                var cj = croaksJSON[i];
+                //croaks.add(Croak(id: cj['id'], content: cj['content'], timestamp: cj['created_at'], score: cj['score'], lat: cj['y'], lon: cj['x'], type: cj['type']));
+                //var tl = json.decode(cj['tags'].toString());
+                for (int j = 0; j < cj['tags'].length; j++){
+                  //cj['tags'][j] = tl[j]['label'];
+                  print(cj['tags'][j]['label']);
+                }
+              }
+            });
+            db.saveCroaks(croaksJSON);
+            prefs.setInt('last_croaks_get', DateTime.now().millisecondsSinceEpoch);
+          });
   }
 
   Future<LocationData> initLocation() async{
