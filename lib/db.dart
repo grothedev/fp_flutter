@@ -10,10 +10,10 @@ void initDB() async{
     join(await getDatabasesPath(), 'fp.db'),
     onCreate: (db, v){
       //NOTE: the PK ids on these tables are not the same as on server
-      db.execute('CREATE TABLE croaks(id INTEGER PRIMARY KEY, timestamp TEXT, content TEXT, score INTEGER, tags TEXT)');
+      db.execute('CREATE TABLE croaks(id INTEGER PRIMARY KEY, timestamp TEXT, content TEXT, score INTEGER, tags TEXT, type INTEGER, x REAL, y REAL)');
       //db.execute('CREATE TABLE prefs()'); //use shared prefs, but maybe saved tags/users could be saved here because there could be a lot
-      db.execute('CREATE TABLE tags(id INTEGER PRIMARY KEY, label TEXT)');
-      db.execute('CREATE TABLE croaks_tags(croak_id INTEGER, tag_id INTEGER)');
+      //db.execute('CREATE TABLE tags(id INTEGER PRIMARY KEY, label TEXT)');
+      //db.execute('CREATE TABLE croaks_tags(croak_id INTEGER, tag_id INTEGER)');
     },
     version: 1
   ).then((db){
@@ -23,17 +23,26 @@ void initDB() async{
 
 void saveCroaks(croaks) async{
   
-  var c = [];
+  
   for (int i = 0; i < croaks.length; i++){
+    var c = croaks[i];
+    var tags = "";
+    for (int j = 0; j < c['tags'].length; j++){
+      tags += c['tags'][j]['label'] + ",";
+    }
     //something feels wrong about this. i should make a fromMap() function 
     //c.add(Croak(id: croaks[i]['id'], content: croaks[i]['content'], timestamp: croaks[i]['timestamp'], tags: croaks[i]['tags'], score: croaks[i]['score']));
+    
     print('saving: ' + croaks[i].toString());
     database.insert('croaks', {
-      'id': croaks[i]['id'],
-      'timestamp': croaks[i]['create_at'],
-      'content': croaks[i]['content'],
-      'score': croaks[i]['score'],
-      
+      'id': c['id'],
+      'timestamp': c['created_at'],
+      'content': c['content'],
+      'score': c['score'],
+      'tags': tags, 
+      'x': c['x'],
+      'y': c['y'],
+      'type': c['type']
       }, conflictAlgorithm: ConflictAlgorithm.replace);
     
   }
@@ -49,5 +58,5 @@ void saveTags(tags) async{
 }
 
 Future<List> loadTags() async{
-  
+
 }

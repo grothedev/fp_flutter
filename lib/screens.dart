@@ -63,8 +63,8 @@ class FeedState extends State<FeedScreen>{
     SharedPreferences.getInstance().then((p){
       prefs = p;
       lastUpdated = prefs.getInt('last_croaks_get');
-      //TODO remove dbg true
-      if (lastUpdated == null || DateTime.now().millisecondsSinceEpoch - lastUpdated > CROAKS_GET_TIMEOUT){
+      
+      if (true || lastUpdated == null || DateTime.now().millisecondsSinceEpoch - lastUpdated > CROAKS_GET_TIMEOUT){
         initLocation().then((l){
 
           double x, y;
@@ -84,15 +84,15 @@ class FeedState extends State<FeedScreen>{
               croaksJSON = res;
               for (int i = 0; i < croaksJSON.length; i++){
                 var cj = croaksJSON[i];
-                croaks.add(Croak(id: cj['id'], content: cj['content'], timestamp: cj['created_at'], score: cj['score'], lat: cj['y'], lon: cj['x'], type: cj['type']));
-                /*for (int j = 0; j < cj['tags']; j++){
-
-                }*/
-                print(cj['tags']);
+                //croaks.add(Croak(id: cj['id'], content: cj['content'], timestamp: cj['created_at'], score: cj['score'], lat: cj['y'], lon: cj['x'], type: cj['type']));
+                //var tl = json.decode(cj['tags'].toString());
+                for (int j = 0; j < cj['tags'].length; j++){
+                  //cj['tags'][j] = tl[j]['label'];
+                  print(cj['tags'][j]['label']);
+                }
               }
             });
-            print('passing to db: ' + croaks.toString());
-            db.saveCroaks(croaks);
+            db.saveCroaks(croaksJSON);
             p.setInt('last_croaks_get', DateTime.now().millisecondsSinceEpoch);
           });
 
@@ -103,6 +103,7 @@ class FeedState extends State<FeedScreen>{
           print('croaks loaded: ' + crks.toString());
           setState(() {
             croaksJSON = crks.toList();
+            loading = false;
           });
         });
       }
@@ -145,7 +146,7 @@ class FeedState extends State<FeedScreen>{
 
   Widget feedBuilder(){
     return new ListView.builder(
-      itemCount: croaks == null ? 0 : croaks.length,
+      itemCount: croaksJSON == null ? 0 : croaksJSON.length,
       itemBuilder: (context, i) {
         return new Container(
           child: feedItem(i),
