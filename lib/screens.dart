@@ -131,7 +131,8 @@ class FeedState extends State<FeedScreen>{
         return new Container(
           child: feedItem(i),
         );
-      }
+      },
+      shrinkWrap: true,
     );
   }
 
@@ -140,11 +141,17 @@ class FeedState extends State<FeedScreen>{
     
     for (int j = 0; j < croaksJSON[i]['tags'].length; j++){
       tags.add(croaksJSON[i]['tags'][j]['label']);
-      print(tags[j]);
     }
 
     return new ListTile(
-        title: Text(croaksJSON[i]['content']),
+        title: RichText(
+          text: TextSpan( 
+            text: croaksJSON[i]['content'],
+            style: TextStyle(color: Colors.black),
+          ),
+          maxLines: 2,
+          overflow: TextOverflow.fade
+        ),
         trailing: Icon(Icons.favorite),
         subtitle: Row(
           children: <Widget>[
@@ -160,7 +167,7 @@ class FeedState extends State<FeedScreen>{
             builder: (context) => CroakDetailScreen(croaksJSON[i])
           ));
         },
-
+        
       );
 
       
@@ -179,23 +186,23 @@ class FeedState extends State<FeedScreen>{
     }
 
     api.getCroaks(x, y).then((res){
-            setState(() {
-              //res is a list decoded from json 
-              loading = false;
-              croaksJSON = res;
-              for (int i = 0; i < croaksJSON.length; i++){
-                var cj = croaksJSON[i];
-                //croaks.add(Croak(id: cj['id'], content: cj['content'], timestamp: cj['created_at'], score: cj['score'], lat: cj['y'], lon: cj['x'], type: cj['type']));
-                //var tl = json.decode(cj['tags'].toString());
-                for (int j = 0; j < cj['tags'].length; j++){
-                  //cj['tags'][j] = tl[j]['label'];
-                  print(cj['tags'][j]['label']);
-                }
-              }
-            });
-            db.saveCroaks(croaksJSON);
-            prefs.setInt('last_croaks_get', DateTime.now().millisecondsSinceEpoch);
-          });
+      setState(() {
+        //res is a list decoded from json 
+        loading = false;
+        croaksJSON = res;
+        for (int i = 0; i < croaksJSON.length; i++){
+          var cj = croaksJSON[i];
+          //croaks.add(Croak(id: cj['id'], content: cj['content'], timestamp: cj['created_at'], score: cj['score'], lat: cj['y'], lon: cj['x'], type: cj['type']));
+          //var tl = json.decode(cj['tags'].toString());
+          for (int j = 0; j < cj['tags'].length; j++){
+            //cj['tags'][j] = tl[j]['label'];
+            print(cj['tags'][j]['label']);
+          }
+        }
+      });
+      db.saveCroaks(croaksJSON);
+      prefs.setInt('last_croaks_get', DateTime.now().millisecondsSinceEpoch);
+    });
   }
 
   Future<LocationData> initLocation() async{
@@ -324,9 +331,7 @@ class ComposeScreen extends StatelessWidget {
   }
 
   void submitCroak(String croak, String tags, anon){
-    
     Croak c = new Croak(id: anon ? -1 : 0 , content: croak, timestamp: new DateTime.now().toString() , score: 0);
-
     api.postCroak(c.toMap());
   }
 }
@@ -334,6 +339,9 @@ class ComposeScreen extends StatelessWidget {
 class CroakDetailScreen extends StatelessWidget{
 
   Map c;
+  final replyController = TextEditingController();
+  final fk = GlobalKey<FormState>();// form key
+  bool anon = true;
 
   CroakDetailScreen(Map c){
     this.c = c;
@@ -351,12 +359,55 @@ class CroakDetailScreen extends StatelessWidget{
       bottomSheet: Container(
         padding: EdgeInsets.all(8.0),
         child: Form(
-         child: Text('reply input here'),
+          key: fk,
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  TextFormField(
+                    controller: replyController,
+                    validator: (value){
+                        if (value.isEmpty) return 'Enter some text';
+                      },
+                      decoration: InputDecoration(
+                        icon: Icon(Icons.message),
+                        labelText: 'Reply'
+                      ),
+                  ),
+                  FlatButton(
+                    onPressed: (){
+                      if (fk.currentState.validate()){
+                        Scaffold.of(context).showSnackBar(SnackBar(content: Text('Replying...')));
+                        submitReply(c);
+                      }
+                    },
+                    child: Text("Reply"),
+
+                  )
+                ]
+              ),
+              Row(
+                children: [
+                  Text('anon'),
+                  Checkbox(
+                    value: true,
+                    onChanged: (v) => {anon = v},
+                  )
+                ]
+              ),
+            ]
+          ),
         
         ),
       )
       
     );
+  }
+
+  void submitReply(Map parent){
+    Croak c = new Croak(id: anon ? -1 : 0 , content: replyController.text, timestamp: new DateTime.now().toString() , score: 0);
+    c.pid = parent['id'];
+    api.postCroak(c.toMap());
   }
   
 }
