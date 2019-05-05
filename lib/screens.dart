@@ -361,7 +361,7 @@ class CroakDetailScreen extends StatelessWidget{
         child: Form(
           key: fk,
           child: Column(
-            children: [
+            children: <Widget>[
               Row(
                 children: [
                   TextFormField(
