@@ -387,7 +387,17 @@ class CroakDetailScreen extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return Scaffold( 
-      appBar: AppBar(title: Text(c['created_at'])),
+      appBar: AppBar(
+        title: Text(c['created_at']),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.share),
+            onPressed: (){
+              Clipboard.setData(ClipboardData(text: api.api_url+'croaks/'+c['id']));
+            },
+          )
+        ]
+      ),
       body: Container(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -468,6 +478,10 @@ class CroakDetailScreen extends StatelessWidget{
       
       
     );
+  }
+
+  void copyURL(){
+
   }
   
 }
