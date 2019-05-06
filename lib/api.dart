@@ -17,7 +17,9 @@ Future<List> getCroaks(double x, double y) async {
 
 Future<String> postCroak(Map<String, dynamic> req) async {
   
-  var res = await http.post(api_url+'croaks', body: req).then((r){print(r.body);});
+  print('post croak: ' + req.toString());
 
-  return json.decode(res.body);
+  await http.post(api_url+'croaks', body: req).then((r){
+    return r;
+  });
 }

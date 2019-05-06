@@ -7,13 +7,14 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-import 'models.dart';
-import 'db.dart' as db;
-import 'api.dart' as api;
 import 'package:location/location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'consts.dart';
 
+import 'models.dart';
+import 'db.dart' as db;
+import 'api.dart' as api;
+import 'util.dart' as util;
 
 //this screen should show a UI to set feed filter, user account pref, notifications
 class HomeScreen extends StatelessWidget {
@@ -75,7 +76,15 @@ class FeedState extends State<FeedScreen>{
         db.loadCroaks().then((crks){
           print('croaks loaded: ' + crks.toString());
           setState(() {
-            croaksJSON = crks.toList();
+            List tmp = croaks.toList();
+            for (int i = 0; i < tmp.length; i++){
+              if (tmp[i]['p_id'] != 0){ //make sure it's not a comment croak
+                tmp.removeAt(i);
+                i--;
+              }
+            }
+            croaksJSON = tmp;
+
             loading = false;
           });
         });
@@ -152,10 +161,17 @@ class FeedState extends State<FeedScreen>{
           maxLines: 2,
           overflow: TextOverflow.fade
         ),
-        trailing: Icon(Icons.favorite),
+        trailing: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.favorite),
+            Text(croaksJSON[i]['score'].toString(), textAlign: TextAlign.center,)
+          ]
+        ),
         subtitle: Row(
           children: <Widget>[
-            Text(croaksJSON[i]['created_at']),
+            Text(croaksJSON[i]['created_at']), //TODO add # replies?
             Spacer(
               flex: 2
             ),
@@ -290,6 +306,7 @@ class ComposeScreen extends StatelessWidget {
                           onChanged: (val){
                             anon = val;
                           },
+                          value: true,
                           materialTapTargetSize: MaterialTapTargetSize.padded,
                         ),
 
@@ -302,7 +319,11 @@ class ComposeScreen extends StatelessWidget {
                         onPressed: (){
                           if (fk.currentState.validate()){
                             Scaffold.of(context).showSnackBar(SnackBar(content: Text('Croaking...')));
-                            submitCroak(croakText.text, tagsText.text, anon);
+                            util.submitCroak(croakText.text, tagsText.text, anon).then((r){
+                              Scaffold.of(context).showSnackBar(SnackBar(content: Text('Success')));
+                            } else {
+                              Scaffold.of(context).showSnackBar(SnackBar(content: Text('Croak failed to post')));
+                            });
                           }
                         },
                         child: Text('Croak')
@@ -317,11 +338,6 @@ class ComposeScreen extends StatelessWidget {
         )
       )
     );
-  }
-
-  void submitCroak(String croak, String tags, anon){
-    Croak c = new Croak(id: anon ? -1 : 0 , content: croak, timestamp: new DateTime.now().toString() , score: 0);
-    api.postCroak(c.toMap());
   }
 }
 
@@ -359,12 +375,12 @@ class CroakDetailScreen extends StatelessWidget{
               ),
             ),
             Container( //comments
-              child: FeedScreen()
+              child: FeedScreen() //getCroaks(parentId) . figure out how to support threaded system
             ),
             Container(
               
               padding: EdgeInsets.all(8.0),
-              alignment: Alignment.bottomCenter,
+              alignment: Alignment(0, 1),
               child: Form(
                 key: fk,
                 child: Column(
@@ -386,11 +402,12 @@ class CroakDetailScreen extends StatelessWidget{
                             
                           ),
                         ),
-                        FlatButton(
+                        RaisedButton(
                           onPressed: (){
                             if (fk.currentState.validate()){
                               Scaffold.of(context).showSnackBar(SnackBar(content: Text('Replying...')));
-                              submitReply(c);
+                              Croak r = Croak();
+                              util.submitReply(c['pid'], replyController.text, c['tags'], true); //TODO add functionality to add additional tags?
                             }
                           },
                           child: Text("Reply"),
@@ -420,12 +437,6 @@ class CroakDetailScreen extends StatelessWidget{
       
       
     );
-  }
-
-  void submitReply(Map parent){
-    Croak c = new Croak(id: anon ? -1 : 0 , content: replyController.text, timestamp: new DateTime.now().toString() , score: 0);
-    c.pid = parent['id'];
-    api.postCroak(c.toMap());
   }
   
 }
