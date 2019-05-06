@@ -67,10 +67,16 @@ class FeedState extends State<FeedScreen>{
       
       if (true || lastUpdated == null || DateTime.now().millisecondsSinceEpoch - lastUpdated > CROAKS_GET_TIMEOUT){
         initLocation().then((l){
+          if (l != null){
+            prefs.setDouble('lat', l.longitude);
+            prefs.setDouble('lon', l.latitude);
+          }
 
-          getCroaks(l);
-
+          util.getCroaks(l).then((r){
+            populateListView(r);
+          });
         });
+
       } else {
         print('loading croaks from sqlite');
         db.loadCroaks().then((crks){
@@ -114,9 +120,13 @@ class FeedState extends State<FeedScreen>{
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.refresh),
-              onPressed: () => getCroaks(location),
+              onPressed: () => util.getCroaks(location),
 
             ),
+            IconButton(
+              icon: Icon(Icons.sort),
+              onPressed: () => sortOptions()
+            )
           ],
         ),
         body: Container(
@@ -189,36 +199,25 @@ class FeedState extends State<FeedScreen>{
       
   }
 
-  void getCroaks(loc){
-    
-    double x, y;
-    if (loc != null){
-      x = loc.longitude;
-      y = loc.latitude;
-      prefs.setDouble('lat', y);
-      prefs.setDouble('lon', x);
-    } else {
-      x = y = null;
-    }
-
-    api.getCroaks(x, y).then((res){
-      setState(() {
+  void populateListView(List crks){
+    setState(() {
         //res is a list decoded from json 
         loading = false;
-        croaksJSON = res;
+        croaksJSON = crks;
         for (int i = 0; i < croaksJSON.length; i++){
           var cj = croaksJSON[i];
-          //croaks.add(Croak(id: cj['id'], content: cj['content'], timestamp: cj['created_at'], score: cj['score'], lat: cj['y'], lon: cj['x'], type: cj['type']));
-          //var tl = json.decode(cj['tags'].toString());
           for (int j = 0; j < cj['tags'].length; j++){
-            //cj['tags'][j] = tl[j]['label'];
             print(cj['tags'][j]['label']);
           }
         }
-      });
-      db.saveCroaks(croaksJSON);
-      prefs.setInt('last_croaks_get', DateTime.now().millisecondsSinceEpoch);
     });
+    db.saveCroaks(croaksJSON);
+    prefs.setInt('last_croaks_get', DateTime.now().millisecondsSinceEpoch);
+    
+  }
+
+  void sortOptions(){
+
   }
 
   Future<LocationData> initLocation() async{
@@ -274,7 +273,7 @@ class ComposeScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    TextFormField(
+                    TextFormField( //CROAK INPUT
                       controller: croakText,
                       validator: (value){
                         if (value.isEmpty) return 'Enter some text';
@@ -286,7 +285,7 @@ class ComposeScreen extends StatelessWidget {
                       maxLines: 8,
                       minLines: 3, 
                     ),
-                    TextFormField(
+                    TextFormField( //TAGS INPUT
                       controller: tagsText,
                       validator: (value){
                         if (value.isEmpty) return 'Enter some tags, seperated by spaces';
@@ -299,6 +298,7 @@ class ComposeScreen extends StatelessWidget {
                       minLines: 2,
                       
                     ),
+                    SuggestedTags(),
                     Row(
                       children: <Widget>[
                         Text('anon'),
@@ -313,16 +313,23 @@ class ComposeScreen extends StatelessWidget {
                       ],
                     ),
                     
-                    Padding(
+                    Padding( //CROAK SUBMIT
                       padding: EdgeInsets.symmetric(vertical: 12.0),
                       child: RaisedButton(
                         onPressed: (){
                           if (fk.currentState.validate()){
                             Scaffold.of(context).showSnackBar(SnackBar(content: Text('Croaking...')));
-                            util.submitCroak(croakText.text, tagsText.text, anon).then((r){
-                              Scaffold.of(context).showSnackBar(SnackBar(content: Text('Success')));
-                            } else {
-                              Scaffold.of(context).showSnackBar(SnackBar(content: Text('Croak failed to post')));
+                            util.submitCroak(croakText.text, tagsText.text, true).then((r){
+                              if (r){
+                                Scaffold.of(context).removeCurrentSnackBar();
+                                Scaffold.of(context).showSnackBar(SnackBar(content: Text('Success')));
+                                TabBarView b = context.ancestorWidgetOfExactType(TabBarView);
+                                b.controller.animateTo(b.controller.previousIndex);
+                              } else {
+                                Scaffold.of(context).removeCurrentSnackBar();
+                                Scaffold.of(context).showSnackBar(SnackBar(content: Text('Croak failed to post')));
+
+                              }
                             });
                           }
                         },
@@ -339,6 +346,24 @@ class ComposeScreen extends StatelessWidget {
       )
     );
   }
+}
+
+class SuggestedTags extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
+    return Wrap( 
+        
+        children:[
+          ChoiceChip(
+            label: Text('Test_tag_sug'),
+            selected: false
+          )
+        ]
+      );
+  }
+
+
+  
 }
 
 class CroakDetailScreen extends StatelessWidget{
