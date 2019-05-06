@@ -230,16 +230,6 @@ class FeedState extends State<FeedScreen>{
       location = null;
       return null;
     }
-
-    //TODO dbging, remove
-    showDialog(
-      builder: (BuildContext context){
-      return AlertDialog(
-        title: Text('location'),
-        content: Text(location.toString()),
-      );
-      }, context: this.context
-    );
       
   }
 }
@@ -297,7 +287,6 @@ class ComposeScreen extends StatelessWidget {
                       children: <Widget>[
                         Text('anon'),
                         Checkbox(
-                          value: true,
                           onChanged: (val){
                             anon = val;
                           },
@@ -347,59 +336,88 @@ class CroakDetailScreen extends StatelessWidget{
     this.c = c;
   }
 
-  //TODO pass in data, probably will need to be stateful widget
+
   @override
   Widget build(BuildContext context) {
     return Scaffold( 
       appBar: AppBar(title: Text(c['created_at'])),
       body: Container(
-        child: Text(c['content']),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container( //croak content
+             child:  Text(c['content']),
+             padding: EdgeInsets.only(bottom: 12.0),
+             decoration: BoxDecoration(
+               
+                border: Border(
+                  bottom: BorderSide(width: 1.0, color: Colors.black),
+                  top: BorderSide.none,
+                  right: BorderSide.none,
+                  left: BorderSide.none,
+                ),
+              ),
+            ),
+            Container( //comments
+              child: FeedScreen()
+            ),
+            Container(
+              
+              padding: EdgeInsets.all(8.0),
+              alignment: Alignment.bottomCenter,
+              child: Form(
+                key: fk,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: <Widget>[
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: TextFormField(
+                          controller: replyController,
+                          validator: (value){
+                              if (value.isEmpty) return 'Enter some text';
+                            },
+                            decoration: InputDecoration(
+                              icon: Icon(Icons.message),
+                              labelText: 'Reply'
+                            ),
+                            
+                          ),
+                        ),
+                        FlatButton(
+                          onPressed: (){
+                            if (fk.currentState.validate()){
+                              Scaffold.of(context).showSnackBar(SnackBar(content: Text('Replying...')));
+                              submitReply(c);
+                            }
+                          },
+                          child: Text("Reply"),
+
+                        )
+                      ]
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('anon'),
+                        Checkbox(
+                          value: true,
+                          onChanged: (v) => {anon = v},
+                        )
+                      ]
+                    ),
+                  ]
+                ),
+              
+              ),
+            )
+          ],
+        ),
         padding: EdgeInsets.all(12.0),
       ),
-      bottomSheet: Container(
-        padding: EdgeInsets.all(8.0),
-        child: Form(
-          key: fk,
-          child: Column(
-            children: <Widget>[
-              Row(
-                children: [
-                  TextFormField(
-                    controller: replyController,
-                    validator: (value){
-                        if (value.isEmpty) return 'Enter some text';
-                      },
-                      decoration: InputDecoration(
-                        icon: Icon(Icons.message),
-                        labelText: 'Reply'
-                      ),
-                  ),
-                  FlatButton(
-                    onPressed: (){
-                      if (fk.currentState.validate()){
-                        Scaffold.of(context).showSnackBar(SnackBar(content: Text('Replying...')));
-                        submitReply(c);
-                      }
-                    },
-                    child: Text("Reply"),
-
-                  )
-                ]
-              ),
-              Row(
-                children: [
-                  Text('anon'),
-                  Checkbox(
-                    value: true,
-                    onChanged: (v) => {anon = v},
-                  )
-                ]
-              ),
-            ]
-          ),
-        
-        ),
-      )
+      
       
     );
   }
