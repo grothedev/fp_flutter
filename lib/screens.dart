@@ -73,6 +73,9 @@ class FeedState extends State<FeedScreen>{
           }
 
           util.getCroaks(l).then((r){
+            croaksJSON.sort((a, b){
+              return DateTime.parse(b['created_at']).millisecondsSinceEpoch - DateTime.parse(a['created_at']).millisecondsSinceEpoch;
+            });
             populateListView(r);
           });
         });
@@ -144,6 +147,7 @@ class FeedState extends State<FeedScreen>{
   }
 
   Widget feedBuilder(){
+    
     return new ListView.builder(
       itemCount: croaksJSON == null ? 0 : croaksJSON.length,
       itemBuilder: (context, i) {
@@ -161,6 +165,8 @@ class FeedState extends State<FeedScreen>{
     for (int j = 0; j < croaksJSON[i]['tags'].length; j++){
       tags.add(croaksJSON[i]['tags'][j]['label']);
     }
+
+      //DateTime.parse(croaksJSON['timestamp']).millisecondsSinceEpoch;
 
     return new ListTile(
         title: RichText(
