@@ -29,6 +29,7 @@ dependencies:
   path:
   location:
   shared_preferences: 
+  image_picker:
   
 dev_dependencies:
   flutter_test:

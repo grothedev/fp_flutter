@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,8 +11,9 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:location/location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'consts.dart';
+import 'package:image_picker/image_picker.dart';
 
+import 'consts.dart';
 import 'models.dart';
 import 'db.dart' as db;
 import 'api.dart' as api;
@@ -217,6 +220,11 @@ class CroakFeed extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
+    if (croaksJSON == null){
+      return new Container(
+        child: Text('no croaks'),
+      );
+    }
     return new ListView.builder(
       itemCount: croaksJSON == null ? 0 : croaksJSON.length,
       itemBuilder: (context, i) {
@@ -283,9 +291,11 @@ class ComposeScreen extends StatelessWidget {
   final croakText = TextEditingController();
   final tagsText = TextEditingController();
   bool anon = true;
-
+  File image;
+  
  @override
   Widget build(BuildContext context){
+    getImage();
     return Scaffold(
       appBar: AppBar(
         title: Text('Croak with your fellow tadpoles')
@@ -326,6 +336,9 @@ class ComposeScreen extends StatelessWidget {
                       
                     ),
                     SuggestedTags(),
+                    Expanded(
+                      child: image == null ? Text('no image') : Image.file(image),
+                    ),
                     Row(
                       children: <Widget>[
                         Text('anon'),
@@ -372,6 +385,11 @@ class ComposeScreen extends StatelessWidget {
         )
       )
     );
+  }
+
+  Future getImage() async{
+    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+
   }
 }
 
@@ -443,7 +461,7 @@ class CroakDetailScreen extends StatelessWidget{
               child: CroakFeed(
                 context: context,
                 pid: c['id'],
-                croaksJSON: ,
+                croaksJSON: null, //TODO
               ) //getCroaks(parentId) . figure out how to support threaded system
             ),
             Container(
