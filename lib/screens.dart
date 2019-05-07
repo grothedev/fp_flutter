@@ -70,9 +70,13 @@ class FeedState extends State<FeedScreen>{
           if (l != null){
             prefs.setDouble('lat', l.longitude);
             prefs.setDouble('lon', l.latitude);
+          } else {
+            print('null loc');
           }
+          
 
           util.getCroaks(l).then((r){
+            croaksJSON = r;
             croaksJSON.sort((a, b){
               return DateTime.parse(b['created_at']).millisecondsSinceEpoch - DateTime.parse(a['created_at']).millisecondsSinceEpoch;
             });
@@ -230,25 +234,30 @@ class FeedState extends State<FeedScreen>{
 
     Location().serviceEnabled().then((s){
       if (!s) Location().requestService().then((r){
-        if (!r) return null; //service denied
+        if (!r) {
+          print('service denied');
+          return null;
+        }
       });
     });
    
     Location().hasPermission().then((p){
       if (!p) Location().requestPermission().then((r){
-        if (!r) return null; //permission denied
+        if (!r) {
+          print('permission denied');
+          return null;
+        }
       });
     });
 
     try{
-      new Location().getLocation().then((loc){
-        return loc;
-      });
+      return await Location().getLocation();
+      
     } on PlatformException catch (e){
       if (e.code == 'PERMISSION_DENIED'){
         print('permission denied');
       }
-      location = null;
+      print(e.code);
       return null;
     }
       
@@ -393,7 +402,7 @@ class CroakDetailScreen extends StatelessWidget{
           IconButton(
             icon: Icon(Icons.share),
             onPressed: (){
-              Clipboard.setData(ClipboardData(text: api.api_url+'croaks/'+c['id']));
+              Clipboard.setData(ClipboardData(text: api.api_url+'croaks/'+c['id'].toString()));
             },
           )
         ]
@@ -416,7 +425,9 @@ class CroakDetailScreen extends StatelessWidget{
               ),
             ),
             Container( //comments
-              child: FeedScreen() //getCroaks(parentId) . figure out how to support threaded system
+              child: CommentsFeed(
+                parent: c['id'],
+              ) //getCroaks(parentId) . figure out how to support threaded system
             ),
             Container(
               
