@@ -7,8 +7,8 @@ import 'models.dart';
 
 String api_url = 'http://grothe.ddns.net:8090/api/';
 
-Future<List> getCroaks(double x, double y) async {
-  var res = await http.get(api_url+'croaks'); //TODO handle location
+Future<List> getCroaks(double x, double y, int p_id) async {
+  var res = await http.get(api_url+'croaks'); //TODO handle location and parent id
   print(res.body);
 
   return json.decode(res.body);

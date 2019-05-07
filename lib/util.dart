@@ -22,8 +22,11 @@ Future<List> getCroaks(loc){
       x = y = null;
     }
 
-    return api.getCroaks(x, y);
-      
+    return api.getCroaks(x, y, 0);
+}
+
+Future<List> getReplies(int p_id){
+  return api.getCroaks(null, null, p_id);
 }
 
 Future<bool> submitReply(int p_id, String content, String tags, anon) async{ //TODO support user account posting 

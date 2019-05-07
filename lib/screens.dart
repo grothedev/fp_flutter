@@ -137,7 +137,7 @@ class FeedState extends State<FeedScreen>{
           ],
         ),
         body: Container(
-          child: feedBuilder()
+          child: CroakFeed(context: context, pid: 0, croaksJSON: croaksJSON)
         ),
 
         /* 
@@ -150,8 +150,73 @@ class FeedState extends State<FeedScreen>{
         
   }
 
-  Widget feedBuilder(){
+  
+
+  void populateListView(List crks){
+    setState(() {
+        //res is a list decoded from json 
+        loading = false;
+        croaksJSON = crks;
+        for (int i = 0; i < croaksJSON.length; i++){
+          var cj = croaksJSON[i];
+          for (int j = 0; j < cj['tags'].length; j++){
+            print(cj['tags'][j]['label']);
+          }
+        }
+    });
+    db.saveCroaks(croaksJSON);
+    prefs.setInt('last_croaks_get', DateTime.now().millisecondsSinceEpoch);
     
+  }
+
+  void sortOptions(){
+
+  }
+
+  Future<LocationData> initLocation() async{
+
+    Location().serviceEnabled().then((s){
+      if (!s) Location().requestService().then((r){
+        if (!r) {
+          print('service denied');
+          return null;
+        }
+      });
+    });
+   
+    Location().hasPermission().then((p){
+      if (!p) Location().requestPermission().then((r){
+        if (!r) {
+          print('permission denied');
+          return null;
+        }
+      });
+    });
+
+    try{
+      return await Location().getLocation();
+      
+    } on PlatformException catch (e){
+      if (e.code == 'PERMISSION_DENIED'){
+        print('permission denied');
+      }
+      print(e.code);
+      return null;
+    }
+      
+  }
+}
+
+class CroakFeed extends StatelessWidget{
+
+  int pid;
+  List croaksJSON; //json array
+  BuildContext context;
+
+  CroakFeed({this.context, this.pid, this.croaksJSON});
+
+  @override
+  Widget build(BuildContext context) {
     return new ListView.builder(
       itemCount: croaksJSON == null ? 0 : croaksJSON.length,
       itemBuilder: (context, i) {
@@ -208,60 +273,7 @@ class FeedState extends State<FeedScreen>{
 
       
   }
-
-  void populateListView(List crks){
-    setState(() {
-        //res is a list decoded from json 
-        loading = false;
-        croaksJSON = crks;
-        for (int i = 0; i < croaksJSON.length; i++){
-          var cj = croaksJSON[i];
-          for (int j = 0; j < cj['tags'].length; j++){
-            print(cj['tags'][j]['label']);
-          }
-        }
-    });
-    db.saveCroaks(croaksJSON);
-    prefs.setInt('last_croaks_get', DateTime.now().millisecondsSinceEpoch);
-    
-  }
-
-  void sortOptions(){
-
-  }
-
-  Future<LocationData> initLocation() async{
-
-    Location().serviceEnabled().then((s){
-      if (!s) Location().requestService().then((r){
-        if (!r) {
-          print('service denied');
-          return null;
-        }
-      });
-    });
-   
-    Location().hasPermission().then((p){
-      if (!p) Location().requestPermission().then((r){
-        if (!r) {
-          print('permission denied');
-          return null;
-        }
-      });
-    });
-
-    try{
-      return await Location().getLocation();
-      
-    } on PlatformException catch (e){
-      if (e.code == 'PERMISSION_DENIED'){
-        print('permission denied');
-      }
-      print(e.code);
-      return null;
-    }
-      
-  }
+  
 }
 
 //for making a croak
@@ -395,6 +407,9 @@ class CroakDetailScreen extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
+
+    
+
     return Scaffold( 
       appBar: AppBar(
         title: Text(c['created_at']),
@@ -425,8 +440,10 @@ class CroakDetailScreen extends StatelessWidget{
               ),
             ),
             Container( //comments
-              child: CommentsFeed(
-                parent: c['id'],
+              child: CroakFeed(
+                context: context,
+                pid: c['id'],
+                croaksJSON: ,
               ) //getCroaks(parentId) . figure out how to support threaded system
             ),
             Container(
