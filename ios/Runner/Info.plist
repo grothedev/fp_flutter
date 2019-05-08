@@ -41,5 +41,11 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+  <key>NSPhotoLibraryUsageDescription</key>
+  <string>To select photos to attach to posts</string>
+  <key>NSCameraUsageDescription</key>
+  <string>To take photos/videos to attach to posts</string>
+  <key>NSMicrophoneUsageDescription</key>
+  <string>To record audio to attach to posts</string>
 </dict>
 </plist>

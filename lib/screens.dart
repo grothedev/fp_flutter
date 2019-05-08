@@ -12,6 +12,7 @@ import 'package:path/path.dart';
 import 'package:location/location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:file_picker/file_picker.dart';
 
 import 'consts.dart';
 import 'models.dart';
@@ -284,18 +285,16 @@ class CroakFeed extends StatelessWidget{
   
 }
 
-//for making a croak
-class ComposeScreen extends StatelessWidget {
+class ComposeScreenState extends State<ComposeScreen>{
 
   final fk = GlobalKey<FormState>();// form key
   final croakText = TextEditingController();
   final tagsText = TextEditingController();
   bool anon = true;
-  File image;
+  String file;
   
- @override
+  @override
   Widget build(BuildContext context){
-    getImage();
     return Scaffold(
       appBar: AppBar(
         title: Text('Croak with your fellow tadpoles')
@@ -336,9 +335,20 @@ class ComposeScreen extends StatelessWidget {
                       
                     ),
                     SuggestedTags(),
-                    Expanded(
-                      child: image == null ? Text('no image') : Image.file(image),
+                    Row(
+                      children: [
+                        RaisedButton(
+                          onPressed: getFile,
+                          child: Text('Attach File'),
+
+                        ),
+                        Container(
+                          padding: EdgeInsets.only(left: 15),
+                          child: file == null ? Text('no file') : Text(file.toString())
+                        ),
+                      ]
                     ),
+                    
                     Row(
                       children: <Widget>[
                         Text('anon'),
@@ -355,26 +365,29 @@ class ComposeScreen extends StatelessWidget {
                     
                     Padding( //CROAK SUBMIT
                       padding: EdgeInsets.symmetric(vertical: 12.0),
-                      child: RaisedButton(
-                        onPressed: (){
-                          if (fk.currentState.validate()){
-                            Scaffold.of(context).showSnackBar(SnackBar(content: Text('Croaking...')));
-                            util.submitCroak(croakText.text, tagsText.text, true).then((r){
-                              if (r){
-                                Scaffold.of(context).removeCurrentSnackBar();
-                                Scaffold.of(context).showSnackBar(SnackBar(content: Text('Success')));
-                                TabBarView b = context.ancestorWidgetOfExactType(TabBarView);
-                                b.controller.animateTo(b.controller.previousIndex);
-                              } else {
-                                Scaffold.of(context).removeCurrentSnackBar();
-                                Scaffold.of(context).showSnackBar(SnackBar(content: Text('Croak failed to post')));
+                      child: Center(
+                        child: RaisedButton(
+                        
+                          onPressed: (){
+                            if (fk.currentState.validate()){
+                              Scaffold.of(context).showSnackBar(SnackBar(content: Text('Croaking...')));
+                              util.submitCroak(croakText.text, tagsText.text, true).then((r){
+                                if (r){
+                                  Scaffold.of(context).removeCurrentSnackBar();
+                                  Scaffold.of(context).showSnackBar(SnackBar(content: Text('Success')));
+                                  TabBarView b = context.ancestorWidgetOfExactType(TabBarView);
+                                  b.controller.animateTo(b.controller.previousIndex);
+                                } else {
+                                  Scaffold.of(context).removeCurrentSnackBar();
+                                  Scaffold.of(context).showSnackBar(SnackBar(content: Text('Croak failed to post')));
 
-                              }
-                            });
-                          }
-                        },
-                        child: Text('Croak')
-                      ),
+                                }
+                              });
+                            }
+                          },
+                          child: Text('Croak')
+                        ),
+                      )
                     )
 
                   ],
@@ -387,9 +400,21 @@ class ComposeScreen extends StatelessWidget {
     );
   }
 
-  Future getImage() async{
-    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+  Future getFile() async{ //currently supports one file; will provide multiple files in future if necessary
+    var f = await FilePicker.getFilePath(type: FileType.ANY);
+    setState((){
+      file = f;
+    });
+  }
+  
+}
 
+//for making a croak
+class ComposeScreen extends StatefulWidget {
+
+  @override
+  State<StatefulWidget> createState() {
+    return ComposeScreenState();
   }
 }
 

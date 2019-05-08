@@ -13,6 +13,11 @@ FrogPond mobile application, made with flutter. https://flutter.dev/
 	preferences as home screen UI
 	about page
 
+
+uses some packages:
+  image picker: https://pub.dev/packages/image_picker
+  
+
 TODO: put entire roadmap and feature plans and vision here
 
 features:
