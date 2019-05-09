@@ -6,7 +6,7 @@ class Croak{
   int id;
   int pid; //parent
   int uid; //user (author)
-  int lat, lon;
+  double lat, lon;
   final String content;
   final String timestamp;
   List<String> tags; //in the future, tags might have to be more aligned with the data structure on the server

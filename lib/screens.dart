@@ -256,10 +256,11 @@ class CroakFeed extends StatelessWidget{
           overflow: TextOverflow.fade
         ),
         trailing: Column(
+          
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.favorite),
+            RaisedButton( onPressed: (){fav(i);},  child: Icon(Icons.favorite) ), 
             Text(croaksJSON[i]['score'].toString(), textAlign: TextAlign.center,)
           ]
         ),
@@ -282,6 +283,11 @@ class CroakFeed extends StatelessWidget{
 
       
   }
+
+  //toggles "favorite" or normal for a croak  
+  void fav(int id){
+
+  }
   
 }
 
@@ -292,7 +298,14 @@ class ComposeScreenState extends State<ComposeScreen>{
   final tagsText = TextEditingController();
   bool anon = true;
   String file;
-  
+  SharedPreferences prefs; 
+
+  void initState(){
+    SharedPreferences.getInstance().then((p){
+      prefs = p;
+    });
+  }
+
   @override
   Widget build(BuildContext context){
     return Scaffold(
@@ -371,7 +384,7 @@ class ComposeScreenState extends State<ComposeScreen>{
                           onPressed: (){
                             if (fk.currentState.validate()){
                               Scaffold.of(context).showSnackBar(SnackBar(content: Text('Croaking...')));
-                              util.submitCroak(croakText.text, tagsText.text, true).then((r){
+                              util.submitCroak(croakText.text, tagsText.text, true, prefs.getDouble('lat'), prefs.getDouble('lon')).then((r){
                                 if (r){
                                   Scaffold.of(context).removeCurrentSnackBar();
                                   Scaffold.of(context).showSnackBar(SnackBar(content: Text('Success')));

@@ -34,8 +34,8 @@ Future<bool> submitReply(int p_id, String content, String tags, anon) async{ //T
   return await postCroak(c.toMap());
 }
 
-Future<bool> submitCroak(String croak, String tags, anon) async{
-  Croak c = new Croak(content: croak, timestamp: new DateTime.now().toString() , score: 0, tags: tags.split(' '), type: 0, pid: 0);
+Future<bool> submitCroak(String croak, String tags, bool anon, double lat, double lon) async{
+  Croak c = new Croak(content: croak, timestamp: new DateTime.now().toString() , score: 0, tags: tags.split(' '), type: 0, pid: 0, lat: lat, lon: lon);
   return await postCroak(c.toMap());
 }
 
