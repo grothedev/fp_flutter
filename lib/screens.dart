@@ -24,6 +24,8 @@ import 'util.dart' as util;
 class HomeScreen extends StatelessWidget {
 
   TextEditingController dbgTC;
+  final fk = GlobalKey<FormState>();
+  TextEditingController tagsText = TextEditingController();
 
   @override
   Widget build(BuildContext context){
@@ -33,13 +35,27 @@ class HomeScreen extends StatelessWidget {
         title: Text('Welcome to FrogPond')
       ),
       body: Container(
-        child: Text(
-          'location data',
-          key: Key('dbgT'),
-          
+        child: Form(
+          key: fk,
+          child: Padding(
+            padding: EdgeInsets.all(12.0),
+            child: Column(
+              children: [
+                TextFormField( //TAGS INPUT
+                      controller: tagsText,
+                      decoration: InputDecoration(
+                        icon: Icon(Icons.category),
+                        labelText: 'Tags'
+                      ),
+                      maxLines: 3,
+                      minLines: 1,
+                    ),
+              ],
+            )
           ),
         ),
-      );
+      )
+    );
     
   }
 }
@@ -211,13 +227,15 @@ class FeedState extends State<FeedScreen>{
   }
 }
 
-class CroakFeed extends StatelessWidget{
-
+class CroakFeedState extends State<CroakFeed>{
   int pid;
   List croaksJSON; //json array
   BuildContext context;
+  List<bool> favs;
 
-  CroakFeed({this.context, this.pid, this.croaksJSON});
+  CroakFeedState({this.context, this.pid, this.croaksJSON}){
+    favs = new List<bool>(croaksJSON.length);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -245,6 +263,7 @@ class CroakFeed extends StatelessWidget{
     }
 
       //DateTime.parse(croaksJSON['timestamp']).millisecondsSinceEpoch;
+    favs[i] = false;
 
     return new ListTile(
         title: RichText(
@@ -260,7 +279,7 @@ class CroakFeed extends StatelessWidget{
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            RaisedButton( onPressed: (){fav(i);},  child: Icon(Icons.favorite) ), 
+            RaisedButton( key: i, onPressed: (){fav(i);},  child: favs[i] ? Icon(Icons.favorite) : (Icons.favorite_border) ), 
             Text(croaksJSON[i]['score'].toString(), textAlign: TextAlign.center,)
           ]
         ),
@@ -281,12 +300,27 @@ class CroakFeed extends StatelessWidget{
         
       );
 
-      
+
   }
 
   //toggles "favorite" or normal for a croak  
   void fav(int id){
+    setState((){
+      favs[id] = !favs[id];
+    });
+  }
+}
 
+class CroakFeed extends StatefulWidget{
+  final BuildContext context;
+  final int pid;
+  final List croaksJSON;
+
+  CroakFeed({this.context, this.pid, this.croaksJSON});
+
+  @override
+  State<StatefulWidget> createState() {
+    return CroakFeedState(context: context, pid: pid, croaksJSON: croaksJSON);
   }
   
 }
@@ -374,7 +408,7 @@ class ComposeScreenState extends State<ComposeScreen>{
                         ),
 
                       ],
-                    ),
+                    ),  
                     
                     Padding( //CROAK SUBMIT
                       padding: EdgeInsets.symmetric(vertical: 12.0),
