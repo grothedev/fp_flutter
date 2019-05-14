@@ -1,28 +1,35 @@
 FrogPond mobile application, made with flutter. https://flutter.dev/
 
 
-4/30
-	flutter is actually pretty awesome, so using it now.
-	croak detail screen
-		should probably be a MaterialPageRoute
-	account for geolocation in getCroaks (and make sure it's working in API)
-	refine the croak data and add support for other data types (img, vid, sound, file)
-		https://github.com/miguelpruivo/plugins_flutter_file_picker
-	finish a basic UI with elegance in mind
-		threaded comment display
-		toasts
-	notifications
-	preferences as home screen UI
-	about page
+4/30:  flutter is actually pretty awesome, so using it now.
+	
+
+TODO: 
+
+	* croak detail screen
+		- fix spacing
+		- fix reply input
+		- implement threaded comments
+
+	* compose croak screen
+		- clean up UI
+		- actually attach the files
+
+	* verify the following features of API are working: popular tags, get by keywords, get by location,
+	
+	* notifications
+	
+	* about page
+
+	* put entire roadmap and feature plans and vision here
+ 
+ 	* make a list of all shared preferences
+	
+	* URLS to simple display rather than API
+	
 
 
 uses some packages:
   file picker: https://pub.dev/packages/file_picker
   toast: https://pub.dev/packages/toast
 
-TODO: 
-	* put entire roadmap and feature plans and vision here
-	* make a list of all shared preferences
-
-features:
-	Get url of any croak file etc
