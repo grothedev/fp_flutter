@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ import 'package:location/location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:toast/toast.dart';
 
 import 'consts.dart';
 import 'models.dart';
@@ -35,13 +37,24 @@ class HomeScreen extends StatelessWidget {
         title: Text('Welcome to FrogPond')
       ),
       body: Container(
-        child: Form(
-          key: fk,
-          child: Padding(
-            padding: EdgeInsets.all(12.0),
-            child: Column(
-              children: [
-                TextFormField( //TAGS INPUT
+        child: Column(
+          children: [
+            Container(
+              child: Text('Configure your search query and preferences here',
+                style: TextStyle(
+                  fontSize: 18,
+                )
+              ),
+              constraints: BoxConstraints(maxHeight: 20),
+              padding: EdgeInsets.all(10),
+            ),
+            Form(
+              key: fk,
+              child: Padding(
+                padding: EdgeInsets.all(12.0),
+                child: Column(
+                  children: [
+                    TextFormField( //TAGS INPUT
                       controller: tagsText,
                       decoration: InputDecoration(
                         icon: Icon(Icons.category),
@@ -50,10 +63,40 @@ class HomeScreen extends StatelessWidget {
                       maxLines: 3,
                       minLines: 1,
                     ),
-              ],
-            )
-          ),
-        ),
+                    TextFormField( //KEYWORDS INPUT
+                      controller: tagsText,
+                      decoration: InputDecoration(
+                        icon: Icon(Icons.message),
+                        labelText: 'Keywords'
+                      ),
+                      maxLines: 3,
+                      minLines: 1,
+                    ),
+                    CheckboxListTile(
+                      title: Text('All (on) or Some (off):'),
+                      value: false,
+                      onChanged: (v){
+                        /*setState((){
+                          SharedPreferences.getInstance().then((pref){
+
+                          };
+                        });*/
+                      },
+                      activeColor: Colors.green,
+                    ),
+                    /*Spacer(flex: 3,),
+                    Container(
+                      child: Text('Location Data: ', //TODO include actual data
+                      
+                      ) 
+                    )*/
+                  ],
+                  
+                )
+              ),
+            ),
+          ]
+        ) 
       )
     );
     
@@ -71,7 +114,7 @@ class FeedScreen extends StatefulWidget {
   }
 }
 
-class FeedState extends State<FeedScreen>{
+class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<FeedScreen>{
   
   List croaksJSON; //this is the same json data structure that is returned by api call 
   List<Croak> croaks;
@@ -83,15 +126,12 @@ class FeedState extends State<FeedScreen>{
   @override
   void initState(){
     super.initState();
-    print("initing feed state");
     SharedPreferences.getInstance().then((p){
-      print('got shared pref');
       prefs = p;
       lastUpdated = prefs.getInt('last_croaks_get');
       
       if (true || lastUpdated == null || DateTime.now().millisecondsSinceEpoch - lastUpdated > CROAKS_GET_TIMEOUT){
         initLocation().then((l){
-          print('got loc');
           if (l != null){
             prefs.setDouble('lat', l.longitude);
             prefs.setDouble('lon', l.latitude);
@@ -99,16 +139,14 @@ class FeedState extends State<FeedScreen>{
             print('null loc');
           }
           
-          print('getting croaks');
           util.getCroaks(l).then((r){
-            print('croaks gotten');
             r.sort((a, b){
               return DateTime.parse(b['created_at']).millisecondsSinceEpoch - DateTime.parse(a['created_at']).millisecondsSinceEpoch;
             });
             populateListView(r);
           });
         }).timeout(new Duration(seconds: 12), onTimeout: (){
-          print('failed to get location');
+          Toast.show('Unable to get your location', this.context);
           print('getting croaks');
           util.getCroaks(null).then((r){
             print('croaks gotten');
@@ -249,6 +287,9 @@ class FeedState extends State<FeedScreen>{
     }
       
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class CroakFeedState extends State<CroakFeed>{
@@ -303,7 +344,7 @@ class CroakFeedState extends State<CroakFeed>{
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            RaisedButton( key: new Key(i.toString()), onPressed: (){fav(i);},  child: favs[i] ? Icon(Icons.favorite) : Icon(Icons.favorite_border) ), 
+            RaisedButton( key: new UniqueKey(), onPressed: (){fav(i);},  child: favs[i] ? Icon(Icons.favorite) : Icon(Icons.favorite_border) ), 
             Text(croaksJSON[i]['score'].toString(), textAlign: TextAlign.center,)
           ]
         ),
@@ -349,7 +390,7 @@ class CroakFeed extends StatefulWidget{
   
 }
 
-class ComposeScreenState extends State<ComposeScreen>{
+class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveClientMixin<ComposeScreen>{
 
   final fk = GlobalKey<FormState>();// form key
   final croakText = TextEditingController();
@@ -477,6 +518,9 @@ class ComposeScreenState extends State<ComposeScreen>{
       file = f;
     });
   }
+
+  @override
+  bool get wantKeepAlive => true;
   
 }
 

@@ -14,6 +14,11 @@ class FrogPondApp extends StatelessWidget {
       title: 'FrogPond',
       theme: ThemeData(
         primarySwatch: Colors.green,
+        accentColor: Colors.green,
+        backgroundColor: Color(0xFFEDEDED),
+        textTheme: TextTheme(
+          
+        )
       ),
       home: RootView()
     );
@@ -34,7 +39,7 @@ class RootView extends StatefulWidget{
   @override
   RootState createState() => new RootState();
 }
-class RootState extends State<RootView> with SingleTickerProviderStateMixin{
+class RootState extends State<RootView> with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin<RootView>{
   TabController controller;
   //SharedPreferences prefs; //this global variable might not be necessary
 
@@ -84,6 +89,9 @@ class RootState extends State<RootView> with SingleTickerProviderStateMixin{
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
   
 }
 
