@@ -18,9 +18,11 @@ FrogPond mobile application, made with flutter. https://flutter.dev/
 
 uses some packages:
   file picker: https://pub.dev/packages/file_picker
-  
+  toast: https://pub.dev/packages/toast
 
-TODO: put entire roadmap and feature plans and vision here
+TODO: 
+	* put entire roadmap and feature plans and vision here
+	* make a list of all shared preferences
 
 features:
 	Get url of any croak file etc

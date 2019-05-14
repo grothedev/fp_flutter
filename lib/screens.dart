@@ -22,16 +22,15 @@ import 'db.dart' as db;
 import 'api.dart' as api;
 import 'util.dart' as util;
 
-//this screen should show a UI to set feed filter, user account pref, notifications
-class HomeScreen extends StatelessWidget {
-
+class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMixin<HomeScreen>{
+  
   TextEditingController dbgTC;
   final fk = GlobalKey<FormState>();
   TextEditingController tagsText = TextEditingController();
+  bool kwdAll = false;
 
   @override
   Widget build(BuildContext context){
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Welcome to FrogPond')
@@ -40,12 +39,12 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           children: [
             Container(
-              child: Text('Configure your search query and preferences here',
-                style: TextStyle(
-                  fontSize: 18,
-                )
+              child: Text('Welcome to the pond, young tadpole! Come grow some legs and croak with your frog breathren. \n Configure your search query and preferences on this screen. Swipe right to go for a swim or croak your own croak.',
+                style: Theme.of(context).textTheme.headline,
+                maxLines: 5,
+                overflow: TextOverflow.visible,
               ),
-              constraints: BoxConstraints(maxHeight: 20),
+              //constraints: BoxConstraints(maxHeight: 20),
               padding: EdgeInsets.all(10),
             ),
             Form(
@@ -76,20 +75,24 @@ class HomeScreen extends StatelessWidget {
                       title: Text('All (on) or Some (off):'),
                       value: false,
                       onChanged: (v){
-                        /*setState((){
+                        setState((){
                           SharedPreferences.getInstance().then((pref){
-
-                          };
-                        });*/
+                            pref.setBool("query_kwdAll", v);
+                          });
+                          kwdAll = v;
+                        });
                       },
                       activeColor: Colors.green,
                     ),
-                    /*Spacer(flex: 3,),
+                    
                     Container(
                       child: Text('Location Data: ', //TODO include actual data
                       
-                      ) 
-                    )*/
+                      ),
+                      margin: EdgeInsets.only(bottom: 2),
+                      padding: EdgeInsets.only(left: 8),
+
+                    )
                   ],
                   
                 )
@@ -99,8 +102,21 @@ class HomeScreen extends StatelessWidget {
         ) 
       )
     );
-    
   }
+
+  @override
+  bool get wantKeepAlive => true;
+  
+}
+
+//this screen should show a UI to set feed filter, user account pref, notifications
+class HomeScreen extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return HomeScreenState();
+  }
+
+
 }
 
 
@@ -120,7 +136,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   List<Croak> croaks;
   bool loading = true;
   int lastUpdated;
-  LocationData location;
+  LocationData location; //getting location and downloading croaks
   SharedPreferences prefs;
 
   @override
@@ -188,7 +204,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
           padding: EdgeInsets.all(24.0),
           child: Column(
             children: [
-              Text("Finding Location..."),
+              Text("Finding your location and gathering nearby croaks..."),
               CircularProgressIndicator(
                   value: null,
                   semanticsLabel: 'Retreiving Croaks...',
