@@ -197,24 +197,25 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   @override
   Widget build(BuildContext context) {
     if (loading){
-      return Center(
-        child: Container(
-          width: 120, 
-          height: 120,
-          padding: EdgeInsets.all(24.0),
-          child: Column(
-            children: [
-              Text("Finding your location and gathering nearby croaks..."),
-              CircularProgressIndicator(
-                  value: null,
-                  semanticsLabel: 'Retreiving Croaks...',
-                  semanticsValue: 'Retreiving Croaks...',
-              ),
-            ]
-          )
-          
-        )
-      );
+      return Column(
+        children: [
+          Text("Finding your location and gathering nearby croaks..."),
+          Center(
+            child: Container(
+              width: 120, 
+              height: 120,
+              padding: EdgeInsets.all(24.0),
+              child: CircularProgressIndicator(
+                      value: null,
+                      semanticsLabel: 'Retreiving Croaks...',
+                      semanticsValue: 'Retreiving Croaks...',
+                  ),
+                
+              )
+            
+            )]
+          );
+        
     }
     return Scaffold(
       appBar: AppBar(
@@ -570,9 +571,11 @@ class SuggestedTags extends StatelessWidget{
 class CroakDetailScreen extends StatelessWidget{
 
   Map c;
-  final replyController = TextEditingController();
-  final fk = GlobalKey<FormState>();// form key
-  bool anon = true;
+
+  //this stuff is now in the compose croak dialog
+  //final replyController = TextEditingController();
+  //final fk = GlobalKey<FormState>();// form key
+  //bool anon = true;
 
   CroakDetailScreen(Map c){
     this.c = c;
@@ -582,8 +585,6 @@ class CroakDetailScreen extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
 
-    
-
     return Scaffold( 
       appBar: AppBar(
         title: Text(c['created_at']),
@@ -592,6 +593,7 @@ class CroakDetailScreen extends StatelessWidget{
             icon: Icon(Icons.share),
             onPressed: (){
               Clipboard.setData(ClipboardData(text: api.api_url+'croaks/'+c['id'].toString()));
+              Toast.show('URL copied to clipboard', context);
             },
           )
         ]
@@ -600,19 +602,23 @@ class CroakDetailScreen extends StatelessWidget{
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container( //croak content
-             child:  Text(c['content']),
-             padding: EdgeInsets.only(bottom: 12.0),
-             decoration: BoxDecoration(
-               
-                border: Border(
-                  bottom: BorderSide(width: 1.0, color: Colors.black),
-                  top: BorderSide.none,
-                  right: BorderSide.none,
-                  left: BorderSide.none,
+            Expanded(
+              flex: 1,
+              child: Container( //croak content
+                child:  Text(c['content']), 
+                padding: EdgeInsets.only(bottom: 12.0),
+                decoration: BoxDecoration(
+                  
+                    border: Border(
+                      bottom: BorderSide(width: 1.0, color: Colors.black),
+                      top: BorderSide.none,
+                      right: BorderSide.none,
+                      left: BorderSide.none,
+                    ),
+                  ),
                 ),
-              ),
             ),
+            
             Container( //comments
               child: CroakFeed(
                 context: context,
@@ -624,7 +630,80 @@ class CroakDetailScreen extends StatelessWidget{
               
               padding: EdgeInsets.all(8.0),
               alignment: Alignment(0, 1),
-              child: Form(
+              child: Text("old reply form was here")
+            )
+          ],
+        ),
+        padding: EdgeInsets.all(12.0),
+      ),
+      //bottomSheet: Text('bottomsheet test'),
+      floatingActionButton: FloatingActionButton(
+        onPressed: (){
+          showDialog(context: context, builder: (context) {
+            return ComposeCroakDialog(c);
+          });
+        },
+        child: Icon(Icons.add_circle),
+
+      ),
+    );
+  }
+
+  void copyURL(){
+
+  }
+  
+}
+
+//a form to overlay the main UI to make and submit croaks
+class ComposeCroakDialog extends Dialog{
+  
+  final contentController = TextEditingController();
+  final fk = GlobalKey<FormState>();// form key
+  final Map parent; //croak replying to
+  bool anon;
+
+  ComposeCroakDialog(this.parent);
+
+  @override
+  Widget build(BuildContext context){
+    return SimpleDialog( 
+              contentPadding: EdgeInsets.all(12.0),
+              children: [
+                Text('croak dialog test'),
+                TextFormField(
+                  controller: contentController,
+                  validator: (value){
+                      if (value.isEmpty) return 'Enter some text';
+                    },
+                    decoration: InputDecoration(
+                      icon: Icon(Icons.message),
+                      labelText: 'Reply'
+                    ),
+                    
+                  ),
+                  CheckboxListTile(
+                    value: true,
+                    title: Text('anon'),
+                    onChanged: (v){},
+
+                  ),
+                  RaisedButton(
+                          onPressed: (){
+                            if (fk.currentState.validate()){
+                              Scaffold.of(context).showSnackBar(SnackBar(content: Text('Replying...')));
+                              Croak r = Croak();
+                              util.submitReply(parent['pid'], contentController.text, parent['tags'], true); //TODO add functionality to add additional tags?
+                            }
+                          },
+                          child: Text("Reply"),
+
+                        )
+              ]
+            ) ;
+  }
+  /*
+  Form(
                 key: fk,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -672,18 +751,5 @@ class CroakDetailScreen extends StatelessWidget{
                 ),
               
               ),
-            )
-          ],
-        ),
-        padding: EdgeInsets.all(12.0),
-      ),
-      
-      
-    );
-  }
-
-  void copyURL(){
-
-  }
-  
+    */
 }
