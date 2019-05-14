@@ -63,8 +63,10 @@ class HomeScreen extends StatelessWidget {
 
 class FeedScreen extends StatefulWidget {
 
+  const FeedScreen() : super();
+
   @override
-  State<StatefulWidget> createState() {
+  FeedState createState() {
     return new FeedState();
   }
 }
@@ -81,12 +83,15 @@ class FeedState extends State<FeedScreen>{
   @override
   void initState(){
     super.initState();
+    print("initing feed state");
     SharedPreferences.getInstance().then((p){
+      print('got shared pref');
       prefs = p;
       lastUpdated = prefs.getInt('last_croaks_get');
       
       if (true || lastUpdated == null || DateTime.now().millisecondsSinceEpoch - lastUpdated > CROAKS_GET_TIMEOUT){
         initLocation().then((l){
+          print('got loc');
           if (l != null){
             prefs.setDouble('lat', l.longitude);
             prefs.setDouble('lon', l.latitude);
@@ -94,10 +99,20 @@ class FeedState extends State<FeedScreen>{
             print('null loc');
           }
           
-
+          print('getting croaks');
           util.getCroaks(l).then((r){
-            croaksJSON = r;
-            croaksJSON.sort((a, b){
+            print('croaks gotten');
+            r.sort((a, b){
+              return DateTime.parse(b['created_at']).millisecondsSinceEpoch - DateTime.parse(a['created_at']).millisecondsSinceEpoch;
+            });
+            populateListView(r);
+          });
+        }).timeout(new Duration(seconds: 12), onTimeout: (){
+          print('failed to get location');
+          print('getting croaks');
+          util.getCroaks(null).then((r){
+            print('croaks gotten');
+            r.sort((a, b){
               return DateTime.parse(b['created_at']).millisecondsSinceEpoch - DateTime.parse(a['created_at']).millisecondsSinceEpoch;
             });
             populateListView(r);
@@ -141,38 +156,39 @@ class FeedState extends State<FeedScreen>{
         )
       );
     }
-      return Scaffold(
-        appBar: AppBar(
-          title: Text('Tha Pond'),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.refresh),
-              onPressed: () => util.getCroaks(location),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Tha Pond'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.refresh),
+            onPressed: () => util.getCroaks(location),
 
-            ),
-            IconButton(
-              icon: Icon(Icons.sort),
-              onPressed: () => sortOptions()
-            )
-          ],
-        ),
-        body: Container(
-          child: CroakFeed(context: context, pid: 0, croaksJSON: croaksJSON)
-        ),
+          ),
+          IconButton(
+            icon: Icon(Icons.sort),
+            onPressed: () => sortOptions()
+          )
+        ],
+      ),
+      body: Container(
+        child: CroakFeed(context: context, pid: 0, croaksJSON: croaksJSON)
+      ),
 
-        /* 
-        floatingActionButton: FloatingActionButton(
-              child: new Icon(Icons.add),
-              onPressed: makeCroak,
-            ),
-        */
-        );
+      /* 
+      floatingActionButton: FloatingActionButton(
+            child: new Icon(Icons.add),
+            onPressed: makeCroak,
+          ),
+      */
+      );
         
   }
 
   
 
   void populateListView(List crks){
+    print('setting state');
     setState(() {
         //res is a list decoded from json 
         loading = false;
@@ -194,6 +210,7 @@ class FeedState extends State<FeedScreen>{
   }
 
   Future<LocationData> initLocation() async{
+    print('initing loc');
 
     Location().serviceEnabled().then((s){
       if (!s) Location().requestService().then((r){
@@ -214,7 +231,8 @@ class FeedState extends State<FeedScreen>{
     });
 
     try{
-      return await Location().getLocation();
+      print ('getting loc');
+      return Location().getLocation(); //hanging here on windows emulation
       
     } on PlatformException catch (e){
       if (e.code == 'PERMISSION_DENIED'){
@@ -279,7 +297,7 @@ class CroakFeedState extends State<CroakFeed>{
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            RaisedButton( key: i, onPressed: (){fav(i);},  child: favs[i] ? Icon(Icons.favorite) : (Icons.favorite_border) ), 
+            //RaisedButton( key: i, onPressed: (){fav(i);},  child: favs[i] ? Icon(Icons.favorite) : (Icons.favorite_border) ), 
             Text(croaksJSON[i]['score'].toString(), textAlign: TextAlign.center,)
           ]
         ),
