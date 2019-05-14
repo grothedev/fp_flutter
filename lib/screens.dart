@@ -148,11 +148,17 @@ class FeedState extends State<FeedScreen>{
           width: 120, 
           height: 120,
           padding: EdgeInsets.all(24.0),
-          child: CircularProgressIndicator(
-              value: null,
-              semanticsLabel: 'Retreiving Croaks...',
-              semanticsValue: 'Retreiving Croaks...',
+          child: Column(
+            children: [
+              Text("Finding Location..."),
+              CircularProgressIndicator(
+                  value: null,
+                  semanticsLabel: 'Retreiving Croaks...',
+                  semanticsValue: 'Retreiving Croaks...',
+              ),
+            ]
           )
+          
         )
       );
     }
@@ -252,7 +258,7 @@ class CroakFeedState extends State<CroakFeed>{
   List<bool> favs;
 
   CroakFeedState({this.context, this.pid, this.croaksJSON}){
-    favs = new List<bool>(croaksJSON.length);
+    favs = new List<bool>();
   }
 
   @override
@@ -281,7 +287,7 @@ class CroakFeedState extends State<CroakFeed>{
     }
 
       //DateTime.parse(croaksJSON['timestamp']).millisecondsSinceEpoch;
-    favs[i] = false;
+    favs.add(false);
 
     return new ListTile(
         title: RichText(
@@ -297,7 +303,7 @@ class CroakFeedState extends State<CroakFeed>{
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            //RaisedButton( key: i, onPressed: (){fav(i);},  child: favs[i] ? Icon(Icons.favorite) : (Icons.favorite_border) ), 
+            RaisedButton( key: new Key(i.toString()), onPressed: (){fav(i);},  child: favs[i] ? Icon(Icons.favorite) : Icon(Icons.favorite_border) ), 
             Text(croaksJSON[i]['score'].toString(), textAlign: TextAlign.center,)
           ]
         ),
