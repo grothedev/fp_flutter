@@ -9,13 +9,15 @@ FrogPond mobile application, made with flutter. https://flutter.dev/
 	refine the croak data and add support for other data types (img, vid, sound, file)
 		https://github.com/miguelpruivo/plugins_flutter_file_picker
 	finish a basic UI with elegance in mind
+		threaded comment display
+		toasts
 	notifications
 	preferences as home screen UI
 	about page
 
 
 uses some packages:
-  image picker: https://pub.dev/packages/image_picker
+  file picker: https://pub.dev/packages/file_picker
   
 
 TODO: put entire roadmap and feature plans and vision here

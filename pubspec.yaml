@@ -31,6 +31,7 @@ dependencies:
   shared_preferences: 
   image_picker:
   file_picker:
+  toast:
   
 dev_dependencies:
   flutter_test:
