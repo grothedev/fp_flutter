@@ -323,7 +323,7 @@ class CroakFeedState extends State<CroakFeed>{
   Widget build(BuildContext context) {
     if (croaksJSON == null){
       return new Container(
-        child: Text('no croaks'),
+        child: Text('No Croaks Found'),
       );
     }
     return new ListView.builder(
@@ -407,6 +407,7 @@ class CroakFeed extends StatefulWidget{
   
 }
 
+//for making a root croak (no parent)
 class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveClientMixin<ComposeScreen>{
 
   final fk = GlobalKey<FormState>();// form key
@@ -619,18 +620,25 @@ class CroakDetailScreen extends StatelessWidget{
                 ),
             ),
             
-            Container( //comments
-              child: CroakFeed(
-                context: context,
-                pid: c['id'],
-                croaksJSON: null, //TODO
-              ) //getCroaks(parentId) . figure out how to support threaded system
+            Column(
+              children: <Widget>[
+                Title(
+                  
+                  child: Text('Comments'),
+                  color: Colors.black,
+                ),
+                CroakFeed(
+                  context: context,
+                  pid: c['id'],
+                  croaksJSON: null, //TODO
+                ),
+              ], //comments
+              
+               //getCroaks(parentId) . figure out how to support threaded system
             ),
             Container(
-              
               padding: EdgeInsets.all(8.0),
               alignment: Alignment(0, 1),
-              child: Text("old reply form was here")
             )
           ],
         ),
@@ -643,7 +651,7 @@ class CroakDetailScreen extends StatelessWidget{
             return ComposeCroakDialog(c);
           });
         },
-        child: Icon(Icons.add_circle),
+        child: Icon(Icons.reply),
 
       ),
     );
@@ -655,7 +663,11 @@ class CroakDetailScreen extends StatelessWidget{
   
 }
 
-//a form to overlay the main UI to make and submit croaks
+/*
+//a form to overlay the main UI to make and submit croaks.
+  was gonna use this for both replies and root croaks, but decided to keep ComposeDialog and ComposeScreen separate,
+  because ComposeScreen may as well keep its "fuller" design
+*/
 class ComposeCroakDialog extends Dialog{
   
   final contentController = TextEditingController();
@@ -670,7 +682,7 @@ class ComposeCroakDialog extends Dialog{
     return SimpleDialog( 
               contentPadding: EdgeInsets.all(12.0),
               children: [
-                Text('croak dialog test'),
+                (this.parent != null) ? Text('Reply') : Text('Croak'),
                 TextFormField(
                   controller: contentController,
                   validator: (value){
@@ -678,10 +690,12 @@ class ComposeCroakDialog extends Dialog{
                     },
                     decoration: InputDecoration(
                       icon: Icon(Icons.message),
-                      labelText: 'Reply'
+                      labelText: 'Reply',
                     ),
-                    
+                    maxLines: 3,
+                    minLines: 1,
                   ),
+                  
                   CheckboxListTile(
                     value: true,
                     title: Text('anon'),
