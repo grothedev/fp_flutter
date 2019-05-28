@@ -73,7 +73,7 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
                     ),
                     CheckboxListTile(
                       title: Text('All (on) or Some (off):'),
-                      value: false,
+                      value: kwdAll,
                       onChanged: (v){
                         setState((){
                           SharedPreferences.getInstance().then((pref){
@@ -145,7 +145,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
     SharedPreferences.getInstance().then((p){
       prefs = p;
       lastUpdated = prefs.getInt('last_croaks_get');
-      
+
       if (true || lastUpdated == null || DateTime.now().millisecondsSinceEpoch - lastUpdated > CROAKS_GET_TIMEOUT){
         initLocation().then((l){
           if (l != null){
@@ -484,9 +484,11 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                         Text('anon'),
                         Checkbox(
                           onChanged: (val){
-                            anon = val;
+                            setState((){
+                              anon = val;
+                            });
                           },
-                          value: true,
+                          value: this.anon,
                           materialTapTargetSize: MaterialTapTargetSize.padded,
                         ),
 
@@ -673,7 +675,7 @@ class ComposeCroakDialog extends Dialog{
   final contentController = TextEditingController();
   final fk = GlobalKey<FormState>();// form key
   final Map parent; //croak replying to
-  bool anon;
+  bool anon = true;
 
   ComposeCroakDialog(this.parent);
 
@@ -697,9 +699,11 @@ class ComposeCroakDialog extends Dialog{
                   ),
                   
                   CheckboxListTile(
-                    value: true,
+                    value: this.anon,
                     title: Text('anon'),
-                    onChanged: (v){},
+                    onChanged: (v){
+                      anon = !anon;
+                    },
 
                   ),
                   RaisedButton(
