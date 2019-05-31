@@ -1,0 +1,74 @@
+import 'dart:io';
+import 'dart:math';
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:http/http.dart' as http;
+import 'dart:async';
+import 'dart:convert';
+import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart';
+import 'package:location/location.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:toast/toast.dart';
+
+import 'consts.dart';
+import 'models.dart';
+import 'db.dart' as db;
+import 'api.dart' as api;
+import 'util.dart' as util;
+  /*
+  Form(
+                key: fk,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: <Widget>[
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: TextFormField(
+                          controller: replyController,
+                          validator: (value){
+                              if (value.isEmpty) return 'Enter some text';
+                            },
+                            decoration: InputDecoration(
+                              icon: Icon(Icons.message),
+                              labelText: 'Reply'
+                            ),
+                            
+                          ),
+                        ),
+                        RaisedButton(
+                          onPressed: (){
+                            if (fk.currentState.validate()){
+                              Scaffold.of(context).showSnackBar(SnackBar(content: Text('Replying...')));
+                              Croak r = Croak();
+                              util.submitReply(c['pid'], replyController.text, c['tags'], true); //TODO add functionality to add additional tags?
+                            }
+                          },
+                          child: Text("Reply"),
+
+                        )
+                      ]
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('anon'),
+                        Checkbox(
+                          value: true,
+                          onChanged: (v) => {anon = v},
+                        )
+                      ]
+                    ),
+                  ]
+                ),
+              
+              ),
+    */
+}

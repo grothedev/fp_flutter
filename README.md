@@ -16,7 +16,6 @@ TODO:
 * notifications
 * about page
 * put entire roadmap and feature plans and vision here
-* make a list of all shared preferences
 * URLS to simple display rather than API
 
 

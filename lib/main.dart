@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'screens.dart';
+import 'screens/home.dart';
+import 'screens/feed.dart';
+import 'screens/composecroak.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 import 'db.dart' as db;
@@ -97,6 +99,7 @@ class RootState extends State<RootView> with SingleTickerProviderStateMixin, Aut
           controller: controller,
           labelColor: Colors.green,
         ),
+        type: MaterialType.canvas
       ),
     );
   }
