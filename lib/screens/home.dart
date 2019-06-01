@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fp/screens/helpers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
@@ -44,6 +45,9 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
                       maxLines: 3,
                       minLines: 1,
                     ),
+                    SuggestedTags(),
+                    //phase 2: keywords
+                    /*
                     TextFormField( //KEYWORDS INPUT
                       controller: tagsText,
                       decoration: InputDecoration(
@@ -53,6 +57,7 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
                       maxLines: 3,
                       minLines: 1,
                     ),
+                    */
                     CheckboxListTile(
                       title: Text('All (on) or Some (off):'),
                       value: kwdAll,

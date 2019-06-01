@@ -22,3 +22,8 @@ Future<String> postCroak(Map<String, dynamic> req) async {
   var res = await http.post(api_url+'croaks', body: req);
   return res.body;
 }
+
+//get most referenced n tags
+Future<List> getTags(int n){
+
+}

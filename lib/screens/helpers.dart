@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../models.dart';
 import '../util.dart' as util;
 import 'croakdetail.dart';
+import '../api.dart' as api;
 
 //things that are not full screens, like widgets and dialogs
 
@@ -32,6 +33,7 @@ class CroakFeedState extends State<CroakFeed>{
         );
       },
       shrinkWrap: true,
+
     );
   }
 
@@ -133,6 +135,8 @@ class ComposeCroakDialog extends Dialog{
                     minLines: 1,
                   ),
                   
+                  //force anon for phase 1
+                  /*
                   CheckboxListTile(
                     value: this.anon,
                     title: Text('anon'),
@@ -141,6 +145,7 @@ class ComposeCroakDialog extends Dialog{
                     },
 
                   ),
+                  */
                   RaisedButton(
                           onPressed: (){
                             if (fk.currentState.validate()){
@@ -172,16 +177,28 @@ class CroakFeed extends StatefulWidget{
 }
 
 class SuggestedTags extends StatelessWidget{
+
+  List chips;
+  List<bool> selTags; //bool for selected
+  int n = 10; //# tags to retreive
+
   @override
   Widget build(BuildContext context) {
-    return Wrap( 
-        
-        children:[
-          ChoiceChip(
-            label: Text('Test_tag_sug'),
-            selected: false
-          )
-        ]
+
+    api.getTags(10).then((r){
+      for (var i = 0; i < r.length; i++){
+        selTags.add(false);
+        chips.add( new ChoiceChip(
+          label: Text(r[i]['label']),
+          selected: selTags[i],
+        ));
+
+      }
+      
+    });    
+
+    return Wrap(
+        children: chips
       );
   }
 

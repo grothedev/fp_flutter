@@ -83,6 +83,8 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                       ]
                     ),
                     
+                    //for phase 1, force anon
+                    /*
                     Row(
                       children: <Widget>[
                         Text('anon'),
@@ -97,7 +99,8 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                         ),
 
                       ],
-                    ),  
+                    ),
+                    */  
                     
                     Padding( //CROAK SUBMIT
                       padding: EdgeInsets.symmetric(vertical: 12.0),
