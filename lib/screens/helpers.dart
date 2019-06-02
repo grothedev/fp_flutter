@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models.dart';
 import '../util.dart' as util;
@@ -179,9 +180,9 @@ class CroakFeed extends StatefulWidget{
 class TagChip extends StatefulWidget{
 
   final String label;
+  final SharedPreferences prefs;
 
-  TagChip({Key key, this.label}): super(key: key);
-
+  TagChip({Key key, this.label, this.prefs}): super(key: key);
 
   @override
   State<StatefulWidget> createState(){
@@ -204,6 +205,10 @@ class TagChipState extends State<TagChip>{
           setState((){
             sel = v;
           });
+          List tl = widget.prefs.getStringList('tags');
+          if (v) tl.add(widget.label);
+          else tl.remove(widget.label);
+          widget.prefs.setStringList('tags', tl);
         }),
       );
   }
@@ -221,18 +226,22 @@ class SuggestedTagsState extends State<SuggestedTags>{
   List chips; //TODO combine selected and these within one data structure? 
   int n = 10; //# tags to retreive
   bool loading = true;
+  SharedPreferences prefs;
 
   @override
   void initState() {
     super.initState();
-    
+    SharedPreferences.getInstance().then((p){ //there's probably a better way to do this rather then repeatedly getting an instance
+      this.prefs = p;
+    });
     chips = <Widget>[];
     api.getTags(10).then((r){
       for (var i = 0; i < r.length; i++){
-        chips.add(TagChip(label: r[i]['label']));  
+        chips.add(TagChip(label: r[i]['label'], prefs: prefs));  
       }
       setState((){
         loading = false;
+        prefs.setStringList('tags', []);
       });
     });    
   }

@@ -29,6 +29,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   
   List croaksJSON; //this is the same json data structure that is returned by api call 
   List<Croak> croaks;
+  List tags;
   bool loading = true;
   int lastUpdated;
   LocationData location; //getting location and downloading croaks

@@ -10,6 +10,24 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
   final fk = GlobalKey<FormState>();
   TextEditingController tagsText = TextEditingController();
   bool kwdAll = false;
+  List tags;
+  SharedPreferences prefs;
+
+  initState(){
+    SharedPreferences.getInstance().then((p){
+      this.prefs = p;
+    });
+    tagsText.addListener((){
+      List tagsFromText = tagsText.text.split(' ');
+      List tl = prefs.getStringList('tags');
+      for (String t in tagsFromText){ //TODO this does not account for deleting tags
+        if (!tl.contains(t)){
+          tl.add(t);
+        }
+      }
+      prefs.setStringList('tags', tl);
+    });
+  }
 
   @override
   Widget build(BuildContext context){
