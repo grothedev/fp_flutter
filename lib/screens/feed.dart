@@ -38,7 +38,22 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   @override
   void initState(){
     super.initState();
-    util.getCroaks();
+    util.getCroaks().then((cks){
+      setState(() {
+        if (cks == null) {
+          print('no croaks');
+          return;
+        }
+        for (int i = 0; i < cks.length; i++){
+          if (cks[i]['p_id'] != 0){ //make sure it's not a comment croak
+            cks.removeAt(i);
+            i--;
+          }
+        }
+        croaksJSON = cks;
+        loading = false;
+      });
+    });
   }
 
   @override
@@ -70,7 +85,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.refresh),
-            onPressed: () => util.getCroaks(location, prefs.getStringList('tags')),
+            onPressed: () => util.getCroaks(),
 
           ),
           IconButton(
@@ -118,40 +133,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
     print(prefs.getStringList('tags'));
   }
 
-  Future<LocationData> initLocation() async{
-    print('initing loc');
-
-    Location().serviceEnabled().then((s){
-      if (!s) Location().requestService().then((r){
-        if (!r) {
-          print('service denied');
-          return null;
-        }
-      });
-    });
-   
-    Location().hasPermission().then((p){
-      if (!p) Location().requestPermission().then((r){
-        if (!r) {
-          print('permission denied');
-          return null;
-        }
-      });
-    });
-
-    try{
-      print ('getting loc');
-      return Location().getLocation(); //hanging here on windows emulation
-      
-    } on PlatformException catch (e){
-      if (e.code == 'PERMISSION_DENIED'){
-        print('permission denied');
-      }
-      print(e.code);
-      return null;
-    }
-      
-  }
+  
 
   @override
   bool get wantKeepAlive => true;
