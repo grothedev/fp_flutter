@@ -38,56 +38,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   @override
   void initState(){
     super.initState();
-    SharedPreferences.getInstance().then((p){
-      prefs = p;
-      lastUpdated = prefs.getInt('last_croaks_get');
-
-      if (true || lastUpdated == null || DateTime.now().millisecondsSinceEpoch - lastUpdated > CROAKS_GET_TIMEOUT){
-        initLocation().then((l){
-          if (l != null){
-            prefs.setDouble('lat', l.longitude);
-            prefs.setDouble('lon', l.latitude);
-          } else {
-            print('null loc');
-          }
-          
-          util.getCroaks(l).then((r){
-            r.sort((a, b){
-              return DateTime.parse(b['created_at']).millisecondsSinceEpoch - DateTime.parse(a['created_at']).millisecondsSinceEpoch;
-            });
-            populateListView(r);
-          });
-        }).timeout(new Duration(seconds: 12), onTimeout: (){
-          Toast.show('Unable to get your location', this.context);
-          print('getting croaks');
-          util.getCroaks(null).then((r){
-            print('croaks gotten');
-            r.sort((a, b){
-              return DateTime.parse(b['created_at']).millisecondsSinceEpoch - DateTime.parse(a['created_at']).millisecondsSinceEpoch;
-            });
-            populateListView(r);
-          });
-        });
-
-      } else {
-        print('loading croaks from sqlite');
-        db.loadCroaks().then((crks){
-          print('croaks loaded: ' + crks.toString());
-          setState(() {
-            List tmp = croaks.toList();
-            for (int i = 0; i < tmp.length; i++){
-              if (tmp[i]['p_id'] != 0){ //make sure it's not a comment croak
-                tmp.removeAt(i);
-                i--;
-              }
-            }
-            croaksJSON = tmp;
-
-            loading = false;
-          });
-        });
-      }
-    });
+    util.getCroaks();
   }
 
   @override
@@ -119,7 +70,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.refresh),
-            onPressed: () => util.getCroaks(location),
+            onPressed: () => util.getCroaks(location, prefs.getStringList('tags')),
 
           ),
           IconButton(

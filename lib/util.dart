@@ -7,6 +7,8 @@ import 'db.dart' as db;
 //NOTE: util might not be the best name
 //these are helper functions to pass data to the api calls so that you don't have to worry about constructing the croak maps in event handlers
 
+//TODO might be a good to delegate all sharedpref functionality to util
+
 Future<List> getSugTags(){
   //TODO
 }
