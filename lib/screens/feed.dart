@@ -163,8 +163,8 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
     
   }
 
-  void sortOptions(){
-
+  void sortOptions(){ //currently just using this function for testing
+    print(prefs.getStringList('tags'));
   }
 
   Future<LocationData> initLocation() async{

@@ -17,7 +17,7 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
     SharedPreferences.getInstance().then((p){
       this.prefs = p;
     });
-    tagsText.addListener((){
+    /*tagsText.addListener((){
       List tagsFromText = tagsText.text.split(' ');
       List tl = prefs.getStringList('tags');
       for (String t in tagsFromText){ //TODO this does not account for deleting tags
@@ -27,6 +27,7 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
       }
       prefs.setStringList('tags', tl);
     });
+    */
   }
 
   @override

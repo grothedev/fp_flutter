@@ -11,7 +11,8 @@ Future<List> getSugTags(){
   //TODO
 }
 
-Future<List> getCroaks(loc){
+//TODO deal with checking last update and getting user's location here instead of feedscreen class?
+Future<List> getCroaks(loc, tagList){
     List resJSON;
     
     double x, y;
@@ -22,11 +23,11 @@ Future<List> getCroaks(loc){
       x = y = null;
     }
 
-    return api.getCroaks(x, y, 0);
+    return api.getCroaks(x, y, 0, tagList);
 }
 
 Future<List> getReplies(int p_id){
-  return api.getCroaks(null, null, p_id);
+  return api.getCroaks(null, null, p_id, null);
 }
 
 Future<bool> submitReply(int p_id, String content, String tags, anon) async{ //TODO support user account posting 
