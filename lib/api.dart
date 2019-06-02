@@ -24,6 +24,7 @@ Future<String> postCroak(Map<String, dynamic> req) async {
 }
 
 //get most referenced n tags
-Future<List> getTags(int n){
-
+Future<List> getTags(int n) async{
+  var res = await http.get(api_url+'tags?n='+n.toString());
+  return json.decode(res.body);
 }

@@ -176,32 +176,77 @@ class CroakFeed extends StatefulWidget{
   
 }
 
-class SuggestedTags extends StatelessWidget{
+class TagChip extends StatefulWidget{
 
-  List chips;
-  List<bool> selTags; //bool for selected
-  int n = 10; //# tags to retreive
+  final String label;
+
+  TagChip({Key key, this.label}): super(key: key);
+
+
+  @override
+  State<StatefulWidget> createState(){
+    return TagChipState();
+  }
+}
+
+class TagChipState extends State<TagChip>{
+
+  bool sel = false;
 
   @override
   Widget build(BuildContext context) {
-
-    api.getTags(10).then((r){
-      for (var i = 0; i < r.length; i++){
-        selTags.add(false);
-        chips.add( new ChoiceChip(
-          label: Text(r[i]['label']),
-          selected: selTags[i],
-        ));
-
-      }
-      
-    });    
-
-    return Wrap(
-        children: chips
+      return FilterChip(
+        label: Text(widget.label),
+        selected: sel,
+        padding: EdgeInsets.all(4),
+        labelPadding: EdgeInsets.all(2),
+        onSelected: ((v){
+          setState((){
+            sel = v;
+          });
+        }),
       );
   }
+  
+}
 
+class SuggestedTags extends StatefulWidget{
+  @override
+  State<StatefulWidget> createState() {
+    return SuggestedTagsState();
+  }
+}
 
+class SuggestedTagsState extends State<SuggestedTags>{
+  List chips; //TODO combine selected and these within one data structure? 
+  int n = 10; //# tags to retreive
+  bool loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    
+    chips = <Widget>[];
+    api.getTags(10).then((r){
+      for (var i = 0; i < r.length; i++){
+        chips.add(TagChip(label: r[i]['label']));  
+      }
+      setState((){
+        loading = false;
+      });
+    });    
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (this.loading){
+      return Text('loading');
+    } else {
+      return Wrap(
+        children: this.chips,
+        spacing: 8  
+      );
+    }
+  }
   
 }
