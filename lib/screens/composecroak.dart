@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +20,7 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
   final croakText = TextEditingController();
   final tagsText = TextEditingController();
   bool anon = true;
-  String file;
+  File file;
   SharedPreferences prefs; 
 
   void initState(){
@@ -110,7 +112,7 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                           onPressed: (){
                             if (fk.currentState.validate()){
                               Scaffold.of(context).showSnackBar(SnackBar(content: Text('Croaking...')));
-                              util.submitCroak(croakText.text, tagsText.text, true, prefs.getDouble('lat'), prefs.getDouble('lon')).then((r){
+                              util.submitCroak(croakText.text, tagsText.text, true, prefs.getDouble('lat'), prefs.getDouble('lon'), file).then((r){
                                 if (r){
                                   Scaffold.of(context).removeCurrentSnackBar();
                                   Scaffold.of(context).showSnackBar(SnackBar(content: Text('Success')));
@@ -140,7 +142,7 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
   }
 
   Future getFile() async{ //currently supports one file; will provide multiple files in future if necessary
-    var f = await FilePicker.getFilePath(type: FileType.ANY);
+    var f = await FilePicker.getFile(type: FileType.ANY);
     setState((){
       file = f;
     });

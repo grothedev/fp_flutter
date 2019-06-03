@@ -17,6 +17,7 @@ class CroakFeedState extends State<CroakFeed>{
 
   CroakFeedState({this.context, this.pid, this.croaksJSON}){
     favs = new List<bool>();
+    print('constructing croakfeed: ' + this.croaksJSON.toString());
   }
 
   @override
@@ -26,16 +27,15 @@ class CroakFeedState extends State<CroakFeed>{
         child: Text('No Croaks Found'),
       );
     }
-    return new ListView.builder(
-      itemCount: croaksJSON == null ? 0 : croaksJSON.length,
-      itemBuilder: (context, i) {
-        return new Container(
-          child: feedItem(i),
-        );
-      },
-      shrinkWrap: true,
-
-    );
+    return ListView.builder(
+          itemCount: croaksJSON == null ? 0 : croaksJSON.length,
+          itemBuilder: (context, i) {
+            return new Container(
+              child: feedItem(i),
+            );
+          },
+          shrinkWrap: true,
+    ); 
   }
 
   Widget feedItem(i){

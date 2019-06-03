@@ -42,7 +42,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
       print('feed got croaks: ' + cks.length.toString());
       
       for (int i = 0; i < cks.length; i++){
-        if (cks[i]['p_id'] != 0){ //make sure it's not a comment croak
+        if (cks[i]['p_id'] != null){ //make sure it's not a comment croak
           cks.removeAt(i);
           i--;
         }
@@ -109,6 +109,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   
 
   void populateListView(List crks){
+    print('populating list view' + crks.toString());
     setState(() {
         loading = false;
         croaksJSON = crks;

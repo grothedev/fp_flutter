@@ -10,7 +10,7 @@ class Croak{
   final String content;
   final String timestamp;
   List<String> tags; //in the future, tags might have to be more aligned with the data structure on the server
-  List<File> files = null;
+  List<File> files;
   final int score;
   final int type;
 

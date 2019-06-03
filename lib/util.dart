@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:location/location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
@@ -97,7 +99,8 @@ Future<bool> submitReply(int p_id, String content, String tags, anon) async{ //T
   return await postCroak(c.toMap());
 }
 
-Future<bool> submitCroak(String croak, String tags, bool anon, double lat, double lon) async{
+Future<bool> submitCroak(String croak, String tags, bool anon, double lat, double lon, File f) async{
+  print(f.readAsString());
   Croak c = new Croak(content: croak, timestamp: new DateTime.now().toString() , score: 0, tags: tags.split(' '), type: 0, pid: 0, lat: lat, lon: lon);
   return await postCroak(c.toMap());
 }
