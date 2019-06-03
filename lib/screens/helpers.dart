@@ -208,7 +208,7 @@ class TagChipState extends State<TagChip>{
           List tl = widget.prefs.getStringList('tags');
           if (v) tl.add(widget.label);
           else tl.remove(widget.label);
-          widget.prefs.setStringList('tags', tl);
+          widget.prefs.setStringList('tags', tl); //i'll leave this like this for now, since it works, but it should be delegated to util
         }),
       );
   }
@@ -222,16 +222,16 @@ class SuggestedTags extends StatefulWidget{
   }
 }
 
-class SuggestedTagsState extends State<SuggestedTags>{
+class SuggestedTagsState extends State<SuggestedTags> with AutomaticKeepAliveClientMixin<SuggestedTags>{
   List chips; //TODO combine selected and these within one data structure? 
   int n = 10; //# tags to retreive
   bool loading = true;
   SharedPreferences prefs;
-
+  
   @override
   void initState() {
     super.initState();
-    SharedPreferences.getInstance().then((p){ //there's probably a better way to do this rather then repeatedly getting an instance
+    SharedPreferences.getInstance().then((p){
       this.prefs = p;
     });
     chips = <Widget>[];
@@ -257,5 +257,8 @@ class SuggestedTagsState extends State<SuggestedTags>{
       );
     }
   }
+
+  @override
+  bool get wantKeepAlive => true;
   
 }

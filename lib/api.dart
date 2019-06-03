@@ -8,13 +8,17 @@ import 'models.dart';
 //String api_url = 'http://grothe.ddns.net:8090/api/';
 String api_url = 'http://192.168.1.7:8090/api/'; //tmp while at cabin
 
-Future<List> getCroaks(double x, double y, int p_id, List<String> tl) async {
+//tl = taglist ; at = should get croaks with all(true) or some(false) given tags ; p_id = parent id
+Future<List> getCroaks(double x, double y, int p_id, List<String> tl, bool at) async {
   var reqURL = api_url+'croaks?';
   if (tl != null && tl.length > 0){
     reqURL += 'tags=' + tl.join(',') + '&'; 
   }
   if (p_id > 0){
     reqURL += 'p_id=' + p_id.toString() + '&';
+  }
+  if (at){
+    reqURL += 'mode=1&';
   }
   print('api.getCroaks reqURL: ' + reqURL);
 

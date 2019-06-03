@@ -17,7 +17,7 @@ import 'consts.dart';
 
 int lastUpdated;
 LocationData location;
-
+SharedPreferences prefs;
 
 Future<List> getSugTags(){
   //TODO probably obsolete now
@@ -25,51 +25,31 @@ Future<List> getSugTags(){
 
 //should this function actually return the croaks or just say if it has written croaks to db?
 Future<List> getCroaks() async{
-
+  
   List crks;
 
-  if (location == null){
-    await initLocation();
+  if (prefs == null){
+    prefs = await SharedPreferences.getInstance();
   }
   
+  if (location == null){
+    await initLocation().timeout(new Duration(seconds: 12));
+  }
+  
+
+  lastUpdated = prefs.getInt('last_croaks_get');
+
   //TODO remove dbging true
   if (true || lastUpdated == null || DateTime.now().millisecondsSinceEpoch - lastUpdated > CROAKS_GET_TIMEOUT){
-    return await queryCroaks(location, null); //TODO get taglist
-  }
-
-
-
-  SharedPreferences.getInstance().then((prefs){
-      lastUpdated = prefs.getInt('last_croaks_get');
-
-      if (true || lastUpdated == null || DateTime.now().millisecondsSinceEpoch - lastUpdated > CROAKS_GET_TIMEOUT){
-        initLocation().then((l){
-          if (l != null){
-            prefs.setDouble('lat', l.longitude);
-            prefs.setDouble('lon', l.latitude);
-          } else {
-            print('null loc');
-          }
-          print('util.getCroaks: l='+l.toString() + '; '); 
-          queryCroaks(l, prefs.getStringList('tags')).then((r){
-            db.saveCroaks(r);
-            prefs.setInt('last_croaks_get', DateTime.now().millisecondsSinceEpoch);
-            crks = r;
-          });
-        }).timeout(new Duration(seconds: 12), onTimeout: (){
-          return queryCroaks(null, prefs.getStringList('tags'));
-        });
-
-      } else {
-        print('loading croaks from sqlite');
-        db.loadCroaks().then((crks){
-          print('croaks loaded: ' + crks.toString());
-          return crks.toList();
-        });
-      }
+    return await queryCroaks(location, prefs.getStringList('tags')); //TODO get taglist
+  } else {
+    print('loading croaks from sqlite');
+    db.loadCroaks().then((crks){
+      print('croaks loaded: ' + crks.toString());
+      return crks.toList();
     });
-
-    return crks;
+  }
+  return crks;
 }
 
 Future<List> queryCroaks(loc, tagList) async{
@@ -83,7 +63,7 @@ Future<List> queryCroaks(loc, tagList) async{
       x = y = null;
     }
     print('util.queryCroaks');
-    resJSON = await api.getCroaks(x, y, 0, tagList);
+    resJSON = await api.getCroaks(x, y, 0, tagList, prefs.getBool('query_all'));
     resJSON.sort((a, b){
       return DateTime.parse(b['created_at']).millisecondsSinceEpoch - DateTime.parse(a['created_at']).millisecondsSinceEpoch;
     });
@@ -91,7 +71,7 @@ Future<List> queryCroaks(loc, tagList) async{
 }
 
 Future<List> getReplies(int p_id){
-  return api.getCroaks(null, null, p_id, null);
+  return api.getCroaks(null, null, p_id, null, null);
 }
 
 Future<bool> submitReply(int p_id, String content, String tags, anon) async{ //TODO support user account posting 
@@ -139,8 +119,15 @@ Future<LocationData> initLocation() async{
 
     try{
       print ('getting loc');
-      return Location().getLocation();
-      
+      LocationData l = await Location().getLocation();
+      if (l != null){
+        prefs.setDouble('lat', l.longitude);
+        prefs.setDouble('lon', l.latitude);
+      } else {
+        print('null loc');
+      }
+      return l;
+
     } on PlatformException catch (e){
       if (e.code == 'PERMISSION_DENIED'){
         print('permission denied');

@@ -32,29 +32,17 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   List tags;
   bool loading = true;
   int lastUpdated;
-  LocationData location; //getting location and downloading croaks
-  SharedPreferences prefs;
 
   @override
   void initState(){
     super.initState();
-    util.getCroaks().then((cks){
-      print('feed got croaks: ' + cks.length.toString());
-      
-      for (int i = 0; i < cks.length; i++){
-        if (cks[i]['p_id'] != null){ //make sure it's not a comment croak
-          cks.removeAt(i);
-          i--;
-        }
-      }
-      populateListView(cks);
-      
-    });
+    displayCroaks();
     
   }
 
   @override
   Widget build(BuildContext context) {
+    
     if (loading){
       return Column(
         children: [
@@ -82,7 +70,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.refresh),
-            onPressed: () => util.getCroaks(),
+            onPressed: () => displayCroaks(),
 
           ),
           IconButton(
@@ -106,7 +94,25 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
         
   }
 
-  
+  @override
+  bool didUpdateWidget(Widget ow){
+    //displayCroaks();
+    return true;
+  }  
+
+  void displayCroaks(){
+    util.getCroaks().then((cks){
+      
+      for (int i = 0; i < cks.length; i++){
+        if (cks[i]['p_id'] != null){ //make sure it's not a comment croak
+          cks.removeAt(i);
+          i--;
+        }
+      }
+      populateListView(cks);
+      
+    });
+  }
 
   void populateListView(List crks){
     print('populating list view' + crks.toString());
@@ -124,7 +130,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   }
 
   void sortOptions(){ //currently just using this function for testing
-    print(prefs.getStringList('tags'));
+    
   }
 
   

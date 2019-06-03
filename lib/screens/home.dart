@@ -84,7 +84,7 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
                       onChanged: (v){
                         setState((){
                           SharedPreferences.getInstance().then((pref){
-                            pref.setBool("query_kwdAll", v);
+                            pref.setBool("query_all", v);
                           });
                           kwdAll = v;
                         });
