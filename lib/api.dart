@@ -3,12 +3,16 @@
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'models.dart';
 
-//String api_url = 'http://grothe.ddns.net:8090/api/';
-String api_url = 'http://192.168.1.7:8090/api/'; //tmp while at cabin
+//String host = 'http://grothe.ddns.net';
+String host = '192.168.1.7'; //tmp while at cabin
+int port = 8090;
+String api_url = 'http://' + host + ':' + port.toString() + '/api/'; 
+
 
 //tl = taglist ; at = should get croaks with all(true) or some(false) given tags ; p_id = parent id
 Future<List> getCroaks(double x, double y, int p_id, List<String> tl, bool at) async {
@@ -33,7 +37,7 @@ Future<List> getCroaks(double x, double y, int p_id, List<String> tl, bool at) a
 }
 
 Future<String> postCroak(Map<String, dynamic> req) async {
-  var mr = new http.MultipartRequest('POST', Uri(host:  api_url+'croaks'));
+  var mr = new http.MultipartRequest('POST', Uri.parse(api_url));
   mr.fields['tags'] = req['tags'];
   mr.fields['type'] = req['type'];
   mr.fields['content'] = req['content'];
@@ -42,7 +46,10 @@ Future<String> postCroak(Map<String, dynamic> req) async {
   mr.fields['p_id'] = req['pid'];
   File f = req['files'][0];
   
-  mr.files.add(await http.MultipartFile.fromPath('package', f.path));
+  var mf = await http.MultipartFile.fromPath('f', f.path, contentType: new MediaType('multipart', 'mixed'));
+  mr.files.add(mf); 
+
+
 
   mr.send().then((res){
     print(res);

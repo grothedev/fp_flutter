@@ -25,10 +25,11 @@ class Croak{
       'content': content,
       'tags': tags.join(','),
       'timestamp': timestamp,
-      'type': type.toString()
+      'type': type.toString(),
+      'files': files
     };
   }
-
+  
   String toJSON(){
     
   }
