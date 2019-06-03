@@ -19,11 +19,10 @@ void initDB() async{
   ).then((db){
     database = db;
   });
+
 }
 
-void saveCroaks(croaks) async{
-  
-  
+void saveCroaks(croaks) async{  
   for (int i = 0; i < croaks.length; i++){
     var c = croaks[i];
     var tags = "";

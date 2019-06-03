@@ -12,7 +12,8 @@ TODO:
 * compose croak screen
 	- clean up UI
 	- actually attach the files
-* verify the following features of API are working: popular tags, get by keywords, get by location,
+* make commenting system, 
+* verify the following features of API are working: get by keywords, get by location,
 * notifications
 * about page
 * put entire roadmap and feature plans and vision here

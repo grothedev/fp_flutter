@@ -5,7 +5,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'models.dart';
 
-String api_url = 'http://grothe.ddns.net:8090/api/';
+//String api_url = 'http://grothe.ddns.net:8090/api/';
+String api_url = 'http://192.168.1.7:8090/api/'; //tmp while at cabin
 
 Future<List> getCroaks(double x, double y, int p_id, List<String> tl) async {
   var reqURL = api_url+'croaks?';
@@ -15,10 +16,11 @@ Future<List> getCroaks(double x, double y, int p_id, List<String> tl) async {
   if (p_id > 0){
     reqURL += 'p_id=' + p_id.toString() + '&';
   }
+  print('api.getCroaks reqURL: ' + reqURL);
 
   var res = await http.get(reqURL); //TODO handle location
 
-  print(res.body);
+  //print('api.getCroaks response body: '+ res.body);
 
   return json.decode(res.body);
 

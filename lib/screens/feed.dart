@@ -39,21 +39,18 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   void initState(){
     super.initState();
     util.getCroaks().then((cks){
-      setState(() {
-        if (cks == null) {
-          print('no croaks');
-          return;
+      print('feed got croaks: ' + cks.length.toString());
+      
+      for (int i = 0; i < cks.length; i++){
+        if (cks[i]['p_id'] != 0){ //make sure it's not a comment croak
+          cks.removeAt(i);
+          i--;
         }
-        for (int i = 0; i < cks.length; i++){
-          if (cks[i]['p_id'] != 0){ //make sure it's not a comment croak
-            cks.removeAt(i);
-            i--;
-          }
-        }
-        croaksJSON = cks;
-        loading = false;
-      });
+      }
+      populateListView(cks);
+      
     });
+    
   }
 
   @override
@@ -112,9 +109,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   
 
   void populateListView(List crks){
-    print('setting state');
     setState(() {
-        //res is a list decoded from json 
         loading = false;
         croaksJSON = crks;
         for (int i = 0; i < croaksJSON.length; i++){
@@ -124,8 +119,6 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
           }
         }
     });
-    db.saveCroaks(croaksJSON);
-    prefs.setInt('last_croaks_get', DateTime.now().millisecondsSinceEpoch);
     
   }
 

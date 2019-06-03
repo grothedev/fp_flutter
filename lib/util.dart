@@ -14,13 +14,29 @@ import 'consts.dart';
 //TODO might be a good to delegate all sharedpref functionality to util
 
 int lastUpdated;
+LocationData location;
+
 
 Future<List> getSugTags(){
-  //TODO
+  //TODO probably obsolete now
 }
 
 //should this function actually return the croaks or just say if it has written croaks to db?
 Future<List> getCroaks() async{
+
+  List crks;
+
+  if (location == null){
+    await initLocation();
+  }
+  
+  //TODO remove dbging true
+  if (true || lastUpdated == null || DateTime.now().millisecondsSinceEpoch - lastUpdated > CROAKS_GET_TIMEOUT){
+    return await queryCroaks(location, null); //TODO get taglist
+  }
+
+
+
   SharedPreferences.getInstance().then((prefs){
       lastUpdated = prefs.getInt('last_croaks_get');
 
@@ -32,22 +48,14 @@ Future<List> getCroaks() async{
           } else {
             print('null loc');
           }
-          
+          print('util.getCroaks: l='+l.toString() + '; '); 
           queryCroaks(l, prefs.getStringList('tags')).then((r){
-            r.sort((a, b){
-              return DateTime.parse(b['created_at']).millisecondsSinceEpoch - DateTime.parse(a['created_at']).millisecondsSinceEpoch;
-            });
-            return r;
+            db.saveCroaks(r);
+            prefs.setInt('last_croaks_get', DateTime.now().millisecondsSinceEpoch);
+            crks = r;
           });
         }).timeout(new Duration(seconds: 12), onTimeout: (){
-          print('getting croaks');
-          queryCroaks(null, prefs.getStringList('tags')).then((r){
-            print('croaks gotten');
-            r.sort((a, b){
-              return DateTime.parse(b['created_at']).millisecondsSinceEpoch - DateTime.parse(a['created_at']).millisecondsSinceEpoch;
-            });
-            return r;
-          });
+          return queryCroaks(null, prefs.getStringList('tags'));
         });
 
       } else {
@@ -58,10 +66,11 @@ Future<List> getCroaks() async{
         });
       }
     });
+
+    return crks;
 }
 
-//TODO deal with checking last update and getting user's location here instead of feedscreen class?
-Future<List> queryCroaks(loc, tagList){
+Future<List> queryCroaks(loc, tagList) async{
     List resJSON;
     
     double x, y;
@@ -71,8 +80,12 @@ Future<List> queryCroaks(loc, tagList){
     } else {
       x = y = null;
     }
-
-    return api.getCroaks(x, y, 0, tagList);
+    print('util.queryCroaks');
+    resJSON = await api.getCroaks(x, y, 0, tagList);
+    resJSON.sort((a, b){
+      return DateTime.parse(b['created_at']).millisecondsSinceEpoch - DateTime.parse(a['created_at']).millisecondsSinceEpoch;
+    });
+    return resJSON;
 }
 
 Future<List> getReplies(int p_id){
@@ -101,6 +114,7 @@ Future<bool> postCroak(Map c) async{
 
 Future<LocationData> initLocation() async{
     print('initing loc');
+    if (location != null) return location;
 
     Location().serviceEnabled().then((s){
       if (!s) Location().requestService().then((r){
@@ -122,7 +136,7 @@ Future<LocationData> initLocation() async{
 
     try{
       print ('getting loc');
-      return Location().getLocation(); //hanging here on windows emulation
+      return Location().getLocation();
       
     } on PlatformException catch (e){
       if (e.code == 'PERMISSION_DENIED'){
