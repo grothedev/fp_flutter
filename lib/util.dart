@@ -80,8 +80,7 @@ Future<bool> submitReply(int p_id, String content, String tags, anon) async{ //T
 }
 
 Future<bool> submitCroak(String croak, String tags, bool anon, double lat, double lon, File f) async{
-  print(f.readAsString());
-  Croak c = new Croak(content: croak, timestamp: new DateTime.now().toString() , score: 0, tags: tags.split(' '), type: 0, pid: 0, lat: lat, lon: lon);
+  Croak c = new Croak(content: croak, timestamp: new DateTime.now().toString() , score: 0, tags: tags.split(' '), type: 0, pid: null, lat: lat, lon: lon, files: [f]);
   return await postCroak(c.toMap());
 }
 

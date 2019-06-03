@@ -15,7 +15,7 @@ class Croak{
   final int type;
 
   
-  Croak({this.id, this.pid, this.content, this.timestamp, this.score, this.lat, this.lon, this.type, this.tags});
+  Croak({this.id, this.pid, this.content, this.timestamp, this.score, this.lat, this.lon, this.type, this.tags, this.files});
 
 
   Map<String, dynamic> toMap(){

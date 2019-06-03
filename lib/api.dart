@@ -1,5 +1,7 @@
 //TODO is sqlite caching as clean as it can be?
  
+import 'dart:io';
+
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
@@ -31,7 +33,21 @@ Future<List> getCroaks(double x, double y, int p_id, List<String> tl, bool at) a
 }
 
 Future<String> postCroak(Map<String, dynamic> req) async {
+  var mr = new http.MultipartRequest('POST', Uri(host:  api_url+'croaks'));
+  mr.fields['tags'] = req['tags'];
+  mr.fields['type'] = req['type'];
+  mr.fields['content'] = req['content'];
+  mr.fields['lat'] = req['lat'];
+  mr.fields['lon'] = req['lon'];
+  mr.fields['p_id'] = req['pid'];
+  File f = req['files'][0];
   
+  mr.files.add(await http.MultipartFile.fromPath('package', f.path));
+
+  mr.send().then((res){
+    print(res);
+  });
+
   print('post croak: ' + req.toString());
 
   var res = await http.post(api_url+'croaks', body: req);
