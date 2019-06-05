@@ -104,6 +104,7 @@ class CroakFeedState extends State<CroakFeed>{
 }
 
 /*
+  * probably obsolete. just including it on bottom of croakdetail screen
 //a form to overlay the main UI to make and submit croaks.
   was gonna use this for both replies and root croaks, but decided to keep ComposeDialog and ComposeScreen separate,
   because ComposeScreen may as well keep its "fuller" design
@@ -120,37 +121,46 @@ class ComposeCroakDialog extends Dialog{
   @override
   Widget build(BuildContext context){
     return SimpleDialog( 
-              contentPadding: EdgeInsets.all(12.0),
+              contentPadding: EdgeInsets.all(6),
+              titlePadding: EdgeInsets.all(4),
+              title: (this.parent != null) ? Text('Reply') : Text('Croak'),
               children: [
-                (this.parent != null) ? Text('Reply') : Text('Croak'),
-                TextFormField(
-                  controller: contentController,
-                  validator: (value){
-                      if (value.isEmpty) return 'Enter some text';
-                    },
-                    decoration: InputDecoration(
-                      icon: Icon(Icons.message),
-                      labelText: 'Reply',
-                    ),
-                    maxLines: 3,
-                    minLines: 1,
-                  ),
-                  
-                  //force anon for phase 1
-                  /*
-                  CheckboxListTile(
-                    value: this.anon,
-                    title: Text('anon'),
-                    onChanged: (v){
-                      anon = !anon;
-                    },
+                Form(
+                  key: fk,
+                  child: Column(
+                    //direction: Axis.vertical,
+                    children: [
+                      TextFormField(
+                        controller: contentController,
+                        validator: (value){
+                            if (value.isEmpty) return 'Enter some text';
+                        },
+                        decoration: InputDecoration(
+                          icon: Icon(Icons.message),
+                          labelText: 'Reply',
 
-                  ),
-                  */
-                  RaisedButton(
+                        ),
+                        maxLines: 3,
+                        minLines: 1,
+                        //autofocus: true,
+                        autovalidate: false,
+                        
+                      ),
+                        //force anon for phase 1
+                        /*
+                        CheckboxListTile(
+                          value: this.anon,
+                          title: Text('anon'),
+                          onChanged: (v){
+                            anon = !anon;
+                          },
+
+                        ),
+                        */
+                        RaisedButton(
                           onPressed: (){
                             if (fk.currentState.validate()){
-                              Scaffold.of(context).showSnackBar(SnackBar(content: Text('Replying...')));
+                              //Scaffold.of(context).showSnackBar(SnackBar(content: Text('Replying...')));
                               Croak r = Croak();
                               util.submitReply(parent['pid'], contentController.text, parent['tags'], true); //TODO add functionality to add additional tags?
                             }
@@ -158,7 +168,16 @@ class ComposeCroakDialog extends Dialog{
                           child: Text("Reply"),
 
                         )
-              ]
+                    ]
+                  ),
+                ),
+                
+              ],
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(4)), 
+              ),
+              
+
             ) ;
   }
 }

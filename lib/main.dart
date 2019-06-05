@@ -61,13 +61,15 @@ class RootState extends State<RootView> with SingleTickerProviderStateMixin, Aut
     super.initState();
     controller = new TabController(length: 3, vsync: this);
     db.initDB(); //in case the db was deleted
-   
+    print("INIT ROOT STATE");
+
     SharedPreferences.getInstance().then((p){
       //TODO set things here, get filter specs, etc.
       if (p.getInt('last_launch') == null){
         p.setInt('last_launch', DateTime.now().millisecondsSinceEpoch);
-        
       }
+      if (p.getBool('query_all') == null) p.setBool('query_all', false);
+      
     });
 
 

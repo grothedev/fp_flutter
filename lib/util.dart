@@ -63,7 +63,12 @@ Future<List> queryCroaks(loc, tagList) async{
       x = y = null;
     }
     print('util.queryCroaks');
-    resJSON = await api.getCroaks(x, y, 0, tagList, prefs.getBool('query_all'));
+    bool qa; //query all 
+    if (prefs.getBool('query_all') == null) {
+      qa = false;
+      print('query all pref null, which is not supposed to be');
+    }
+    resJSON = await api.getCroaks(x, y, 0, tagList, qa);
     resJSON.sort((a, b){
       return DateTime.parse(b['created_at']).millisecondsSinceEpoch - DateTime.parse(a['created_at']).millisecondsSinceEpoch;
     });
@@ -74,13 +79,19 @@ Future<List> getReplies(int p_id){
   return api.getCroaks(null, null, p_id, null, null);
 }
 
-Future<bool> submitReply(int p_id, String content, String tags, anon) async{ //TODO support user account posting 
-  Croak c = new Croak(content: content, timestamp: new DateTime.now().toString() , score: 0, pid: p_id);
+Future<bool> submitReply(int p_id, String content, List tags, anon) async{ //TODO support user account posting 
+  List<String> tagsStrArr = [];
+  for (var t in tags){
+    tagsStrArr.add(t['label']);
+  }
+  Croak c = new Croak(content: content, timestamp: new DateTime.now().toString() , score: 0, pid: p_id, tags: tagsStrArr);
   return await postCroak(c.toMap());
 }
 
 Future<bool> submitCroak(String croak, String tags, bool anon, double lat, double lon, File f) async{
-  Croak c = new Croak(content: croak, timestamp: new DateTime.now().toString() , score: 0, tags: tags.split(' '), type: 0, pid: null, lat: lat, lon: lon, files: [f]);
+  List files;
+  if (f != null) files.add(f); //again, implementing multiple file input later
+  Croak c = new Croak(content: croak, timestamp: new DateTime.now().toString() , score: 0, tags: tags.split(' '), type: 0, pid: null, lat: lat, lon: lon, files: files);
   return await postCroak(c.toMap());
 }
 
@@ -98,14 +109,15 @@ Future<LocationData> initLocation() async{
     print('initing loc');
     if (location != null) return location;
 
-    Location().serviceEnabled().then((s){
-      if (!s) Location().requestService().then((r){
-        if (!r) {
-          print('service denied');
-          return null;
-        }
-      });
-    });
+    bool s = await Location().serviceEnabled();
+    if (!s) {
+      bool r = await Location().requestService();
+      if (!r) {
+        print('service denied');
+        return null;
+      }
+    }
+    
    
     Location().hasPermission().then((p){
       if (!p) Location().requestPermission().then((r){

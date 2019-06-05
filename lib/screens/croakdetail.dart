@@ -12,6 +12,8 @@ import 'helpers.dart';
 class CroakDetailScreen extends StatelessWidget{
 
   Map c;
+  final contentController = TextEditingController();
+  static final fk = GlobalKey<FormState>();// form key
 
   //this stuff is now in the compose croak dialog
   //final replyController = TextEditingController();
@@ -79,13 +81,59 @@ class CroakDetailScreen extends StatelessWidget{
             Container(
               padding: EdgeInsets.all(8.0),
               alignment: Alignment(0, 1),
+              child: Form(
+                  key: fk,
+                  child: Column(
+                    //direction: Axis.vertical,
+                    children: [
+                      TextFormField(
+                        controller: contentController,
+                        validator: (value){
+                            if (value.isEmpty) return 'Enter some text';
+                        },
+                        decoration: InputDecoration(
+                          icon: Icon(Icons.message),
+                          labelText: 'Reply',
+
+                        ),
+                        maxLines: 3,
+                        minLines: 1,
+                        autofocus: true,
+                        autovalidate: false,
+                        
+                      ),
+                        //force anon for phase 1
+                        /*
+                        CheckboxListTile(
+                          value: this.anon,
+                          title: Text('anon'),
+                          onChanged: (v){
+                            anon = !anon;
+                          },
+
+                        ),
+                        */
+                        RaisedButton(
+                          onPressed: (){
+                            if (fk.currentState.validate()){
+                              //Scaffold.of(context).showSnackBar(SnackBar(content: Text('Replying...')));
+                              print('attempting to reply: ' + c['tags'].toString());
+                              util.submitReply(c['pid'], contentController.text, c['tags'], true); //TODO add functionality to add additional tags?
+                            }
+                          },
+                          child: Text("Reply"),
+
+                        )
+                    ]
+                  ),
+                ),
             )
           ],
         ),
         padding: EdgeInsets.all(12.0),
       ),
       //bottomSheet: Text('bottomsheet test'),
-      floatingActionButton: FloatingActionButton(
+      /*floatingActionButton: FloatingActionButton(
         onPressed: (){
           showDialog(context: context, builder: (context) {
             return ComposeCroakDialog(c);
@@ -93,7 +141,7 @@ class CroakDetailScreen extends StatelessWidget{
         },
         child: Icon(Icons.reply),
 
-      ),
+      ),*/
     );
   }
 

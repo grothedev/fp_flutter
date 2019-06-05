@@ -23,7 +23,7 @@ Future<List> getCroaks(double x, double y, int p_id, List<String> tl, bool at) a
   if (p_id > 0){
     reqURL += 'p_id=' + p_id.toString() + '&';
   }
-  if (at){
+  if (at != null && at){
     reqURL += 'mode=1&';
   }
   print('api.getCroaks reqURL: ' + reqURL);
@@ -37,28 +37,36 @@ Future<List> getCroaks(double x, double y, int p_id, List<String> tl, bool at) a
 }
 
 Future<String> postCroak(Map<String, dynamic> req) async {
-  var mr = new http.MultipartRequest('POST', Uri.parse(api_url));
-  mr.fields['tags'] = req['tags'];
-  mr.fields['type'] = req['type'];
-  mr.fields['content'] = req['content'];
-  mr.fields['lat'] = req['lat'];
-  mr.fields['lon'] = req['lon'];
-  mr.fields['p_id'] = req['pid'];
-  File f = req['files'][0];
   
-  var mf = await http.MultipartFile.fromPath('f', f.path, contentType: new MediaType('multipart', 'mixed'));
-  mr.files.add(mf); 
+  if (req['files'] != null && req['files'].length > 0){
+    var mr = new http.MultipartRequest('POST', Uri.parse(api_url));
+    mr.fields['tags'] = req['tags'];
+    mr.fields['type'] = req['type'];
+    mr.fields['content'] = req['content'];
+    mr.fields['lat'] = req['lat'];
+    mr.fields['lon'] = req['lon'];
+    mr.fields['p_id'] = req['pid'];
+    File f = req['files'][0];
+
+    var mf = await http.MultipartFile.fromPath('f', f.path, contentType: new MediaType('multipart', 'mixed'));
+    mr.files.add(mf); 
 
 
 
-  mr.send().then((res){
-    print(res);
-  });
+    mr.send().then((res){
+      print(res);
+      return res;
+    });
+  } else {
+    print('post croak: ' + req.toString());
 
-  print('post croak: ' + req.toString());
+    var res = await http.post(api_url+'croaks', body: req);
+    return res.body;
+  }
 
-  var res = await http.post(api_url+'croaks', body: req);
-  return res.body;
+  
+
+  
 }
 
 //get most referenced n tags
