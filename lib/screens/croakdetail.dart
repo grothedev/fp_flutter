@@ -10,6 +10,7 @@ import 'helpers.dart';
 
 
 class CroakDetailState extends State<CroakDetailScreen>{
+
   Map c;
   final contentController = TextEditingController();
   static final fk = GlobalKey<FormState>();// form key
@@ -76,10 +77,10 @@ class CroakDetailState extends State<CroakDetailScreen>{
                   color: Colors.black,
                 ),
                 replies == null ?
-                CroakFeed(
-                  context: context,
-                  pid: c['id'],
-                  croaksJSON: null,
+                CircularProgressIndicator(
+                      value: null,
+                      semanticsLabel: 'Retreiving Comments...',
+                      semanticsValue: 'Retreiving Comments...',
                 ) : 
                 CroakFeed(
                   context: context,
@@ -165,7 +166,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
   void getReplies(){
     util.getReplies(c['id']).then((r){
       setState((){
-        replies = r;
+        this.replies = r;
       });
     });
   }
