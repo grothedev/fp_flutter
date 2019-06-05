@@ -79,28 +79,27 @@ Future<List> getReplies(int p_id){
   return api.getCroaks(null, null, p_id, null, null);
 }
 
-Future<bool> submitReply(int p_id, String content, List tags, anon) async{ //TODO support user account posting 
+Future<bool> submitReply(int p_id, String content, List tags, anon) async{ //TODO should location be included?
   List<String> tagsStrArr = [];
   for (var t in tags){
     tagsStrArr.add(t['label']);
   }
-  Croak c = new Croak(content: content, timestamp: new DateTime.now().toString() , score: 0, pid: p_id, tags: tagsStrArr);
-  return await postCroak(c.toMap());
+  Croak c = new Croak(content: content, timestamp: new DateTime.now().toString() , score: 0, pid: p_id, tags: tagsStrArr, type: 0);
+  return await postCroak(c.toMap(), null); //for now will not handle files for replies, but should in the future TODO
 }
 
 Future<bool> submitCroak(String croak, String tags, bool anon, double lat, double lon, File f) async{
-  List files;
-  if (f != null) files.add(f); //again, implementing multiple file input later
-  Croak c = new Croak(content: croak, timestamp: new DateTime.now().toString() , score: 0, tags: tags.split(' '), type: 0, pid: null, lat: lat, lon: lon, files: files);
-  return await postCroak(c.toMap());
+  Croak c = new Croak(content: croak, timestamp: new DateTime.now().toString() , score: 0, tags: tags.split(' '), type: 0, pid: null, lat: lat, lon: lon, files: [f]);
+  return await postCroak(c.toMap(), f);
 }
 
-Future<bool> postCroak(Map c) async{
-  var s = await api.postCroak(c);
+Future<bool> postCroak(Map c, File f) async{
+  var s = await api.postCroak(c, f);
   
   if (s == '0'){
       return true;
   }
+  print(s);
   return false;
   
 }

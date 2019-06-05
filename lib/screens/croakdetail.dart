@@ -118,7 +118,9 @@ class CroakDetailScreen extends StatelessWidget{
                             if (fk.currentState.validate()){
                               //Scaffold.of(context).showSnackBar(SnackBar(content: Text('Replying...')));
                               print('attempting to reply: ' + c['tags'].toString());
-                              util.submitReply(c['pid'], contentController.text, c['tags'], true); //TODO add functionality to add additional tags?
+                              util.submitReply(c['id'], contentController.text, c['tags'], true).then((r){
+                                print(r);
+                              }); //TODO add functionality to add additional tags?
                             }
                           },
                           child: Text("Reply"),

@@ -21,12 +21,12 @@ class Croak{
   Map<String, dynamic> toMap(){
     return {
       'id': id.toString(),
+      'p_id': pid.toString(),
       'score': score.toString(),
       'content': content,
       'tags': tags.join(','),
       'timestamp': timestamp,
       'type': type.toString(),
-      'files': files
     };
   }
   
