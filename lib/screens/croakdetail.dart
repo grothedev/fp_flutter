@@ -9,19 +9,25 @@ import '../db.dart' as db;
 import 'helpers.dart';
 
 
-class CroakDetailScreen extends StatelessWidget{
-
+class CroakDetailState extends State<CroakDetailScreen>{
   Map c;
   final contentController = TextEditingController();
   static final fk = GlobalKey<FormState>();// form key
+  List replies;
 
   //this stuff is now in the compose croak dialog
   //final replyController = TextEditingController();
   //final fk = GlobalKey<FormState>();// form key
   //bool anon = true;
 
-  CroakDetailScreen(Map c){
+  CroakDetailState(Map c){
     this.c = c;
+  }
+
+  @override
+  void initState(){
+    super.initState(); 
+    getReplies(); 
   }
 
 
@@ -69,10 +75,16 @@ class CroakDetailScreen extends StatelessWidget{
                   child: Text('Comments'),
                   color: Colors.black,
                 ),
+                replies == null ?
                 CroakFeed(
                   context: context,
                   pid: c['id'],
-                  croaksJSON: null, //TODO
+                  croaksJSON: null,
+                ) : 
+                CroakFeed(
+                  context: context,
+                  pid: c['id'],
+                  croaksJSON: replies, 
                 ),
               ], //comments
               
@@ -118,8 +130,11 @@ class CroakDetailScreen extends StatelessWidget{
                             if (fk.currentState.validate()){
                               //Scaffold.of(context).showSnackBar(SnackBar(content: Text('Replying...')));
                               print('attempting to reply: ' + c['tags'].toString());
-                              util.submitReply(c['id'], contentController.text, c['tags'], true).then((r){
-                                print(r);
+                              util.submitReply(c['id'], contentController.text, c['tags'], true).then((success){
+                                if (success){
+                                  Toast.show("Ribbit", context);
+                                  contentController.clear();
+                                }
                               }); //TODO add functionality to add additional tags?
                             }
                           },
@@ -147,8 +162,29 @@ class CroakDetailScreen extends StatelessWidget{
     );
   }
 
+  void getReplies(){
+    util.getReplies(c['id']).then((r){
+      setState((){
+        replies = r;
+      });
+    });
+  }
+
   void copyURL(){
 
+  }
+}
+
+class CroakDetailScreen extends StatefulWidget{
+  Map c;
+
+  CroakDetailScreen(Map c){
+    this.c = c;
+  }
+
+  @override
+  State<StatefulWidget> createState() {
+    return CroakDetailState(c);
   }
   
 }

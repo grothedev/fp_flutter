@@ -52,6 +52,14 @@ Future<List> getCroaks() async{
   return crks;
 }
 
+Future<List> getReplies(int pid) async{
+  List resJSON = await api.getCroaks(null, null, pid, null, null);
+  resJSON.sort((a, b){
+    return DateTime.parse(b['created_at']).millisecondsSinceEpoch - DateTime.parse(a['created_at']).millisecondsSinceEpoch;
+  });
+  return resJSON;
+}
+
 Future<List> queryCroaks(loc, tagList) async{
     List resJSON;
     
@@ -73,10 +81,6 @@ Future<List> queryCroaks(loc, tagList) async{
       return DateTime.parse(b['created_at']).millisecondsSinceEpoch - DateTime.parse(a['created_at']).millisecondsSinceEpoch;
     });
     return resJSON;
-}
-
-Future<List> getReplies(int p_id){
-  return api.getCroaks(null, null, p_id, null, null);
 }
 
 Future<bool> submitReply(int p_id, String content, List tags, anon) async{ //TODO should location be included?
