@@ -8,8 +8,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'models.dart';
 
-//String host = 'http://grothe.ddns.net';
-String host = '192.168.1.7'; //tmp while at cabin
+String host = 'grothe.ddns.net';
+//String host = '192.168.1.7'; //tmp while at cabin
 int port = 8090;
 String api_url = 'http://' + host + ':' + port.toString() + '/api/'; 
 
@@ -70,7 +70,7 @@ Future<String> postCroak(Map<String, dynamic> req, File f) async {
 }
 
 //get most referenced n tags
-Future<List> getTags(int n) async{
-  var res = await http.get(api_url+'tags?n='+n.toString());
+Future<List> getTags(int n, double lat, double lon) async{
+  var res = await http.get(api_url+'tags?n='+n.toString()+'&lat='+lat.toString()+'&lon='+lon.toString());
   return json.decode(res.body);
 }

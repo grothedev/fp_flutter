@@ -13,14 +13,22 @@ import 'consts.dart';
 //NOTE: util might not be the best name
 //these are helper functions to pass data to the api calls so that you don't have to worry about constructing the croak maps in event handlers
 
-//TODO might be a good to delegate all sharedpref functionality to util
-
 int lastUpdated;
 LocationData location;
 SharedPreferences prefs;
 
-Future<List> getSugTags(){
-  //TODO probably obsolete now
+//suggested tags for an area
+Future<List> getTags(int n) async{
+  if (location == null) {
+    initLocation().timeout(new Duration(seconds: 12)).then((loc){
+      location = loc;
+      return api.getTags(n, location.latitude, location.longitude);
+    });
+  } else {
+    return api.getTags(n, location.latitude, location.longitude);
+  }
+  
+  
 }
 
 //should this function actually return the croaks or just say if it has written croaks to db?
@@ -39,9 +47,8 @@ Future<List> getCroaks() async{
 
   lastUpdated = prefs.getInt('last_croaks_get');
 
-  //TODO remove dbging true
-  if (true || lastUpdated == null || DateTime.now().millisecondsSinceEpoch - lastUpdated > CROAKS_GET_TIMEOUT){
-    return await queryCroaks(location, prefs.getStringList('tags')); //TODO get taglist
+  if (lastUpdated == null || DateTime.now().millisecondsSinceEpoch - lastUpdated > CROAKS_GET_TIMEOUT){
+    return await queryCroaks(location, prefs.getStringList('tags')); //TODO get taglist. has this been done already?
   } else {
     print('loading croaks from sqlite');
     db.loadCroaks().then((crks){
@@ -111,6 +118,8 @@ Future<bool> postCroak(Map c, File f) async{
 Future<LocationData> initLocation() async{
     print('initing loc');
     if (location != null) return location;
+
+    if (prefs == null) prefs = await SharedPreferences.getInstance();
 
     bool s = await Location().serviceEnabled();
     if (!s) {

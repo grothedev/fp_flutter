@@ -12,10 +12,17 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
   bool kwdAll = false;
   List tags;
   SharedPreferences prefs;
+  String locStr;
 
   initState(){
     SharedPreferences.getInstance().then((p){
       this.prefs = p;
+      setState((){
+        locStr = (prefs.getDouble('lat') != null && prefs.getDouble('lon') != null) ? 
+                          'Location Data: ' + prefs.getDouble('lat').toString() + ', ' + prefs.getDouble('lon').toString() :
+                            'No Location Data';
+      });
+      
     });
     /*tagsText.addListener((){
       List tagsFromText = tagsText.text.split(' ');
@@ -32,6 +39,7 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
 
   @override
   Widget build(BuildContext context){
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Welcome to FrogPond')
@@ -93,9 +101,7 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
                     ),
                     
                     Container(
-                      child: Text('Location Data: ', //TODO include actual data
-                      
-                      ),
+                      child: (locStr == null) ? Text('Getting location...') : Text(locStr),
                       margin: EdgeInsets.only(bottom: 2),
                       padding: EdgeInsets.only(left: 8),
 

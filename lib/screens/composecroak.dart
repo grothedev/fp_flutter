@@ -76,14 +76,18 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                         RaisedButton(
                           onPressed: getFile,
                           child: Text('Attach File'),
-
+                          padding: EdgeInsets.all(4),
                         ),
                         Container(
                           padding: EdgeInsets.only(left: 15),
-                          child: file == null ? Text('no file') : Text(file.toString())
+                          child: file == null ? Text('no file') : Text(file.toString(), softWrap: true,)
                         ),
-                      ]
+                      ],
+                      
                     ),
+                       
+                  
+                    
                     
                     //for phase 1, force anon
                     /*

@@ -51,48 +51,48 @@ class CroakFeedState extends State<CroakFeed>{
     return new ListTile(
       dense: false,
       
-        title: RichText(
-          
-          text: TextSpan( 
-            
-            text: croaksJSON[i]['content'],
-            style: TextStyle(color: Colors.black),
-          ),
-          maxLines: 2,
-          overflow: TextOverflow.fade
-        ),
-        trailing: Column(
-          
-          crossAxisAlignment: CrossAxisAlignment.start,
-          //mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            RaisedButton( padding: EdgeInsets.all(2), key: new UniqueKey(), onPressed: (){fav(i);},  child: favs[i] ? Icon(Icons.favorite) : Icon(Icons.favorite_border) ), 
-            //Text(croaksJSON[i]['score'].toString(), textAlign: TextAlign.center,)
-          ],
-          
-        ),
-        subtitle: Row(
-          children: <Widget>[
-            Text(croaksJSON[i]['created_at']), //TODO add # replies?
-            Spacer(
-              flex: 2
-            ),
-            Text(tags.join(', '))
-          ]
-        ),
-        onTap: (){
-          Navigator.push(this.context, MaterialPageRoute(
-            builder: (context) => CroakDetailScreen(croaksJSON[i])
-          ));
-        },
-        contentPadding: EdgeInsets.all(4),
-        onLongPress: ((){
-
-        }),
+      title: RichText(
         
-      );
-
-
+        text: TextSpan( 
+          
+          text: croaksJSON[i]['content'],
+          style: TextStyle(color: Colors.black),
+        ),
+        maxLines: 2,
+        overflow: TextOverflow.fade
+      ),
+      trailing: Column(
+        
+        crossAxisAlignment: CrossAxisAlignment.start,
+        //mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          RaisedButton( padding: EdgeInsets.all(2), key: new UniqueKey(), onPressed: (){fav(i);},  child: favs[i] ? Icon(Icons.favorite) : Icon(Icons.favorite_border) ), 
+          //Text(croaksJSON[i]['score'].toString(), textAlign: TextAlign.center,)
+        ],
+        
+      ),
+      subtitle: Row(
+        children: <Widget>[
+          Text(croaksJSON[i]['created_at']),
+          Spacer(
+            flex: 2
+          ),
+          Text(tags.join(', '))
+        ]
+      ),
+      onTap: (){
+        Navigator.pushNamed(this.context, pid.toString(), arguments: MaterialPageRoute(
+          builder: (context) => CroakDetailScreen(croaksJSON[i])
+        ));
+      },
+      contentPadding: EdgeInsets.all(4),
+      onLongPress: ((){
+        Navigator.push(this.context, MaterialPageRoute(
+          builder: (context) => FeedItemOptionsDialog()
+        ));
+      }),
+      
+    );
   }
 
   //toggles "favorite" or normal for a croak  
@@ -100,6 +100,14 @@ class CroakFeedState extends State<CroakFeed>{
     setState((){
       favs[id] = !favs[id];
     });
+  }
+}
+
+//pop-up of list of actions when long press a croak on the feed
+class FeedItemOptionsDialog extends Dialog{
+  @override
+  Widget build(BuildContext context){
+
   }
 }
 
@@ -254,7 +262,7 @@ class SuggestedTagsState extends State<SuggestedTags> with AutomaticKeepAliveCli
       this.prefs = p;
     });
     chips = <Widget>[];
-    api.getTags(10).then((r){
+    util.getTags(10).then((r){
       for (var i = 0; i < r.length; i++){
         chips.add(TagChip(label: r[i]['label'], prefs: prefs));  
       }
