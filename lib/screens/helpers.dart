@@ -48,51 +48,60 @@ class CroakFeedState extends State<CroakFeed>{
       //DateTime.parse(croaksJSON['timestamp']).millisecondsSinceEpoch;
     favs.add(false);
 
-    return new ListTile(
-      dense: false,
-      
-      title: RichText(
-        
-        text: TextSpan( 
-          
-          text: croaksJSON[i]['content'],
-          style: TextStyle(color: Colors.black),
+    return new Container(
+      padding: EdgeInsets.only(left: 6, right: 6),
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: Colors.grey,
+          width: .2,
         ),
-        maxLines: 2,
-        overflow: TextOverflow.fade
       ),
-      trailing: Column(
+      child: ListTile(
+        dense: false,
         
-        crossAxisAlignment: CrossAxisAlignment.start,
-        //mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          RaisedButton( padding: EdgeInsets.all(2), key: new UniqueKey(), onPressed: (){fav(i);},  child: favs[i] ? Icon(Icons.favorite) : Icon(Icons.favorite_border) ), 
-          //Text(croaksJSON[i]['score'].toString(), textAlign: TextAlign.center,)
-        ],
-        
-      ),
-      subtitle: Row(
-        children: <Widget>[
-          Text(croaksJSON[i]['created_at']),
-          Spacer(
-            flex: 2
+        title: RichText(
+          
+          text: TextSpan( 
+            
+            text: croaksJSON[i]['content'],
+            style: TextStyle(color: Colors.black),
           ),
-          Text(tags.join(', '))
-        ]
-      ),
-      onTap: (){
-        Navigator.pushNamed(this.context, pid.toString(), arguments: MaterialPageRoute(
-          builder: (context) => CroakDetailScreen(croaksJSON[i])
-        ));
-      },
-      contentPadding: EdgeInsets.all(4),
-      onLongPress: ((){
-        Navigator.push(this.context, MaterialPageRoute(
-          builder: (context) => FeedItemOptionsDialog()
-        ));
-      }),
-      
-    );
+          maxLines: 2,
+          overflow: TextOverflow.fade,
+          
+        ),
+        trailing: Column(
+          
+          crossAxisAlignment: CrossAxisAlignment.start,
+          //mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            RaisedButton( padding: EdgeInsets.all(2), key: new UniqueKey(), onPressed: (){fav(i);},  child: favs[i] ? Icon(Icons.favorite) : Icon(Icons.favorite_border) ), 
+            //Text(croaksJSON[i]['score'].toString(), textAlign: TextAlign.center,)
+          ],
+          
+        ),
+        subtitle: Row(
+          children: <Widget>[
+            Text(croaksJSON[i]['created_at']),
+            Spacer(
+              flex: 2
+            ),
+            Text(tags.join(', '))
+          ]
+        ),
+        onTap: (){
+          Navigator.push(this.context, MaterialPageRoute(
+            builder: (context) => CroakDetailScreen(croaksJSON[i])
+          ));
+        },
+        contentPadding: EdgeInsets.all(4),
+        onLongPress: ((){
+          Navigator.push(this.context, MaterialPageRoute(
+            builder: (context) => FeedItemOptionsDialog()
+          ));
+        }),
+      )
+      );
   }
 
   //toggles "favorite" or normal for a croak  
@@ -254,7 +263,8 @@ class SuggestedTagsState extends State<SuggestedTags> with AutomaticKeepAliveCli
   int n = 10; //# tags to retreive
   bool loading = true;
   SharedPreferences prefs;
-  
+  List tags; //suggested tags retrieved from server
+
   @override
   void initState() {
     super.initState();
@@ -263,12 +273,11 @@ class SuggestedTagsState extends State<SuggestedTags> with AutomaticKeepAliveCli
     });
     chips = <Widget>[];
     util.getTags(10).then((r){
-      for (var i = 0; i < r.length; i++){
-        chips.add(TagChip(label: r[i]['label'], prefs: prefs));  
-      }
       setState((){
+        tags = r;
         loading = false;
         prefs.setStringList('tags', []);
+
       });
     });    
   }
@@ -278,6 +287,12 @@ class SuggestedTagsState extends State<SuggestedTags> with AutomaticKeepAliveCli
     if (this.loading){
       return Text('loading');
     } else {
+      if (chips.length == 0){
+        for (var i = 0; i < tags.length; i++){
+          chips.add(TagChip(label: tags[i]['label'], prefs: prefs));  
+        }
+      }
+      
       return Wrap(
         children: this.chips,
         spacing: 8  

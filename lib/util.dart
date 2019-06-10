@@ -24,9 +24,8 @@ Future<List> getTags(int n) async{
       location = loc;
       return api.getTags(n, location.latitude, location.longitude);
     });
-  } else {
-    return api.getTags(n, location.latitude, location.longitude);
-  }
+  } 
+  return api.getTags(n, null, null);
   
   
 }

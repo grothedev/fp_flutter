@@ -71,22 +71,24 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                       
                     ),
                     //SuggestedTags(),
-                    Row(
-                      children: [
-                        RaisedButton(
-                          onPressed: getFile,
-                          child: Text('Attach File'),
-                          padding: EdgeInsets.all(4),
-                        ),
-                        Container(
-                          padding: EdgeInsets.only(left: 15),
-                          child: file == null ? Text('no file') : Text(file.toString(), softWrap: true,)
-                        ),
-                      ],
-                      
+                    Container(
+                      padding: EdgeInsets.all(6),
+
+                      child: Row(
+                        children: [
+                          RaisedButton(
+                            onPressed: getFile,
+                            child: Text('Attach File'),
+                            padding: EdgeInsets.all(8),
+                          ),
+                          Container(
+                            padding: EdgeInsets.only(left: 6),
+                            child: file == null ? Text('no file') : RichText(text: TextSpan(text: file.toString()), overflow: TextOverflow.ellipsis,)
+                          ),
+                        ],
+                        
+                      ),
                     ),
-                       
-                  
                     
                     
                     //for phase 1, force anon
