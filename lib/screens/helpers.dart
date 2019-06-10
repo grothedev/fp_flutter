@@ -226,6 +226,8 @@ class TagChip extends StatefulWidget{
   }
 }
 
+
+//TODO figure out the best way to send tags to feedscreen and to notify screen that tags have been updated. react/redux automatically deals with this
 class TagChipState extends State<TagChip>{
 
   bool sel = false;
@@ -240,6 +242,7 @@ class TagChipState extends State<TagChip>{
         onSelected: ((v){
           setState((){
             sel = v;
+            util.prefs.setBool('needsUpdate', true);
           });
           List tl = widget.prefs.getStringList('tags');
           if (v) tl.add(widget.label);

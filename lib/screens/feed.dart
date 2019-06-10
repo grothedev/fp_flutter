@@ -23,6 +23,14 @@ class FeedScreen extends StatefulWidget {
   FeedState createState() {
     return new FeedState();
   }
+
+  @override
+  StatefulElement createElement(){
+    StatefulElement e = super.createElement();
+    //
+    return e;
+     
+  }
 }
 
 class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<FeedScreen>{
@@ -32,17 +40,19 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   List tags;
   bool loading = true;
   int lastUpdated;
-
+  
   @override
   void initState(){
     super.initState();
-    displayCroaks();
+    retrieveCroaks();
     
   }
 
   @override
   Widget build(BuildContext context) {
     
+    if (util.prefs.getBool('needsUpdate')) retrieveCroaks();
+
     if (loading){
       return Column(
         children: [
@@ -70,7 +80,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.refresh),
-            onPressed: () => displayCroaks(),
+            onPressed: () => retrieveCroaks(),
 
           ),
           IconButton(
@@ -96,13 +106,13 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
 
   @override
   bool didUpdateWidget(Widget ow){
-    //displayCroaks();
+    print('updated widget');
     return true;
   }  
 
-  void displayCroaks(){
+  void retrieveCroaks(){
     util.getCroaks().then((cks){
-      
+      util.prefs.setBool('needsUpdate', false); //this is a less ideal way to set state as opposed to react
       for (int i = 0; i < cks.length; i++){
         if (cks[i]['p_id'] != null){ //make sure it's not a comment croak
           cks.removeAt(i);

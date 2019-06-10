@@ -35,7 +35,7 @@ SharedPreferences:
   * lon (double) : longitude of user
   * query_all (bool) : get croaks by contain all(1) or some(0) of given tags
   * tags (List<String>) : tags to query for
-
+  * needsUpdate (bool) : does the main feed need to be updated?
 uses some packages:
   file picker: https://pub.dev/packages/file_picker
   toast: https://pub.dev/packages/toast
