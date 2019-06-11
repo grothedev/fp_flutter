@@ -46,8 +46,10 @@ Future<List> getCroaks() async{
 
   lastUpdated = prefs.getInt('last_croaks_get');
 
-  if (lastUpdated == null || DateTime.now().millisecondsSinceEpoch - lastUpdated > CROAKS_GET_TIMEOUT){
-    return await queryCroaks(location, prefs.getStringList('tags')); //TODO get taglist. has this been done already?
+  if (prefs.getBool('needsUpdate') || lastUpdated == null || DateTime.now().millisecondsSinceEpoch - lastUpdated > CROAKS_GET_TIMEOUT){
+    List crks =  await queryCroaks(location, prefs.getStringList('tags')); //TODO get taglist. has this been done already?
+    print('util get croaks (tags=' + prefs.getStringList('tags').toString() + ') :' + crks.toString());
+    return crks;
   } else {
     print('loading croaks from sqlite');
     db.loadCroaks().then((crks){
@@ -55,7 +57,7 @@ Future<List> getCroaks() async{
       return crks.toList();
     });
   }
-  return crks;
+  //return crks;
 }
 
 Future<List> getReplies(int pid) async{

@@ -242,12 +242,13 @@ class TagChipState extends State<TagChip>{
         onSelected: ((v){
           setState((){
             sel = v;
-            util.prefs.setBool('needsUpdate', true);
           });
           List tl = widget.prefs.getStringList('tags');
           if (v) tl.add(widget.label);
           else tl.remove(widget.label);
           widget.prefs.setStringList('tags', tl); //i'll leave this like this for now, since it works, but it should be delegated to util
+          print('tag chip updated: ' + widget.prefs.getStringList('tags').toString());
+          widget.prefs.setBool('needsUpdate', true);
         }),
       );
   }
