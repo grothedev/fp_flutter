@@ -32,6 +32,7 @@ dependencies:
   image_picker:
   file_picker:
   toast:
+  scoped_model:
   
 dev_dependencies:
   flutter_test:

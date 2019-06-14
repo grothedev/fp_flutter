@@ -8,16 +8,16 @@ FrogPond mobile application, made with flutter. https://flutter.dev/
 TODO:
 * fix the async timing issues
 * refresh feed after change tags
+    - make croakfeed a consumer, and the croaks and tags a changenotifier
 * sug tags for compose croak
 * automatically update comments upon submit comment
-* fix shared prefs return null for get
 * timeout for feed loading
 * intro "tutorial" and better homescreen text
 * better looking title/subtitle situation
 * word wrap for attached file
 * croak detail screen
 	- fix spacing
-	- implement threaded comments
+	- implement threaded comments (or keep screen stack?)
 * compose croak screen
 	- clean up UI
 	- actually attach the files

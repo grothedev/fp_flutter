@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:location/location.dart';
 import 'screens/home.dart';
 import 'screens/feed.dart';
 import 'screens/composecroak.dart';
@@ -55,6 +56,12 @@ class RootView extends StatefulWidget{
 class RootState extends State<RootView> with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin<RootView>{
   TabController controller;
   //SharedPreferences prefs; //this global variable might not be necessary
+
+
+  //global state
+  List queryTags = [];
+  List croaksJSON = [];
+  LocationData location;
 
   @override
   void initState(){
