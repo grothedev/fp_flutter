@@ -1,6 +1,24 @@
 import 'dart:io';
+import 'package:location/location.dart';
 import 'package:sqflite/sqflite.dart';
 import 'dart:async';
+
+
+class AppState {
+
+  String test = 'inherit widget test';
+  List feed; //current croaks in the main feed
+  bool gettingLocation;
+  bool fetchingCroaks;
+  int whenCroaksFetched;
+  //Query query; //specification of current croak-search query
+  LocationData location;
+
+  AppState(){
+    
+  }
+
+}
 
 class Croak{
   int id;

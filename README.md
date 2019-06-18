@@ -4,6 +4,7 @@ FrogPond mobile application, made with flutter. https://flutter.dev/
 4/30:  flutter is actually pretty awesome, so using it now.
 
 
+some util functions should probably go into StateController
 
 TODO:
 * fix the async timing issues

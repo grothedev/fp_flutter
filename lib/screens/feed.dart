@@ -112,13 +112,14 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
 
   void retrieveCroaks(){
     util.getCroaks().then((cks){
-      util.prefs.setBool('needsUpdate', false); //this is a less ideal way to set state as opposed to react
+      util.prefs.setBool('needsUpdate', false); 
       for (int i = 0; i < cks.length; i++){
         if (cks[i]['p_id'] != null){ //make sure it's not a comment croak
           cks.removeAt(i);
           i--;
         }
       }
+      print('feed got croaks.');
       populateListView(cks);
       
     });

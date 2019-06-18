@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fp/main.dart';
 import 'package:fp/screens/helpers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -74,6 +75,7 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
                     ),
                     Text('Popular Tags:'),
                     SuggestedTags(),
+                    Text(AppState.of(context).test),
                     //phase 2: keywords
                     /*
                     TextFormField( //KEYWORDS INPUT
