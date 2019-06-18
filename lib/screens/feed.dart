@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fp/state_container.dart';
 import 'package:location/location.dart';
 import 'dart:async';
 
@@ -40,20 +41,21 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   List tags;
   bool loading = true;
   int lastUpdated;
-  
+  StateContainerState store;
+
   @override
   void initState(){
     super.initState();
-    retrieveCroaks();
-    
+    /*if (store.state.fetchingCroaks){
+      retrieveCroaks();
+    }*/
   }
 
   @override
   Widget build(BuildContext context) {
-    
-    if (util.prefs.getBool('needsUpdate')) retrieveCroaks();
+    store = StateContainer.of(context);
 
-    if (loading){
+    if (store.state.feed == null){
       return Column(
         children: [
           Text("Finding your location and gathering nearby croaks..."),
@@ -91,7 +93,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
       ),
       body: Container(
         //child: ListTile.divideTiles( tiles: CroakFeed(context: context, pid: 0, croaksJSON: croaksJSON) ), //TODO make croakfeed iterable so have divider between list items
-        child: CroakFeed(context: context, pid: 0, croaksJSON: croaksJSON)
+        child: CroakFeed(context: context, pid: 0, croaksJSON: store.state.feed)
       ),
 
       /* 
@@ -111,7 +113,9 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   }  
 
   void retrieveCroaks(){
-    util.getCroaks().then((cks){
+    store.fetchCroaks(); //should state container call the util methods? 
+    util.getCroaks().then((cks){ //it might be better to pass the statecontainer to util
+      
       util.prefs.setBool('needsUpdate', false); 
       for (int i = 0; i < cks.length; i++){
         if (cks[i]['p_id'] != null){ //make sure it's not a comment croak
@@ -119,8 +123,10 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
           i--;
         }
       }
+      //croaksJSON = cks;
+      store.setCroakFeed(cks);
       print('feed got croaks.');
-      populateListView(cks);
+      //populateListView(cks);
       
     });
   }
@@ -130,6 +136,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
     setState(() {
         loading = false;
         croaksJSON = crks;
+        //this loop is only for debugging currently
         for (int i = 0; i < croaksJSON.length; i++){
           var cj = croaksJSON[i];
           for (int j = 0; j < cj['tags'].length; j++){

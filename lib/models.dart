@@ -15,6 +15,7 @@ class AppState {
   LocationData location;
 
   AppState(){
+    fetchingCroaks = true;
     query = Query();
   }
 

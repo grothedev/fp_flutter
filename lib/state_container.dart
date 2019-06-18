@@ -36,7 +36,7 @@ class StateContainerState extends State<StateContainer>{
     } else {
       state = AppState();
     }
-
+    
     super.initState();
   }
 
@@ -57,6 +57,19 @@ class StateContainerState extends State<StateContainer>{
   void removeTag(String t){
     setState((){
       state.query.tags.remove(t);
+    });
+  }
+
+  void setCroakFeed(List crks){
+    setState((){
+      state.feed = crks;
+      state.fetchingCroaks = false;
+    }); 
+  }
+
+  void fetchCroaks(){
+    setState((){
+      state.fetchingCroaks = true;
     });
   }
 
