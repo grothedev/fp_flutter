@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fp/state_container.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models.dart';
@@ -231,9 +232,12 @@ class TagChip extends StatefulWidget{
 class TagChipState extends State<TagChip>{
 
   bool sel = false;
+  StateContainerState store; //i think this is pretty close to the redux concept of a "store". thought var name "stateContainer was too long"
 
   @override
   Widget build(BuildContext context) {
+      store = StateContainer.of(context);
+      
       return FilterChip(
         label: Text(widget.label),
         selected: sel,
@@ -243,6 +247,11 @@ class TagChipState extends State<TagChip>{
           setState((){
             sel = v;
           });
+          if (sel){
+            store.addTag(widget.label);
+          } else {
+            store.removeTag(widget.label);
+          }
           List tl = widget.prefs.getStringList('tags');
           if (v) tl.add(widget.label);
           else tl.remove(widget.label);
@@ -268,10 +277,11 @@ class SuggestedTagsState extends State<SuggestedTags> with AutomaticKeepAliveCli
   bool loading = true;
   SharedPreferences prefs;
   List tags; //suggested tags retrieved from server
-
+  
   @override
   void initState() {
     super.initState();
+    
     SharedPreferences.getInstance().then((p){
       this.prefs = p;
     });

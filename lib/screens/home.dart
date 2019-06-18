@@ -75,7 +75,6 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
                     ),
                     Text('Popular Tags:'),
                     SuggestedTags(),
-                    Text(AppState.of(context).test),
                     //phase 2: keywords
                     /*
                     TextFormField( //KEYWORDS INPUT

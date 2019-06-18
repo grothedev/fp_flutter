@@ -20,7 +20,7 @@ class StateContainer extends StatefulWidget{
 
   @override
   State<StatefulWidget> createState() {
-        return null;
+        return StateContainerState();
   }
   
 }
@@ -48,6 +48,18 @@ class StateContainerState extends State<StateContainer>{
     );
   }
   
+  //actions for dealing with state data are here
+  void addTag(String t){
+    setState((){
+      state.query.tags.add(t);
+    });
+  }
+  void removeTag(String t){
+    setState((){
+      state.query.tags.remove(t);
+    });
+  }
+
 }
 
 class InheritedStateContainer extends InheritedWidget{

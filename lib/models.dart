@@ -11,13 +11,23 @@ class AppState {
   bool gettingLocation;
   bool fetchingCroaks;
   int whenCroaksFetched;
-  //Query query; //specification of current croak-search query
+  Query query; //specification of current croak-search query
   LocationData location;
 
   AppState(){
-    
+    query = Query();
   }
 
+}
+
+class Query{
+  List<String> tags;
+  bool exclusive; //get croaks with all or some tags
+  //TODO add keywords
+
+  Query(){
+    tags = List();
+  }
 }
 
 class Croak{
