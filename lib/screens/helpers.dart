@@ -19,13 +19,20 @@ class CroakFeedState extends State<CroakFeed>{
 
   CroakFeedState({this.context, this.pid}){
     favs = new List<bool>();
-    //check if state feed is null or if the feed should be updated. 
+    //check if state feed is null or if the feed should be updated.
+  }
+
+  @override
+  void initState(){
+    super.initState();
+
+    refresh();
   }
 
   @override
   Widget build(BuildContext context) {
-    store = StateContainer.of(context);
-    if (croaksJSON == null) refresh();
+    store = StateContainer.of(context); 
+
     if (store.state.fetchingCroaks){
       
       return Column(
@@ -135,9 +142,14 @@ class CroakFeedState extends State<CroakFeed>{
 
   //fetch the croaks according to query
   void refresh(){
+    //store.fetchCroaks(pid);
+    store.setState((){
+      store.state.needsUpdate=false;
+    });
+
     util.getCroaks(store.state.query).then((cks){ //it might be better to pass the statecontainer to util
       
-      util.prefs.setBool('needsUpdate', false); 
+      //util.prefs.setBool('needsUpdate', false); 
       for (int i = 0; i < cks.length; i++){
         if (cks[i]['p_id'] != pid){ 
           cks.removeAt(i);
@@ -150,6 +162,7 @@ class CroakFeedState extends State<CroakFeed>{
       });
       print('feed got croaks.'); 
     });
+    
   }
 
 }

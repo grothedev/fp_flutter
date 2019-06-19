@@ -13,9 +13,11 @@ class AppState {
   int whenCroaksFetched;
   Query query; //specification of current croak-search query
   LocationData location;
+  bool needsUpdate;
 
   AppState(){
-    fetchingCroaks = true;
+    fetchingCroaks = false;
+    needsUpdate = true;
     query = Query();
   }
 

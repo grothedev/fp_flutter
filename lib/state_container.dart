@@ -53,11 +53,13 @@ class StateContainerState extends State<StateContainer>{
   void addTag(String t){
     setState((){
       state.query.tags.add(t);
+      state.needsUpdate = true;
     });
   }
   void removeTag(String t){
     setState((){
       state.query.tags.remove(t);
+      state.needsUpdate = true;
     });
   }
 
@@ -68,12 +70,32 @@ class StateContainerState extends State<StateContainer>{
     }); 
   }
 
-  void fetchCroaks(){
+  void fetchCroaks(int pid){
     setState((){
-      state.fetchingCroaks = true;     
+      state.needsUpdate = false;
+      state.fetchingCroaks = true;
+      util.getCroaks(state.query).then((cks){
+        
+        for (int i = 0; i < cks.length; i++){
+          if (cks[i]['p_id'] != pid){ 
+            cks.removeAt(i);
+            i--;
+          }
+        }
+        state.feed = cks;
+        state.fetchingCroaks = false;
+            
+      });
     });
+    return;
     util.getCroaks(state.query).then((cks){
       setState(() {
+        for (int i = 0; i < cks.length; i++){
+        if (cks[i]['p_id'] != pid){ 
+            cks.removeAt(i);
+            i--;
+          }
+        }
         state.feed = cks;
         state.fetchingCroaks = false;
       });    

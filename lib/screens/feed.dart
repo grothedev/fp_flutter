@@ -35,6 +35,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
 
   @override
   void initState(){
+    super.initState();
     
   }
 
@@ -42,7 +43,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   Widget build(BuildContext context) {
     
     store = StateContainer.of(context);
-    if (croakFeed == null) croakFeed = CroakFeed(context: context, pid: null);
+    croakFeed = CroakFeed(context: context, pid: null);
     
     return Scaffold(
       appBar: AppBar(
@@ -51,10 +52,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
           IconButton(
             icon: Icon(Icons.refresh),
             onPressed: () {
-              store.fetchCroaks();
-              setState(() {
-                croakFeed = null;
-              });
+              store.fetchCroaks(null);
             },
           ),
           IconButton(
