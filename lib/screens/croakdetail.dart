@@ -84,8 +84,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
                 ) : 
                 CroakFeed(
                   context: context,
-                  pid: c['id'],
-                  croaksJSON: replies, 
+                  pid: c['id']
                 ),
               ], //comments
               

@@ -31,7 +31,7 @@ Future<List> getTags(int n) async{
 }
 
 //should this function actually return the croaks or just say if it has written croaks to db?
-Future<List> getCroaks() async{
+Future<List> getCroaks(Query query) async{
   
   List crks;
 
@@ -46,7 +46,7 @@ Future<List> getCroaks() async{
 
   lastUpdated = prefs.getInt('last_croaks_get');
 
-  if (prefs.getBool('needsUpdate') || lastUpdated == null || DateTime.now().millisecondsSinceEpoch - lastUpdated > CROAKS_GET_TIMEOUT){
+  if (lastUpdated == null || DateTime.now().millisecondsSinceEpoch - lastUpdated > CROAKS_GET_TIMEOUT){
     List crks =  await queryCroaks(location, prefs.getStringList('tags')); //TODO get taglist. has this been done already?
     print('util get croaks (tags=' + prefs.getStringList('tags').toString() + ') :' + crks.toString());
     return crks;

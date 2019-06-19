@@ -15,19 +15,40 @@ class CroakFeedState extends State<CroakFeed>{
   List croaksJSON; //json array
   BuildContext context;
   List<bool> favs;
+  StateContainerState store;
 
-  CroakFeedState({this.context, this.pid, this.croaksJSON}){
+  CroakFeedState({this.context, this.pid}){
     favs = new List<bool>();
-    print('constructing croakfeed: ' + this.croaksJSON.toString());
+    //check if state feed is null or if the feed should be updated. 
   }
 
   @override
   Widget build(BuildContext context) {
-    if (croaksJSON == null){
-      return new Container(
-        child: Text('No Croaks Found'),
-      );
+    store = StateContainer.of(context);
+    if (croaksJSON == null) refresh();
+    if (store.state.fetchingCroaks){
+      
+      return Column(
+        children: [
+          Text("Finding your location and gathering nearby croaks..."),
+          Center(
+            child: Container(
+              width: 120, 
+              height: 120,
+              padding: EdgeInsets.all(24.0),
+              child: CircularProgressIndicator(
+                      value: null,
+                      semanticsLabel: 'Retreiving Croaks...',
+                      semanticsValue: 'Retreiving Croaks...',
+                  ),
+                
+              )
+            
+            )]
+          );
+        
     }
+
     return ListView.builder(
           itemCount: croaksJSON == null ? 0 : croaksJSON.length,
           itemBuilder: (context, i) {
@@ -111,6 +132,26 @@ class CroakFeedState extends State<CroakFeed>{
       favs[id] = !favs[id];
     });
   }
+
+  //fetch the croaks according to query
+  void refresh(){
+    util.getCroaks(store.state.query).then((cks){ //it might be better to pass the statecontainer to util
+      
+      util.prefs.setBool('needsUpdate', false); 
+      for (int i = 0; i < cks.length; i++){
+        if (cks[i]['p_id'] != pid){ 
+          cks.removeAt(i);
+          i--;
+        }
+      }
+      setState(() {
+        //loading = false;
+        croaksJSON = cks;
+      });
+      print('feed got croaks.'); 
+    });
+  }
+
 }
 
 //pop-up of list of actions when long press a croak on the feed
@@ -203,13 +244,12 @@ class ComposeCroakDialog extends Dialog{
 class CroakFeed extends StatefulWidget{
   final BuildContext context;
   final int pid;
-  final List croaksJSON;
 
-  CroakFeed({this.context, this.pid, this.croaksJSON});
+  CroakFeed({this.context, this.pid});
 
   @override
   State<StatefulWidget> createState() {
-    return CroakFeedState(context: context, pid: pid, croaksJSON: croaksJSON);
+    return CroakFeedState(context: context, pid: pid);
   }
   
 }

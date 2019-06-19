@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'models.dart';
+import 'util.dart' as util;
 
 class StateContainer extends StatefulWidget{
   
@@ -36,7 +37,7 @@ class StateContainerState extends State<StateContainer>{
     } else {
       state = AppState();
     }
-    
+
     super.initState();
   }
 
@@ -69,7 +70,13 @@ class StateContainerState extends State<StateContainer>{
 
   void fetchCroaks(){
     setState((){
-      state.fetchingCroaks = true;
+      state.fetchingCroaks = true;     
+    });
+    util.getCroaks(state.query).then((cks){
+      setState(() {
+        state.feed = cks;
+        state.fetchingCroaks = false;
+      });    
     });
   }
 

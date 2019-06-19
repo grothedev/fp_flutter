@@ -3,9 +3,6 @@ FrogPond mobile application, made with flutter. https://flutter.dev/
 
 4/30:  flutter is actually pretty awesome, so using it now.
 
-
-some util functions should probably go into StateController
-
 TODO:
 * fix the async timing issues
 * refresh feed after change tags
@@ -22,6 +19,7 @@ TODO:
 * compose croak screen
 	- clean up UI
 	- actually attach the files
+* research MobX, rxdart, BloC, flux vs redux, get_it, provider, 
 * reply form on croak detail screen or dialog from floating action button?
 * keep home screen settings state on tab view switch
 * verify the following features of API are working: get by keywords, get by location,
