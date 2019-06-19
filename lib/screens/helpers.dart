@@ -16,6 +16,7 @@ class CroakFeedState extends State<CroakFeed>{
   BuildContext context;
   List<bool> favs;
   StateContainerState store;
+  bool fetching;
 
   CroakFeedState({this.context, this.pid}){
     favs = new List<bool>();
@@ -25,15 +26,17 @@ class CroakFeedState extends State<CroakFeed>{
   @override
   void initState(){
     super.initState();
-
-    refresh();
+    fetching = true;      
+    //refresh();
   }
 
   @override
   Widget build(BuildContext context) {
     store = StateContainer.of(context); 
 
-    if (store.state.fetchingCroaks){
+    if (store.state.needsUpdate) refresh();
+
+    if (fetching){
       
       return Column(
         children: [
@@ -143,9 +146,6 @@ class CroakFeedState extends State<CroakFeed>{
   //fetch the croaks according to query
   void refresh(){
     //store.fetchCroaks(pid);
-    store.setState((){
-      store.state.needsUpdate=false;
-    });
 
     util.getCroaks(store.state.query).then((cks){ //it might be better to pass the statecontainer to util
       
@@ -157,7 +157,7 @@ class CroakFeedState extends State<CroakFeed>{
         }
       }
       setState(() {
-        //loading = false;
+        fetching = false;
         croaksJSON = cks;
       });
       print('feed got croaks.'); 
