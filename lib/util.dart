@@ -15,7 +15,6 @@ import 'consts.dart';
 
 int lastUpdated;
 LocationData location;
-SharedPreferences prefs;
 
 //suggested tags for an area
 Future<List> getTags(int n) async{
@@ -26,38 +25,26 @@ Future<List> getTags(int n) async{
     });
   } 
   return api.getTags(n, null, null);
-  
-  
 }
 
 //should this function actually return the croaks or just say if it has written croaks to db?
-Future<List> getCroaks(Query query) async{
-  
-  List crks;
-
-  if (prefs == null){
-    prefs = await SharedPreferences.getInstance();
-  }
+Future<List> getCroaks(Query query, int lastUpdated) async{
   
   if (location == null){
     await initLocation().timeout(new Duration(seconds: 12));
   }
   
-
-  lastUpdated = prefs.getInt('last_croaks_get');
-
   if (lastUpdated == null || DateTime.now().millisecondsSinceEpoch - lastUpdated > CROAKS_GET_TIMEOUT){
-    List crks =  await queryCroaks(location, prefs.getStringList('tags')); //TODO get taglist. has this been done already?
-    print('util get croaks (tags=' + prefs.getStringList('tags').toString() + ') :' + crks.toString());
+    List crks =  await queryCroaks(location, query.tags, query.exclusive);
+    print('util get croaks (tags=' + query.tags.toString() + ') :' + crks.toString());
     return crks;
   } else {
-    print('loading croaks from sqlite');
+    print('last got croaks ' + lastUpdated.toString() + '. loading croaks from sqlite');
     db.loadCroaks().then((crks){
       print('croaks loaded: ' + crks.toString());
       return crks.toList();
     });
   }
-  //return crks;
 }
 
 Future<List> getReplies(int pid) async{
@@ -68,7 +55,7 @@ Future<List> getReplies(int pid) async{
   return resJSON;
 }
 
-Future<List> queryCroaks(loc, tagList) async{
+Future<List> queryCroaks(loc, tagList, qa) async{
     List resJSON;
     
     double x, y;
@@ -77,12 +64,6 @@ Future<List> queryCroaks(loc, tagList) async{
       y = loc.latitude;
     } else {
       x = y = null;
-    }
-    print('util.queryCroaks');
-    bool qa; //query all 
-    if (prefs.getBool('query_all') == null) {
-      qa = false;
-      print('query all pref null, which is not supposed to be');
     }
     resJSON = await api.getCroaks(x, y, 0, tagList, qa);
     resJSON.sort((a, b){
@@ -120,6 +101,8 @@ Future<LocationData> initLocation() async{
     print('initing loc');
     if (location != null) return location;
 
+
+    SharedPreferences prefs; //TODO see where this method is called and deal with prefs there to decouple
     if (prefs == null) prefs = await SharedPreferences.getInstance();
 
     bool s = await Location().serviceEnabled();

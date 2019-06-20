@@ -32,7 +32,7 @@ SharedPreferences:
   * last_croaks_get (int) : ms since croaks were last retreived
   * lat (double) : latitude of user
   * lon (double) : longitude of user
-  * query_all (bool) : get croaks by contain all(1) or some(0) of given tags
+  * exclusive (bool) : get croaks by contain all(1) or some(0) of given tags
   * tags (List<String>) : tags to query for
   * needsUpdate (bool) : does the main feed need to be updated?
 uses some packages:

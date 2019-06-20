@@ -157,8 +157,9 @@ class CroakFeedState extends State<CroakFeed>{
   //fetch the croaks according to query
   void refresh(){
     //store.fetchCroaks(pid);
-
-    util.getCroaks(store.state.query).then((cks){ //it might be better to pass the statecontainer to util
+    int lcg; //don't worry about time of last update if needUpdate, for example query changed
+    if (!store.state.needsUpdate) lcg = store.state.lastCroaksGet; 
+    util.getCroaks(store.state.query, lcg).then((cks){ //it might be better to pass the statecontainer to util
       
       //util.prefs.setBool('needsUpdate', false); 
       for (int i = 0; i < cks.length; i++){
@@ -168,6 +169,8 @@ class CroakFeedState extends State<CroakFeed>{
         }
       }
       store.state.needsUpdate = false;
+      store.state.lastCroaksGet = DateTime.now().millisecondsSinceEpoch; //TODO might be better for FeedScreen to pass its store to CroakFeed so that store.fetchCroaks() can be called here instead
+      store.prefs.setInt('last_croaks_get', store.state.lastCroaksGet);
       setState(() {
         fetching = false;
         croaksJSON = cks;
