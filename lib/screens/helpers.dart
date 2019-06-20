@@ -10,23 +10,34 @@ import '../api.dart' as api;
 
 //things that are not full screens, like widgets and dialogs
 
+class CroakFeed extends StatefulWidget{
+  final int pid;
+
+  CroakFeed({this.pid});
+
+  @override
+  State<StatefulWidget> createState() {
+    return CroakFeedState(pid: pid);
+  }
+}
+
 class CroakFeedState extends State<CroakFeed>{
   int pid;
   List croaksJSON; //json array
-  BuildContext context;
   List<bool> favs;
   StateContainerState store;
   bool fetching;
 
-  CroakFeedState({this.context, this.pid}){
+  CroakFeedState({this.pid}){
     favs = new List<bool>();
     //check if state feed is null or if the feed should be updated.
+    fetching = true;
   }
 
   @override
   void initState(){
     super.initState();
-    fetching = true;      
+          
     //refresh();
   }
 
@@ -156,6 +167,7 @@ class CroakFeedState extends State<CroakFeed>{
           i--;
         }
       }
+      store.state.needsUpdate = false;
       setState(() {
         fetching = false;
         croaksJSON = cks;
@@ -254,18 +266,6 @@ class ComposeCroakDialog extends Dialog{
   }
 }
 
-class CroakFeed extends StatefulWidget{
-  final BuildContext context;
-  final int pid;
-
-  CroakFeed({this.context, this.pid});
-
-  @override
-  State<StatefulWidget> createState() {
-    return CroakFeedState(context: context, pid: pid);
-  }
-  
-}
 
 class TagChip extends StatefulWidget{
 
@@ -305,6 +305,8 @@ class TagChipState extends State<TagChip>{
           } else {
             store.removeTag(widget.label);
           }
+          //store.needsUpdate();
+
           List tl = widget.prefs.getStringList('tags');
           if (v) tl.add(widget.label);
           else tl.remove(widget.label);

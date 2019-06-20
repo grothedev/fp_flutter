@@ -43,7 +43,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   Widget build(BuildContext context) {
     
     store = StateContainer.of(context);
-    croakFeed = CroakFeed(context: context, pid: null);
+    croakFeed = CroakFeed(pid: null);
     
     return Scaffold(
       appBar: AppBar(

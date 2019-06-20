@@ -13,11 +13,11 @@ class AppState {
   int whenCroaksFetched;
   Query query; //specification of current croak-search query
   LocationData location;
-  bool needsUpdate;
+  bool needsUpdate = true;
 
   AppState(){
     fetchingCroaks = false;
-    needsUpdate = true;
+    //needsUpdate = true;
     query = Query();
   }
 
@@ -30,6 +30,7 @@ class Query{
 
   Query(){
     tags = List();
+    exclusive = false;
   }
 }
 

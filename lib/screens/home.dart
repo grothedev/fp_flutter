@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fp/main.dart';
 import 'package:fp/screens/helpers.dart';
+import 'package:fp/state_container.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
@@ -14,6 +15,7 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
   List tags;
   SharedPreferences prefs;
   String locStr;
+  StateContainerState store;
 
   initState(){
     SharedPreferences.getInstance().then((p){
@@ -40,7 +42,7 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
 
   @override
   Widget build(BuildContext context){
-
+    store = StateContainer.of(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('Welcome to FrogPond')
@@ -97,6 +99,7 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
                           });
                           kwdAll = v;
                         });
+                        store.toggleExcusive();
                       },
                       activeColor: Colors.green,
                     ),

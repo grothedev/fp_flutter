@@ -83,7 +83,6 @@ class CroakDetailState extends State<CroakDetailScreen>{
                       semanticsValue: 'Retreiving Comments...',
                 ) : 
                 CroakFeed(
-                  context: context,
                   pid: c['id']
                 ),
               ], //comments

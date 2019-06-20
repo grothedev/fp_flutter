@@ -5,7 +5,7 @@ import 'util.dart' as util;
 
 class StateContainer extends StatefulWidget{
   
-  AppState state;
+  final AppState state;
   Widget child;
   
 
@@ -63,11 +63,24 @@ class StateContainerState extends State<StateContainer>{
     });
   }
 
+  void toggleExcusive(){
+    setState(() {
+      state.query.exclusive = !state.query.exclusive;
+      state.needsUpdate = true;
+    });
+  }
+
   void setCroakFeed(List crks){
     setState((){
       state.feed = crks;
       state.fetchingCroaks = false;
     }); 
+  }
+
+  void needsUpdate(){
+    setState(() {
+      state.needsUpdate = true;
+    });
   }
 
   void fetchCroaks(int pid){
