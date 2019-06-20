@@ -32,18 +32,17 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   
   StateContainerState store;
   CroakFeed croakFeed;
-  bool fetching;
+  bool fetching = true;
   List croaksJSON;
 
   @override
   void initState(){
     super.initState();
-    fetching = true;
   }
 
   @override
   Widget build(BuildContext context) {
-    
+    super.build(context);
     store = StateContainer.of(context);
     
     if (store.state.needsUpdate) refresh();
@@ -69,8 +68,6 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
           );
     }
 
-    croakFeed = CroakFeed(croaksJSON);
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Tha Pond'),
@@ -88,7 +85,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
         ],
       ),
       body: Container(
-        child: croakFeed
+        child: CroakFeed(croaksJSON)
       ),
 
       //still deciding whether to use button to dialog for composing croak, or separe entire screen
@@ -103,10 +100,13 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
 
   //fetch the croaks according to query
   void refresh(){
+    setState(() {
+      fetching = true;
+    });
     //store.fetchCroaks(pid);
     int lcg; //don't worry about time of last update if needUpdate, for example query changed
     if (!store.state.needsUpdate) lcg = store.state.lastCroaksGet; 
-    util.getCroaks(store.state.query, lcg, store.state.location).then((cks){ //it might be better to pass the statecontainer to util
+    util.getCroaks(store.state.query, lcg, store.state.location).then((cks){
        
       for (int i = 0; i < cks.length; i++){
         if (cks[i]['p_id'] != null){ 
@@ -116,7 +116,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
       }
       store.state.needsUpdate = false;
       
-      store.state.lastCroaksGet = DateTime.now().millisecondsSinceEpoch; //TODO might be better for FeedScreen to pass its store to CroakFeed so that store.fetchCroaks() can be called here instead
+      store.state.lastCroaksGet = DateTime.now().millisecondsSinceEpoch;
       store.prefs.setInt('last_croaks_get', store.state.lastCroaksGet);
       setState(() {
         fetching = false;
@@ -134,5 +134,5 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   
 
   @override
-  bool get wantKeepAlive => true;
+  bool get wantKeepAlive => ( !fetching );
 }
