@@ -56,10 +56,10 @@ class StateContainerState extends State<StateContainer>{
     state.lat = prefs.getDouble('lat');
     state.lon = prefs.getDouble('lon');
     state.query.exclusive = prefs.getBool('exclusive');
-    state.query.tags = prefs.getStringList('tags');
+    //state.query.tags = prefs.getStringList('tags'); //tmp for dbging
     state.query.radius = prefs.getInt('radius');
     state.needsUpdate = prefs.getBool('needs_update');
-
+    
     if (state.lat == null || state.lon == null){
       util.initLocation().then((l){
         if (l != null){

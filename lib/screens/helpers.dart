@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fp/state_container.dart';
+import 'package:location/location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models.dart';
@@ -323,9 +324,13 @@ class TagChipState extends State<TagChip>{
 }
 
 class SuggestedTags extends StatefulWidget{
+  final LocationData location;
+
+  SuggestedTags(this.location);
+
   @override
   State<StatefulWidget> createState() {
-    return SuggestedTagsState();
+    return SuggestedTagsState(location);
   }
 }
 
@@ -335,14 +340,17 @@ class SuggestedTagsState extends State<SuggestedTags> with AutomaticKeepAliveCli
   bool loading = true;
   SharedPreferences prefs;
   List tags; //suggested tags retrieved from server
-  
+  LocationData location;
+
+  SuggestedTagsState(this.location);
+
   @override
   void initState() {
     super.initState();
-    StateContainerState store = StateContainer.of(context);
+    //StateContainerState store = StateContainer.of(context);
 
     chips = <Widget>[];
-    util.getTags(10, store.state.location).then((r){
+    util.getTags(10, location).then((r){
       setState((){ 
         tags = r;
         loading = false;

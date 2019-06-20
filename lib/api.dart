@@ -8,8 +8,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'models.dart';
 
-//String host = 'grothe.ddns.net';
-String host = '192.168.1.5'; //tmp while at cabin
+String host = 'grothe.ddns.net';
+//String host = '192.168.1.5'; //tmp while at cabin
 int port = 8090;
 String api_url = 'http://' + host + ':' + port.toString() + '/api/'; 
 
