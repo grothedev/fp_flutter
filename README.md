@@ -5,8 +5,6 @@ FrogPond mobile application, made with flutter. https://flutter.dev/
 
 TODO:
 * fix the async timing issues
-* refresh feed after change tags
-    - make croakfeed a consumer, and the croaks and tags a changenotifier
 * sug tags for compose croak
 * automatically update comments upon submit comment
 * timeout for feed loading
@@ -21,7 +19,6 @@ TODO:
 	- actually attach the files
 * research MobX, rxdart, BloC, flux vs redux, get_it, provider, 
 * reply form on croak detail screen or dialog from floating action button?
-* keep home screen settings state on tab view switch
 * verify the following features of API are working: get by keywords, get by location,
 * notifications
 * about page
@@ -34,7 +31,8 @@ SharedPreferences:
   * lon (double) : longitude of user
   * exclusive (bool) : get croaks by contain all(1) or some(0) of given tags
   * tags (List<String>) : tags to query for
-  * needsUpdate (bool) : does the main feed need to be updated?
+  * radius (int) : geographical radius of query
+  * needs_update (bool) : does the main feed need to be updated?
 uses some packages:
   file picker: https://pub.dev/packages/file_picker
   toast: https://pub.dev/packages/toast

@@ -13,6 +13,7 @@ class AppState {
   int whenCroaksFetched;
   Query query; //specification of current croak-search query
   LocationData location;
+  double lat, lon;
   bool needsUpdate = true;
   int lastCroaksGet;
 
@@ -27,11 +28,13 @@ class AppState {
 class Query{
   List<String> tags;
   bool exclusive; //get croaks with all or some tags
+  int radius;
   //TODO add keywords
 
   Query(){
     tags = List();
     exclusive = false;
+    radius = 10;
   }
 }
 

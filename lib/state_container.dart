@@ -47,13 +47,33 @@ class StateContainerState extends State<StateContainer>{
       });
     }
 
-
-
     super.initState();
   }
 
-  void restoreState(){
-    //TODO restore state from shared prefs
+  
+  void restoreState(){ //from saved session preferences
+    state.lastCroaksGet = prefs.getInt('last_croaks_get');
+    state.lat = prefs.getDouble('lat');
+    state.lon = prefs.getDouble('lon');
+    state.query.exclusive = prefs.getBool('exclusive');
+    state.query.tags = prefs.getStringList('tags');
+    state.query.radius = prefs.getInt('radius');
+    state.needsUpdate = prefs.getBool('needs_update');
+
+    if (state.lat == null || state.lon == null){
+      util.initLocation().then((l){
+        if (l != null){
+          state.location = l;
+          state.lat = l.latitude;
+          state.lon = l.longitude;
+          prefs.setDouble('lat', state.lat);
+          prefs.setDouble('lon', state.lon);
+        }
+      });
+    }
+
+    if (state.needsUpdate == null) state.needsUpdate = true;
+  
   }
 
   @override
@@ -103,7 +123,7 @@ class StateContainerState extends State<StateContainer>{
     setState((){
       state.needsUpdate = false;
       state.fetchingCroaks = true;
-      util.getCroaks(state.query, state.lastCroaksGet).then((cks){
+      util.getCroaks(state.query, state.lastCroaksGet, state.location).then((cks){
         
         for (int i = 0; i < cks.length; i++){
           if (cks[i]['p_id'] != pid){ 

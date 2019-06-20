@@ -159,7 +159,7 @@ class CroakFeedState extends State<CroakFeed>{
     //store.fetchCroaks(pid);
     int lcg; //don't worry about time of last update if needUpdate, for example query changed
     if (!store.state.needsUpdate) lcg = store.state.lastCroaksGet; 
-    util.getCroaks(store.state.query, lcg).then((cks){ //it might be better to pass the statecontainer to util
+    util.getCroaks(store.state.query, lcg, store.state.location).then((cks){ //it might be better to pass the statecontainer to util
       
       //util.prefs.setBool('needsUpdate', false); 
       for (int i = 0; i < cks.length; i++){
@@ -339,16 +339,14 @@ class SuggestedTagsState extends State<SuggestedTags> with AutomaticKeepAliveCli
   @override
   void initState() {
     super.initState();
-    
-    SharedPreferences.getInstance().then((p){
-      this.prefs = p;
-    });
+    StateContainerState store = StateContainer.of(context);
+
     chips = <Widget>[];
-    util.getTags(10).then((r){
-      setState((){
+    util.getTags(10, store.state.location).then((r){
+      setState((){ 
         tags = r;
         loading = false;
-        prefs.setStringList('tags', []);
+        //prefs.setStringList('tags', []);
 
       });
     });    

@@ -14,10 +14,9 @@ import 'consts.dart';
 //these are helper functions to pass data to the api calls so that you don't have to worry about constructing the croak maps in event handlers
 
 int lastUpdated;
-LocationData location;
 
 //suggested tags for an area
-Future<List> getTags(int n) async{
+Future<List> getTags(int n, LocationData location) async{
   if (location == null) {
     initLocation().timeout(new Duration(seconds: 12)).then((loc){
       location = loc;
@@ -28,7 +27,7 @@ Future<List> getTags(int n) async{
 }
 
 //should this function actually return the croaks or just say if it has written croaks to db?
-Future<List> getCroaks(Query query, int lastUpdated) async{
+Future<List> getCroaks(Query query, int lastUpdated, LocationData location) async{
   
   if (location == null){
     await initLocation().timeout(new Duration(seconds: 12));
@@ -97,13 +96,9 @@ Future<bool> postCroak(Map c, File f) async{
   
 }
 
+//TODO rename to getLocation ?
 Future<LocationData> initLocation() async{
     print('initing loc');
-    if (location != null) return location;
-
-
-    SharedPreferences prefs; //TODO see where this method is called and deal with prefs there to decouple
-    if (prefs == null) prefs = await SharedPreferences.getInstance();
 
     bool s = await Location().serviceEnabled();
     if (!s) {
@@ -126,15 +121,7 @@ Future<LocationData> initLocation() async{
 
     try{
       print ('getting loc');
-      LocationData l = await Location().getLocation();
-      if (l != null){
-        prefs.setDouble('lat', l.longitude);
-        prefs.setDouble('lon', l.latitude);
-      } else {
-        print('null loc');
-      }
-      return l;
-
+      return await Location().getLocation();
     } on PlatformException catch (e){
       if (e.code == 'PERMISSION_DENIED'){
         print('permission denied');
