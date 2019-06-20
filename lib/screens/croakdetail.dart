@@ -76,12 +76,6 @@ class CroakDetailState extends State<CroakDetailScreen>{
                   child: Text('Comments'),
                   color: Colors.black,
                 ),
-                replies == null ?
-                CircularProgressIndicator(
-                      value: null,
-                      semanticsLabel: 'Retreiving Comments...',
-                      semanticsValue: 'Retreiving Comments...',
-                ) : 
                 CroakFeed(
                   pid: c['id']
                 ),

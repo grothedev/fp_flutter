@@ -170,6 +170,9 @@ class CroakFeedState extends State<CroakFeed>{
         }
       }
       store.state.needsUpdate = false;
+      //TODO this should probably go in FeedScreen, because it doesn't apply to comments
+      //brings up the question of how comment updates should be dealt with. until now i've just been assuming to always request comments from server.
+      //i'm thinking now i should have an actual croak mirror in the app state where each list/level of croaks has lastUpdated and needsUpdate
       store.state.lastCroaksGet = DateTime.now().millisecondsSinceEpoch; //TODO might be better for FeedScreen to pass its store to CroakFeed so that store.fetchCroaks() can be called here instead
       store.prefs.setInt('last_croaks_get', store.state.lastCroaksGet);
       setState(() {
@@ -347,7 +350,6 @@ class SuggestedTagsState extends State<SuggestedTags> with AutomaticKeepAliveCli
   @override
   void initState() {
     super.initState();
-    //StateContainerState store = StateContainer.of(context);
 
     chips = <Widget>[];
     util.getTags(10, location).then((r){
