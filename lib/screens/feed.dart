@@ -32,19 +32,45 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   
   StateContainerState store;
   CroakFeed croakFeed;
+  bool fetching;
+  List croaksJSON;
 
   @override
   void initState(){
     super.initState();
-    
+    fetching = true;
   }
 
   @override
   Widget build(BuildContext context) {
     
     store = StateContainer.of(context);
-    croakFeed = CroakFeed(pid: null);
     
+    if (store.state.needsUpdate) refresh();
+
+    if (fetching){
+      return Column(
+        children: [
+          Text("Finding your location and gathering nearby croaks..."),
+          Center(
+            child: Container(
+              width: 120, 
+              height: 120,
+              padding: EdgeInsets.all(24.0),
+              child: CircularProgressIndicator(
+                      value: null,
+                      semanticsLabel: 'Retreiving Croaks...',
+                      semanticsValue: 'Retreiving Croaks...',
+                  ),
+                
+              )
+            
+            )]
+          );
+    }
+
+    croakFeed = CroakFeed(croaksJSON);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Tha Pond'),
@@ -52,7 +78,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
           IconButton(
             icon: Icon(Icons.refresh),
             onPressed: () {
-              store.fetchCroaks(null);
+              refresh();
             },
           ),
           IconButton(
@@ -73,6 +99,32 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
           ),
       */
       );
+  }
+
+  //fetch the croaks according to query
+  void refresh(){
+    //store.fetchCroaks(pid);
+    int lcg; //don't worry about time of last update if needUpdate, for example query changed
+    if (!store.state.needsUpdate) lcg = store.state.lastCroaksGet; 
+    util.getCroaks(store.state.query, lcg, store.state.location).then((cks){ //it might be better to pass the statecontainer to util
+       
+      for (int i = 0; i < cks.length; i++){
+        if (cks[i]['p_id'] != null){ 
+          cks.removeAt(i);
+          i--;
+        }
+      }
+      store.state.needsUpdate = false;
+      
+      store.state.lastCroaksGet = DateTime.now().millisecondsSinceEpoch; //TODO might be better for FeedScreen to pass its store to CroakFeed so that store.fetchCroaks() can be called here instead
+      store.prefs.setInt('last_croaks_get', store.state.lastCroaksGet);
+      setState(() {
+        fetching = false;
+        croaksJSON = cks;
+      });
+      print('feed got croaks.'); 
+    });
+    
   }
 
   void sortOptions(){ //currently just using this function for testing

@@ -77,7 +77,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
                   color: Colors.black,
                 ),
                 CroakFeed(
-                  pid: c['id']
+                  replies
                 ),
               ], //comments
               

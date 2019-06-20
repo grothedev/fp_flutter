@@ -12,13 +12,14 @@ import '../api.dart' as api;
 //things that are not full screens, like widgets and dialogs
 
 class CroakFeed extends StatefulWidget{
-  final int pid;
+  //final int pid; //don't think this is needed anymore
+  final List croaksJSON;
 
-  CroakFeed({this.pid});
+  CroakFeed(this.croaksJSON);
 
   @override
   State<StatefulWidget> createState() {
-    return CroakFeedState(pid: pid);
+    return CroakFeedState(croaksJSON);
   }
 }
 
@@ -27,49 +28,18 @@ class CroakFeedState extends State<CroakFeed>{
   List croaksJSON; //json array
   List<bool> favs;
   StateContainerState store;
-  bool fetching;
 
-  CroakFeedState({this.pid}){
+  CroakFeedState(this.croaksJSON){
     favs = new List<bool>();
-    //check if state feed is null or if the feed should be updated.
-    fetching = true;
   }
 
   @override
   void initState(){
     super.initState();
-          
-    //refresh();
   }
 
   @override
   Widget build(BuildContext context) {
-    store = StateContainer.of(context); 
-
-    if (store.state.needsUpdate) refresh();
-
-    if (fetching){
-      
-      return Column(
-        children: [
-          Text("Finding your location and gathering nearby croaks..."),
-          Center(
-            child: Container(
-              width: 120, 
-              height: 120,
-              padding: EdgeInsets.all(24.0),
-              child: CircularProgressIndicator(
-                      value: null,
-                      semanticsLabel: 'Retreiving Croaks...',
-                      semanticsValue: 'Retreiving Croaks...',
-                  ),
-                
-              )
-            
-            )]
-          );
-        
-    }
 
     return ListView.builder(
           itemCount: croaksJSON == null ? 0 : croaksJSON.length,
@@ -89,7 +59,6 @@ class CroakFeedState extends State<CroakFeed>{
       tags.add(croaksJSON[i]['tags'][j]['label']);
     }
 
-      //DateTime.parse(croaksJSON['timestamp']).millisecondsSinceEpoch;
     favs.add(false);
 
     return new Container(
@@ -153,35 +122,6 @@ class CroakFeedState extends State<CroakFeed>{
     setState((){
       favs[id] = !favs[id];
     });
-  }
-
-  //fetch the croaks according to query
-  void refresh(){
-    //store.fetchCroaks(pid);
-    int lcg; //don't worry about time of last update if needUpdate, for example query changed
-    if (!store.state.needsUpdate) lcg = store.state.lastCroaksGet; 
-    util.getCroaks(store.state.query, lcg, store.state.location).then((cks){ //it might be better to pass the statecontainer to util
-      
-      //util.prefs.setBool('needsUpdate', false); 
-      for (int i = 0; i < cks.length; i++){
-        if (cks[i]['p_id'] != pid){ 
-          cks.removeAt(i);
-          i--;
-        }
-      }
-      store.state.needsUpdate = false;
-      //TODO this should probably go in FeedScreen, because it doesn't apply to comments
-      //brings up the question of how comment updates should be dealt with. until now i've just been assuming to always request comments from server.
-      //i'm thinking now i should have an actual croak mirror in the app state where each list/level of croaks has lastUpdated and needsUpdate
-      store.state.lastCroaksGet = DateTime.now().millisecondsSinceEpoch; //TODO might be better for FeedScreen to pass its store to CroakFeed so that store.fetchCroaks() can be called here instead
-      store.prefs.setInt('last_croaks_get', store.state.lastCroaksGet);
-      setState(() {
-        fetching = false;
-        croaksJSON = cks;
-      });
-      print('feed got croaks.'); 
-    });
-    
   }
 
 }
@@ -314,12 +254,12 @@ class TagChipState extends State<TagChip>{
           }
           //store.needsUpdate();
 
-          List tl = widget.prefs.getStringList('tags');
-          if (v) tl.add(widget.label);
-          else tl.remove(widget.label);
-          widget.prefs.setStringList('tags', tl); //i'll leave this like this for now, since it works, but it should be delegated to util
-          print('tag chip updated: ' + widget.prefs.getStringList('tags').toString());
-          widget.prefs.setBool('needsUpdate', true);
+          //List tl = widget.prefs.getStringList('tags');
+          //if (v) tl.add(widget.label);
+          //else tl.remove(widget.label);
+          //widget.prefs.setStringList('tags', tl); //i'll leave this like this for now, since it works, but it should be delegated to util
+         //print('tag chip updated: ' + widget.prefs.getStringList('tags').toString());
+          //widget.prefs.setBool('needsUpdate', true);
         }),
       );
   }
