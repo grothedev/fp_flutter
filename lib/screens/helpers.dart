@@ -59,6 +59,8 @@ class CroakFeedState extends State<CroakFeed>{
       tags.add(croaksJSON[i]['tags'][j]['label']);
     }
 
+    
+
     favs.add(false);
 
     return new Container(

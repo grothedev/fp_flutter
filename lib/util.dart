@@ -41,6 +41,8 @@ Future<List> getCroaks(Query query, int lastUpdated, LocationData location) asyn
   } else {
     print('last got croaks ' + lastUpdated.toString() + '. loading croaks from sqlite');
     List crks = await db.loadCroaks();
+    print(crks.toString());
+    
     return crks;
   }
 }

@@ -107,11 +107,26 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
     int lcg; //don't worry about time of last update if needUpdate, for example query changed
     if (!store.state.needsUpdate) lcg = store.state.lastCroaksGet; 
     util.getCroaks(store.state.query, lcg, store.state.location).then((cks){
-       
+      List cs = List();
       for (int i = 0; i < cks.length; i++){
+        /* this started erroring with 'read only'
         if (cks[i]['p_id'] != null){ 
           cks.removeAt(i);
           i--;
+        }
+        */
+        if (cks[i]['p_id'] == null){
+          cs.add(cks[i]);
+          
+          if (cs.last['tags'] is String){
+            String tagsStr = cs.last['tags'];
+            cs.last['tags'] = [];
+            List tags = tagsStr.split(',');
+            for (int j = 0; j < tags.length; j++){
+              cs.last['tags'].add({'label': tags[j]});
+            } //to make compatible with CroakFeed parsing
+          } 
+            
         }
       }
       store.state.needsUpdate = false;
@@ -120,7 +135,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
       store.prefs.setInt('last_croaks_get', store.state.lastCroaksGet);
       setState(() {
         fetching = false;
-        croaksJSON = cks;
+        croaksJSON = cs;
       });
       print('feed got croaks.'); 
     });
