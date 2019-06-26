@@ -39,6 +39,7 @@ Future<List> getCroaks(double x, double y, int p_id, List<String> tl, bool at) a
 //takes file separately because Croak.toMap() had to give string representations of all of its instance vars
 Future<String> postCroak(Map<String, dynamic> req, File f) async {
   
+
   if (f != null){
     //TODO 
     var mr = new http.MultipartRequest('POST', Uri.parse(api_url));
@@ -48,19 +49,23 @@ Future<String> postCroak(Map<String, dynamic> req, File f) async {
     mr.fields['lat'] = req['lat'];
     mr.fields['lon'] = req['lon'];
     mr.fields['p_id'] = req['pid'];
-    File f = req['files'][0];
+    //File f = req['files'][0];
 
-    var mf = await http.MultipartFile.fromPath('f', f.path, contentType: new MediaType('multipart', 'mixed'));
-    mr.files.add(mf); 
+    //var mf = await http.MultipartFile.fromPath('f', f.path, contentType: new MediaType('multipart', 'mixed'));
+    //mr.files.add(mf); 
 
     mr.send().then((res){
       print(res);
       return res;
     });
   } else {
-    print('post croak: ' + req.toString());
+    print('api post croak: ' + req.toString());
+    req.forEach((k, v) {
+      print(k + ': ' +v.toString());
+    });
 
-    var res = await http.post(api_url+'croaks', body: req);
+    var res = await http.Client().post(api_url+'croaks', body: req);
+    print('rest response: ' + res.body);
     return res.body;
   }
 

@@ -4,11 +4,14 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 //import 'sugtags.dart';
+import '../state_container.dart';
 import '../util.dart' as util;
 import 'package:location/location.dart';
 import 'dart:async';
 
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'helpers.dart';
 
 
 
@@ -22,6 +25,8 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
   bool anon = true;
   File file;
   SharedPreferences prefs; 
+  StateContainerState store;
+
 
   void initState(){
     SharedPreferences.getInstance().then((p){
@@ -31,6 +36,8 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
 
   @override
   Widget build(BuildContext context){
+    store = StateContainer.of(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Croak with your fellow tadpoles')
@@ -109,7 +116,7 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                       ],
                     ),
                     */  
-                    
+                    SuggestedTags(store.state.location),
                     Padding( //CROAK SUBMIT
                       padding: EdgeInsets.symmetric(vertical: 12.0),
                       child: Center(
@@ -118,7 +125,7 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                           onPressed: (){
                             if (fk.currentState.validate()){
                               Scaffold.of(context).showSnackBar(SnackBar(content: Text('Croaking...')));
-                              util.submitCroak(croakText.text, tagsText.text, true, prefs.getDouble('lat'), prefs.getDouble('lon'), file).then((r){
+                              util.submitCroak(croakText.text, tagsText.text, true, store.state.lat, store.state.lon, file).then((r){
                                 if (r){
                                   Scaffold.of(context).removeCurrentSnackBar();
                                   Scaffold.of(context).showSnackBar(SnackBar(content: Text('Success')));

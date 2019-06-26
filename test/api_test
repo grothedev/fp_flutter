@@ -1,0 +1,1 @@
+curl --data "x=0&y=0&type=0&content=this is croak&score=0&tags=test" http://grothe.ddns.net:8090/api/croaks

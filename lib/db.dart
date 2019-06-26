@@ -50,7 +50,7 @@ void saveCroaks(croaks) async{
 }
 
 Future<List> loadCroaks() async{
-  return await database.query('croaks');
+  return List.from(await database.query('croaks', columns: ['*'], where: '1=1'));
 }
 
 void saveTags(tags) async{

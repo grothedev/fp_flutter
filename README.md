@@ -5,7 +5,7 @@ FrogPond mobile application, made with flutter. https://flutter.dev/
 
 TODO:
 * fix the async timing issues
-* sug tags for compose croak
+* sug tags: separate feed automatically fetching when tag un/selected, because innappropiate for composecroak
 * automatically update comments upon submit comment
 * timeout for feed loading
 * intro "tutorial" and better homescreen text

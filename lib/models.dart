@@ -57,7 +57,10 @@ class Croak{
   Map<String, dynamic> toMap(){
     return {
       'id': id.toString(),
-      'p_id': pid.toString(),
+      'p_id': pid != null ? pid.toString() : '',
+      'user_id': uid != null ? uid.toString() : '',
+      'x': lon.toString(),
+      'y': lat.toString(),
       'score': score.toString(),
       'content': content,
       'tags': tags.join(','),
