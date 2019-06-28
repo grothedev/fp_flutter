@@ -22,6 +22,7 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
   final fk = GlobalKey<FormState>();// form key
   final croakText = TextEditingController();
   final tagsText = TextEditingController();
+  List tags;
   bool anon = true;
   File file;
   SharedPreferences prefs; 
@@ -37,7 +38,7 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
   @override
   Widget build(BuildContext context){
     store = StateContainer.of(context);
-
+    
     return Scaffold(
       appBar: AppBar(
         title: Text('Croak with your fellow tadpoles')
@@ -77,7 +78,7 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                       minLines: 2,
                       
                     ),
-                    //SuggestedTags(),
+                    SuggestedTags(store.state.location, selectTagChip),
                     Container(
                       padding: EdgeInsets.all(6),
 
@@ -116,7 +117,6 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                       ],
                     ),
                     */  
-                    SuggestedTags(store.state.location),
                     Padding( //CROAK SUBMIT
                       padding: EdgeInsets.symmetric(vertical: 12.0),
                       child: Center(
@@ -125,12 +125,13 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                           onPressed: (){
                             if (fk.currentState.validate()){
                               Scaffold.of(context).showSnackBar(SnackBar(content: Text('Croaking...')));
-                              util.submitCroak(croakText.text, tagsText.text, true, store.state.lat, store.state.lon, file).then((r){
+                              tags.addAll(tagsText.text.split(' '));
+                              util.submitCroak(croakText.text, tags, true, store.state.lat, store.state.lon, file).then((r){
                                 if (r){
                                   Scaffold.of(context).removeCurrentSnackBar();
                                   Scaffold.of(context).showSnackBar(SnackBar(content: Text('Success')));
-                                  TabBarView b = context.ancestorWidgetOfExactType(TabBarView);
-                                  b.controller.animateTo(b.controller.previousIndex);
+                                  //TabBarView b = context.ancestorWidgetOfExactType(TabBarView);
+                                  //b.controller.animateTo(b.controller.previousIndex);
                                 } else {
                                   Scaffold.of(context).removeCurrentSnackBar();
                                   Scaffold.of(context).showSnackBar(SnackBar(content: Text('Croak failed to post')));
@@ -164,6 +165,10 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
   @override
   bool get wantKeepAlive => true;
   
+  void selectTagChip(String tag, bool sel){
+    sel ? tags.add(tag) : tags.remove(tag);
+  }
+
 }
 
 //for making a croak

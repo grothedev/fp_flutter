@@ -76,7 +76,7 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
                       minLines: 1,
                     ),
                     Text('Popular Tags:'),
-                    SuggestedTags(store.state.location),
+                    SuggestedTags(store.state.location, updateQueryTags), //tell it what to do when one of its chips is selected
                     //phase 2: keywords
                     /*
                     TextFormField( //KEYWORDS INPUT
@@ -124,6 +124,13 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
   @override
   bool get wantKeepAlive => true;
   
+  void updateQueryTags(String tag, bool sel){
+    if (sel){
+      store.addTag(tag);
+    } else {
+      store.removeTag(tag);
+    }
+  }
 }
 
 //this screen should show a UI to set feed filter, user account pref, notifications

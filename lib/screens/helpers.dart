@@ -220,8 +220,9 @@ class TagChip extends StatefulWidget{
 
   final String label;
   final SharedPreferences prefs;
+  final Function onSelected;
 
-  TagChip({Key key, this.label, this.prefs}): super(key: key);
+  TagChip({Key key, this.label, this.prefs, this.onSelected}): super(key: key);
 
   @override
   State<StatefulWidget> createState(){
@@ -230,7 +231,6 @@ class TagChip extends StatefulWidget{
 }
 
 
-//TODO figure out the best way to send tags to feedscreen and to notify screen that tags have been updated. react/redux automatically deals with this
 class TagChipState extends State<TagChip>{
 
   bool sel = false;
@@ -249,11 +249,15 @@ class TagChipState extends State<TagChip>{
           setState((){
             sel = v;
           });
-          if (sel){
-            store.addTag(widget.label);
+          widget.onSelected(widget.label, sel);
+          
+          /*if (sel){
+            store.addTag(widget.label); //TODO make this only add to a set of tags which SuggestedTags widget has, with no further meaning, and parent widget can listen for sugtag selected tags change
           } else {
             store.removeTag(widget.label);
           }
+          */
+
           //store.needsUpdate();
 
           //List tl = widget.prefs.getStringList('tags');
@@ -270,8 +274,9 @@ class TagChipState extends State<TagChip>{
 
 class SuggestedTags extends StatefulWidget{
   final LocationData location;
+  final Function onChipSelected;
 
-  SuggestedTags(this.location);
+  SuggestedTags(this.location, this.onChipSelected);
 
   @override
   State<StatefulWidget> createState() {
@@ -280,7 +285,7 @@ class SuggestedTags extends StatefulWidget{
 }
 
 class SuggestedTagsState extends State<SuggestedTags> with AutomaticKeepAliveClientMixin<SuggestedTags>{
-  List chips; //TODO combine selected and these within one data structure? 
+  List chips;
   int n = 10; //# tags to retreive
   bool loading = true;
   SharedPreferences prefs;
@@ -311,7 +316,7 @@ class SuggestedTagsState extends State<SuggestedTags> with AutomaticKeepAliveCli
     } else {
       if (chips.length == 0){
         for (var i = 0; i < tags.length; i++){
-          chips.add(TagChip(label: tags[i]['label'], prefs: prefs));  
+          chips.add(TagChip(label: tags[i]['label'], prefs: prefs, onSelected: widget.onChipSelected));  
         }
       }
       

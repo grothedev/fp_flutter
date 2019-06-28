@@ -81,9 +81,9 @@ Future<bool> submitReply(int p_id, String content, List tags, anon) async{ //TOD
   return await postCroak(c.toMap(), null); //for now will not handle files for replies, but should in the future TODO
 }
 
-Future<bool> submitCroak(String croak, String tags, bool anon, double lat, double lon, File f) async{
-  print('util submit croak: ' + tags);
-  Croak c = new Croak(content: croak, timestamp: new DateTime.now().toString() , score: 0, tags: tags.split(' '), type: 0, pid: null, lat: lat, lon: lon, files: [f]);
+Future<bool> submitCroak(String croak, List<String> tags, bool anon, double lat, double lon, File f) async{
+  //print('util submit croak: ' + tags);
+  Croak c = new Croak(content: croak, timestamp: new DateTime.now().toString() , score: 0, tags: tags, type: 0, pid: null, lat: lat, lon: lon, files: [f]);
   return await postCroak(c.toMap(), f);
 }
 
