@@ -22,7 +22,7 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
   final fk = GlobalKey<FormState>();// form key
   final croakText = TextEditingController();
   final tagsText = TextEditingController();
-  List tags;
+  List<String> tags = [];
   bool anon = true;
   File file;
   SharedPreferences prefs; 
