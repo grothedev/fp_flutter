@@ -23,7 +23,7 @@ Future<List> getCroaks(double x, double y, int p_id, List<String> tl, bool at) a
   if (p_id > 0){
     reqURL += 'p_id=' + p_id.toString() + '&';
   }
-  if (at != null && at){
+  if (at){
     reqURL += 'mode=1&';
   }
   print('api.getCroaks reqURL: ' + reqURL);

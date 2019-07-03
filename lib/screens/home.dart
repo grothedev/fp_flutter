@@ -99,7 +99,7 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
                           });
                           kwdAll = v;
                         });
-                        store.toggleExcusive();
+                        store.toggleExclusive();
                       },
                       activeColor: Colors.green,
                     ),

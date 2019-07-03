@@ -98,12 +98,15 @@ class StateContainerState extends State<StateContainer>{
     });
   }
 
-  void toggleExcusive(){
+  void toggleExclusive(){
     setState(() {
-      state.query.exclusive = !state.query.exclusive;
+      if (state.query.exclusive != null) state.query.exclusive = !state.query.exclusive;
+      else state.query.exclusive = false;
       state.needsUpdate = true;
       prefs.setBool('exclusive', state.query.exclusive);
+
     });
+    print(state.query.exclusive.toString());
   }
 
   void setCroakFeed(List crks){

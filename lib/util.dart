@@ -32,10 +32,13 @@ Future<List> getCroaks(Query query, int lastUpdated, LocationData location) asyn
   if (location == null){
     await initLocation().timeout(new Duration(seconds: 12));
   }
-  
-  if (lastUpdated == null || DateTime.now().millisecondsSinceEpoch - lastUpdated > CROAKS_GET_TIMEOUT){
+
+  print('util getcroaks: ' + query.toString());
+
+  //TODO fix sqlite
+  if (true || lastUpdated == null || DateTime.now().millisecondsSinceEpoch - lastUpdated > CROAKS_GET_TIMEOUT){
     List crks =  await queryCroaks(location, query.tags, query.exclusive);
-    print('util get croaks (tags=' + query.tags.toString() + ') :' + crks.toString());
+    print('util got croaks (tags=' + query.tags.toString() + ') :' + crks.toString());
     db.saveCroaks(crks);
     return crks;
   } else {

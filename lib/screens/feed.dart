@@ -100,6 +100,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
 
   //fetch the croaks according to query
   void refresh(){
+    store = StateContainer.of(context);
     setState(() {
       fetching = true;
     });
