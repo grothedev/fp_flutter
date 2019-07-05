@@ -44,8 +44,9 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
   Widget build(BuildContext context){
     store = StateContainer.of(context);
     return Scaffold(
+      //appBar: ScreenTitle('Welcome to FrogPond'),
       appBar: AppBar(
-        title: Text('Welcome to FrogPond')
+        title: Text('Frog Pond'),
       ),
       body:  SingleChildScrollView(
         

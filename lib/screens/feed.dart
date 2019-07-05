@@ -81,6 +81,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
 
     return Scaffold(
       appBar: AppBar(
+        //title: ScreenTitle('Tha Pond'),
         title: Text('Tha Pond'),
         actions: <Widget>[
           IconButton(

@@ -340,11 +340,28 @@ class SuggestedTagsState extends State<SuggestedTags> with AutomaticKeepAliveCli
   
 }
 
-//my custom title to go under the app title on each screen
-class ScreenTitle extends StatelessWidget{
+//my custom appbar/title to go under the app title on each screen
+//currently unused since i decided to get rid of global app title. still might switch to using global app title with screen subtitles
+//it is easier to deal with screen-specific actions without the global title
+class ScreenTitle extends StatelessWidget implements PreferredSizeWidget{
+
+  final String label;
+  final Size size = Size.fromHeight(20);
+
+  ScreenTitle(this.label);
+  
   @override
   Widget build(BuildContext context) {
-    return null;
+    return PreferredSize(
+      child: Text(
+        label,
+        style: Theme.of(context).textTheme.headline,
+      ),
+      preferredSize: size,
+    );
   }
+
+  @override
+  Size get preferredSize => size;
 
 }

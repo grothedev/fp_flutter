@@ -31,7 +31,7 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
   EdgeInsets formPadding = EdgeInsets.all(6.0);
   EdgeInsets formElemMargin = EdgeInsets.all(8.0);
 
-  
+
   void initState(){
     SharedPreferences.getInstance().then((p){
       prefs = p;
@@ -43,8 +43,9 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
     store = StateContainer.of(context);
     
     return Scaffold(
+      //appBar: ScreenTitle('Croak with your fellow tadpoles'),
       appBar: AppBar(
-        title: Text('Croak with your fellow tadpoles')
+        title: Text('Croak with your fellow tadpoles'),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(8.0),
@@ -90,9 +91,6 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                         minLines: 2,
                         
                       ),
-                      decoration: BoxDecoration(
-                        border: Border(bottom: BorderSide(color: Theme.of(context).dividerColor)),
-                      ),
                     ),
                     Container(
                       padding: formPadding,
@@ -100,7 +98,10 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                       child: SuggestedTags(store.state.location, selectTagChip),
                       decoration: BoxDecoration(
                         //border: Border.all(color: Colors.black, width: 1, style: BorderStyle.solid)
-                        border: Border(bottom: BorderSide(color: Theme.of(context).dividerColor)),
+                        border: Border(
+                          bottom: BorderSide(color: Theme.of(context).dividerColor),
+                          top: BorderSide(color: Theme.of(context).dividerColor)
+                        ),
                       ),
                     ),
                     Container(
@@ -119,8 +120,13 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                           ),
                           Container(
                             padding: EdgeInsets.only(left: 6),
-                            child: file == null ? Text('no file') : RichText(text: TextSpan(text: file.toString()), overflow: TextOverflow.ellipsis,)
-                          ),
+                            child: file == null ? Text('no file') 
+                                      : ConstrainedBox(
+                                          constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * .6),
+                                          child: Text( file.toString(), style: Theme.of(context).textTheme.subtitle),
+                                      ),
+                            )
+                          
                         ],
                         
                       ),

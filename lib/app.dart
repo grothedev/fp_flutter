@@ -28,9 +28,9 @@ class FrogPondApp extends StatelessWidget {
             ),
             headline: TextStyle(
               fontSize: 16,
-              fontFamily: 'Roboto'
+              fontFamily: 'Roboto',
+              fontWeight: FontWeight.bold,
             )
-            
           ),
           
         ),
@@ -93,9 +93,9 @@ class RootState extends State<RootView> with SingleTickerProviderStateMixin, Aut
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: new AppBar(
-        title: new Text("FrogPond")
-      ),
+      /*appBar: new AppBar(
+        title: new Text("FrogPond"),
+      ),*/
       body: new TabBarView(
         children: <Widget>[new HomeScreen(), new FeedScreen(), new ComposeScreen()],
         controller: controller,
