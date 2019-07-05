@@ -30,8 +30,8 @@ Future<List> getCroaks(double x, double y, int p_id, List<String> tl, bool at) a
   }
   print('api.getCroaks reqURL: ' + reqURL);
 
-  var res = await http.get(reqURL); //TODO handle location
-
+  var res = await http.get(reqURL).catchError((e){ print('http get failed: ' + e.toString()); } ); //TODO handle location
+  if ( !(res is Response) ) return null;
   //print('api.getCroaks response body: '+ res.body);
 
   return json.decode(res.body);
@@ -43,39 +43,13 @@ Future<String> postCroak(Map<String, dynamic> req, File f) async {
   print(req.toString());
 
   if (f != null){
-    //TODO 
-    /*
-    var mr = new http.MultipartRequest('POST', Uri.parse(api_url+'croaks'));
-    mr.headers['Content-Type'] = 'multipart/form-data';
-    mr.fields['tags'] = req['tags'];
-    mr.fields['type'] = req['type'];
-    mr.fields['content'] = req['content'];
-    mr.fields['lat'] = req['lat'];
-    mr.fields['lon'] = req['lon'];
-    mr.fields['p_id'] = req['pid'];
-    mr.fields['score'] = '0';
-    mr.fields['user_id'] = '';
-    */
     req.addAll({'f[]': [ new UploadFileInfo(f, basename(f.path))]  });
     FormData fd = FormData.from(req);
-    //fd.add('f', new UploadFileInfo(f, basename(f.path)));
+    
     print('api post croak: ' + fd.toString());
     Response res =  await Dio().post(api_url+'croaks', data: fd);
     return res.data;
 
-    //File f = req['files'][0];
-
-    //var mf = await http.MultipartFile.fromPath('f', f.path, contentType: new MediaType('multipart', 'mixed'));
-    //mr.files.add(mf); 
-
-    /*
-    print('api multipart post croak: ' + mr.toString() + '; ' + mr.headers.toString() + '; ' + mr.fields.toString()) ;
-
-    mr.send().then((res){
-      print(res);
-      return res;
-    });
-    */
   } else {
     print('api post croak: ' + req.toString());
     req.forEach((k, v) {
@@ -86,16 +60,12 @@ Future<String> postCroak(Map<String, dynamic> req, File f) async {
     print('rest response: ' + res.body);
     return res.body;
   }
-
-  
-
-  
 }
 
 //get most referenced n tags
 Future<List> getTags(int n, double lat, double lon) async{
   if (lat == null) lat = 0; //TODO make a request option which bypasses location
   if (lon == null) lon = 0;
-  var res = await http.get(api_url+'tags?n='+n.toString()+'&lat='+lat.toString()+'&lon='+lon.toString());
+  var res = await http.get(api_url+'tags?n='+n.toString()+'&lat='+lat.toString()+'&lon='+lon.toString()).catchError((e){return null;});
   return json.decode(res.body);
 }

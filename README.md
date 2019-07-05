@@ -4,10 +4,7 @@ FrogPond mobile application, made with flutter. https://flutter.dev/
 4/30:  flutter is actually pretty awesome, so using it now.
 
 TODO:
-* fix the async timing issues
-* sug tags: separate feed automatically fetching when tag un/selected, because innappropiate for composecroak
 * automatically update comments upon submit comment
-* timeout for feed loading
 * intro "tutorial" and better homescreen text
 * better looking title/subtitle situation
 * word wrap for attached file
@@ -15,8 +12,7 @@ TODO:
 	- fix spacing
 	- implement threaded comments (or keep screen stack?)
 * compose croak screen
-	- clean up UI
-	- actually attach the files
+	- clean up UIs
 * research MobX, rxdart, BloC, flux vs redux, get_it, provider, 
 * reply form on croak detail screen or dialog from floating action button?
 * verify the following features of API are working: get by keywords, get by location,

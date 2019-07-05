@@ -126,6 +126,9 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                             if (fk.currentState.validate()){
                               Scaffold.of(context).showSnackBar(SnackBar(content: Text('Croaking...')));
                               tags.addAll(tagsText.text.split(' '));
+                              tags.removeWhere((t) => t==''); //for some reason there are empty strings ending up in the list
+                              
+                              print('croakin with tags: ' + tags.toString());
                               util.submitCroak(croakText.text, tags, true, store.state.lat, store.state.lon, file).then((r){
                                 if (r){
                                   Scaffold.of(context).removeCurrentSnackBar();

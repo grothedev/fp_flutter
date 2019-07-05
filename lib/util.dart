@@ -38,6 +38,7 @@ Future<List> getCroaks(Query query, int lastUpdated, LocationData location) asyn
   //TODO fix sqlite
   if (true || lastUpdated == null || DateTime.now().millisecondsSinceEpoch - lastUpdated > CROAKS_GET_TIMEOUT){
     List crks =  await queryCroaks(location, query.tags, query.exclusive);
+    if (crks == null || crks.length == 0) return null; 
     print('util got croaks (tags=' + query.tags.toString() + ') :' + crks.toString());
     if (db.database == null) await db.initDB();
     db.saveCroaks(crks);
@@ -71,6 +72,7 @@ Future<List> queryCroaks(loc, tagList, qa) async{
       x = y = null;
     }
     resJSON = await api.getCroaks(x, y, 0, tagList, qa);
+    if (resJSON == null) return null;
     resJSON.sort((a, b){
       return DateTime.parse(b['created_at']).millisecondsSinceEpoch - DateTime.parse(a['created_at']).millisecondsSinceEpoch;
     });

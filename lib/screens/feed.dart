@@ -34,6 +34,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   CroakFeed croakFeed;
   bool fetching = true;
   List croaksJSON;
+  bool fetchFailed = false;
 
   @override
   void initState(){
@@ -66,6 +67,16 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
             
             )]
           );
+    }
+
+    if (fetchFailed){
+      return Center(
+          child: RaisedButton(
+            child: Text('Refresh'),
+            onPressed: () => refresh(),
+          ),
+          heightFactor: 10,
+      );
     }
 
     return Scaffold(
@@ -108,6 +119,15 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
     int lcg; //don't worry about time of last update if needUpdate, for example query changed
     if (!store.state.needsUpdate) lcg = store.state.lastCroaksGet; 
     util.getCroaks(store.state.query, lcg, store.state.location).then((cks){
+      if (cks == null || cks.length == 0){
+        print('failed to fetch croaks');
+        Scaffold.of(context).showSnackBar(SnackBar(content: Text('Unable to Fetch Croaks') ));
+        setState(() {
+          fetching = false;
+          fetchFailed = true;
+        });
+        return;
+      }
       List cs = List.from(cks);
       
       for (int i = 0; i < cs.length; i++){
@@ -157,6 +177,13 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
         print('feed got croaks.'); 
       }
       
+    }).timeout(new Duration(seconds: 15)).then((t){
+      print('timed out while fetching croaks');
+      Scaffold.of(context).showSnackBar(SnackBar(content: Text('Unable to Reach Server to Fetch Croaks') ));
+      setState(() {
+        fetching = false;
+        fetchFailed = true;
+      });
     });
     
   }
