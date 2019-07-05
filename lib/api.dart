@@ -40,19 +40,25 @@ Future<List> getCroaks(double x, double y, int p_id, List<String> tl, bool at) a
 Future<String> postCroak(Map<String, dynamic> req, File f) async {
   print(req.toString());
 
-  if (f != null){
+  if (true || f != null){
     //TODO 
-    var mr = new http.MultipartRequest('POST', Uri.parse(api_url));
+    var mr = new http.MultipartRequest('POST', Uri.parse(api_url+'croaks'));
+    mr.headers['Content-Type'] = 'multipart/form-data';
     mr.fields['tags'] = req['tags'];
     mr.fields['type'] = req['type'];
     mr.fields['content'] = req['content'];
     mr.fields['lat'] = req['lat'];
     mr.fields['lon'] = req['lon'];
     mr.fields['p_id'] = req['pid'];
+    mr.fields['score'] = '0';
+    mr.fields['user_id'] = null;
+
     //File f = req['files'][0];
 
     //var mf = await http.MultipartFile.fromPath('f', f.path, contentType: new MediaType('multipart', 'mixed'));
     //mr.files.add(mf); 
+
+    print('api multipart post croak: ' + mr.toString() + '; ' + mr.headers.toString() + '; ' + mr.fields.toString()) ;
 
     mr.send().then((res){
       print(res);
