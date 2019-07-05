@@ -326,9 +326,12 @@ class SuggestedTagsState extends State<SuggestedTags> with AutomaticKeepAliveCli
         direction: Axis.vertical,
         children: [
           Text('Popular Tags', style: Theme.of(context).textTheme.subtitle,),
-          Wrap(
-            children: this.chips,
-            spacing: 8,
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Wrap(
+              children: this.chips,
+              spacing: 8,
+            ),
           )
         ]
       );

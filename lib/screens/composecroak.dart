@@ -108,7 +108,7 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                       padding: formPadding,
                       margin: formElemMargin,
                       decoration: BoxDecoration(
-                        border: Border.all(color: Colors.black, width: 1, style: BorderStyle.solid)
+                        border: Border.all(color: Color(0x66222222), width: 1, style: BorderStyle.solid)
                         //border: Border(bottom: BorderSide(color: Theme.of(context).dividerColor)),
                       ),
                       child: Row(

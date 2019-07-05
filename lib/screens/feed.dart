@@ -49,24 +49,29 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
     if (store.state.needsUpdate) refresh();
 
     if (fetching){
-      return Column(
-        children: [
-          Text("Finding your location and gathering nearby croaks..."),
-          Center(
-            child: Container(
-              width: 120, 
-              height: 120,
-              padding: EdgeInsets.all(24.0),
-              child: CircularProgressIndicator(
-                      value: null,
-                      semanticsLabel: 'Retreiving Croaks...',
-                      semanticsValue: 'Retreiving Croaks...',
-                  ),
-                
-              )
-            
-            )]
-          );
+      return Scaffold(
+        appBar: AppBar(
+          title: Text('Tha Pond'),
+        ),
+        body: Column(
+          children: [
+            Text("Finding your location and gathering nearby croaks..."),
+            Center(
+              child: Container(
+                width: 120, 
+                height: 120,
+                padding: EdgeInsets.all(24.0),
+                child: CircularProgressIndicator(
+                        value: null,
+                        semanticsLabel: 'Retreiving Croaks...',
+                        semanticsValue: 'Retreiving Croaks...',
+                    ),
+                  
+                )
+              
+              )]
+            ),
+      );
     }
 
     if (fetchFailed){
