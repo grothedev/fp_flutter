@@ -68,7 +68,7 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                     TextFormField( //TAGS INPUT
                       controller: tagsText,
                       validator: (value){
-                        if (value.isEmpty) return 'Enter some tags, seperated by spaces';
+                        if (value.isEmpty && tags.length == 0) return 'Enter some tags, seperated by spaces, or select one below.';
                       },
                       decoration: InputDecoration(
                         icon: Icon(Icons.category),

@@ -42,7 +42,7 @@ Future<List> getCroaks(double x, double y, int p_id, List<String> tl, bool at) a
 Future<String> postCroak(Map<String, dynamic> req, File f) async {
   print(req.toString());
 
-  if (true || f != null){
+  if (f != null){
     //TODO 
     /*
     var mr = new http.MultipartRequest('POST', Uri.parse(api_url+'croaks'));
