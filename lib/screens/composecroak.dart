@@ -72,7 +72,8 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                       },
                       decoration: InputDecoration(
                         icon: Icon(Icons.category),
-                        labelText: 'Tags'
+                        labelText: 'Tags',
+                        helperText: 'Seperated by Spaces'
                       ),
                       maxLines: 3,
                       minLines: 2,

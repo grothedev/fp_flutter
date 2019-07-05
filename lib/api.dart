@@ -31,9 +31,12 @@ Future<List> getCroaks(double x, double y, int p_id, List<String> tl, bool at) a
   print('api.getCroaks reqURL: ' + reqURL);
 
   var res = await http.get(reqURL).catchError((e){ print('http get failed: ' + e.toString()); } ); //TODO handle location
-  if ( !(res is Response) ) return null;
+  if ( !(res is http.Response) ) {
+    print('api: response retrieval error: ' + res.toString());
+    return null;
+  }
   //print('api.getCroaks response body: '+ res.body);
-
+  print('api response: ' + res.body);
   return json.decode(res.body);
 
 }

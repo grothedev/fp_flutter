@@ -177,14 +177,16 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
         print('feed got croaks.'); 
       }
       
-    }).timeout(new Duration(seconds: 15)).then((t){
-      print('timed out while fetching croaks');
-      Scaffold.of(context).showSnackBar(SnackBar(content: Text('Unable to Reach Server to Fetch Croaks') ));
-      setState(() {
-        fetching = false;
-        fetchFailed = true;
-      });
-    });
+    }).timeout(new Duration(seconds: 15), 
+        onTimeout: (){
+          print('timed out while fetching croaks');
+          Scaffold.of(context).showSnackBar(SnackBar(content: Text('Unable to Reach Server to Fetch Croaks') ));
+          setState(() {
+            fetching = false;
+            fetchFailed = true;
+          });
+        }
+      );
     
   }
 
