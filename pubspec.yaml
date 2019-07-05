@@ -33,6 +33,7 @@ dependencies:
   file_picker:
   toast:
   scoped_model:
+  dio:
   
 dev_dependencies:
   flutter_test:

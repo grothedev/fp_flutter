@@ -4,9 +4,11 @@ import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
+import 'package:path/path.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'models.dart';
+import 'package:dio/dio.dart';
 
 String host = 'grothe.ddns.net';
 //String host = '192.168.1.5'; //tmp while at cabin
@@ -42,6 +44,7 @@ Future<String> postCroak(Map<String, dynamic> req, File f) async {
 
   if (true || f != null){
     //TODO 
+    /*
     var mr = new http.MultipartRequest('POST', Uri.parse(api_url+'croaks'));
     mr.headers['Content-Type'] = 'multipart/form-data';
     mr.fields['tags'] = req['tags'];
@@ -51,19 +54,28 @@ Future<String> postCroak(Map<String, dynamic> req, File f) async {
     mr.fields['lon'] = req['lon'];
     mr.fields['p_id'] = req['pid'];
     mr.fields['score'] = '0';
-    mr.fields['user_id'] = null;
+    mr.fields['user_id'] = '';
+    */
+    req.addAll({'f[]': [ new UploadFileInfo(f, basename(f.path))]  });
+    FormData fd = FormData.from(req);
+    //fd.add('f', new UploadFileInfo(f, basename(f.path)));
+    print('api post croak: ' + fd.toString());
+    Response res =  await Dio().post(api_url+'croaks', data: fd);
+    return res.data;
 
     //File f = req['files'][0];
 
     //var mf = await http.MultipartFile.fromPath('f', f.path, contentType: new MediaType('multipart', 'mixed'));
     //mr.files.add(mf); 
 
+    /*
     print('api multipart post croak: ' + mr.toString() + '; ' + mr.headers.toString() + '; ' + mr.fields.toString()) ;
 
     mr.send().then((res){
       print(res);
       return res;
     });
+    */
   } else {
     print('api post croak: ' + req.toString());
     req.forEach((k, v) {
