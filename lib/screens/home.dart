@@ -75,7 +75,6 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
                       maxLines: 3,
                       minLines: 1,
                     ),
-                    Text('Popular Tags:'),
                     SuggestedTags(store.state.location, updateQueryTags), //tell it what to do when one of its chips is selected
                     //phase 2: keywords
                     /*

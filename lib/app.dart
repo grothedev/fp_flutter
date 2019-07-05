@@ -24,15 +24,17 @@ class FrogPondApp extends StatelessWidget {
             ),
             subhead: TextStyle(
               fontSize: 14,
-
+              
             ),
             headline: TextStyle(
               fontSize: 16,
               fontFamily: 'Roboto'
             )
             
-          )
+          ),
+          
         ),
+        
         home: RootView()
       );
   }

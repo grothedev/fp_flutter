@@ -322,9 +322,15 @@ class SuggestedTagsState extends State<SuggestedTags> with AutomaticKeepAliveCli
         }
       }
       
-      return Wrap(
-        children: this.chips,
-        spacing: 8  
+      return Flex(
+        direction: Axis.vertical,
+        children: [
+          Text('Popular Tags', style: Theme.of(context).textTheme.subtitle,),
+          Wrap(
+            children: this.chips,
+            spacing: 8,
+          )
+        ]
       );
     }
   }
@@ -332,4 +338,13 @@ class SuggestedTagsState extends State<SuggestedTags> with AutomaticKeepAliveCli
   @override
   bool get wantKeepAlive => true;
   
+}
+
+//my custom title to go under the app title on each screen
+class ScreenTitle extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
+    return null;
+  }
+
 }

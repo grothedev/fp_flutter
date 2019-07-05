@@ -28,7 +28,10 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
   SharedPreferences prefs; 
   StateContainerState store;
 
+  EdgeInsets formPadding = EdgeInsets.all(6.0);
+  EdgeInsets formElemMargin = EdgeInsets.all(8.0);
 
+  
   void initState(){
     SharedPreferences.getInstance().then((p){
       prefs = p;
@@ -51,38 +54,62 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
               key: fk,
               child: Center(
                 child: Column(
+
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    TextFormField( //CROAK INPUT
-                      controller: croakText,
-                      validator: (value){
-                        if (value.isEmpty) return 'Enter some text';
-                      },
-                      decoration: InputDecoration(
-                        icon: Icon(Icons.message),
-                        labelText: 'Post'
-                      ),
-                      maxLines: 8,
-                      minLines: 3, 
-                    ),
-                    TextFormField( //TAGS INPUT
-                      controller: tagsText,
-                      validator: (value){
-                        if (value.isEmpty && tags.length == 0) return 'Enter some tags, seperated by spaces, or select one below.';
-                      },
-                      decoration: InputDecoration(
-                        icon: Icon(Icons.category),
-                        labelText: 'Tags',
-                        helperText: 'Seperated by Spaces'
-                      ),
-                      maxLines: 3,
-                      minLines: 2,
-                      
-                    ),
-                    SuggestedTags(store.state.location, selectTagChip),
                     Container(
-                      padding: EdgeInsets.all(6),
-
+                      padding: formPadding,
+                      margin: formElemMargin,
+                      child: TextFormField( //CROAK INPUT
+                        controller: croakText,
+                        validator: (value){
+                          if (value.isEmpty) return 'Enter some text';
+                        },
+                        decoration: InputDecoration(
+                          icon: Icon(Icons.message),
+                          labelText: 'Post'
+                        ),
+                        maxLines: 8,
+                        minLines: 3, 
+                      ),
+                    ), 
+                    Container(
+                      padding: formPadding,
+                      margin: formElemMargin,
+                      child: TextFormField( //TAGS INPUT
+                        controller: tagsText,
+                        validator: (value){
+                          if (value.isEmpty && tags.length == 0) return 'Enter some tags, seperated by spaces, or select one below.';
+                        },
+                        decoration: InputDecoration(
+                          icon: Icon(Icons.category),
+                          labelText: 'Tags',
+                          helperText: 'Seperated by Spaces'
+                        ),
+                        maxLines: 3,
+                        minLines: 2,
+                        
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border(bottom: BorderSide(color: Theme.of(context).dividerColor)),
+                      ),
+                    ),
+                    Container(
+                      padding: formPadding,
+                      margin: formElemMargin,
+                      child: SuggestedTags(store.state.location, selectTagChip),
+                      decoration: BoxDecoration(
+                        //border: Border.all(color: Colors.black, width: 1, style: BorderStyle.solid)
+                        border: Border(bottom: BorderSide(color: Theme.of(context).dividerColor)),
+                      ),
+                    ),
+                    Container(
+                      padding: formPadding,
+                      margin: formElemMargin,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.black, width: 1, style: BorderStyle.solid)
+                        //border: Border(bottom: BorderSide(color: Theme.of(context).dividerColor)),
+                      ),
                       child: Row(
                         children: [
                           RaisedButton(
