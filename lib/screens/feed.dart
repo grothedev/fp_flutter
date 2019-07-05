@@ -149,11 +149,14 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
       
       store.state.lastCroaksGet = DateTime.now().millisecondsSinceEpoch;
       store.prefs.setInt('last_croaks_get', store.state.lastCroaksGet);
-      setState(() {
-        fetching = false;
-        croaksJSON = cs;
-      });
-      print('feed got croaks.'); 
+      if (mounted){
+        setState(() {
+          fetching = false;
+          croaksJSON = cs;
+        });
+        print('feed got croaks.'); 
+      }
+      
     });
     
   }

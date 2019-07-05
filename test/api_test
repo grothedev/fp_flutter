@@ -1,1 +1,4 @@
-curl --data "x=0&y=0&type=0&content=this is croak&score=0&tags=test" http://grothe.ddns.net:8090/api/croaks
+curl -X POST -F "f[]=@/home/thomas/dev/fp/test/i.jpg" -F 'x=0' -F 'y=0' -F 'type=0' -F 'content=curl test' -F 'score=0' -F 'tags=test' http://grothe.ddns.net:8090/api/croaks
+
+
+#-F 'f=@i.jpg'

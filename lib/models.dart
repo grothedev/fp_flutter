@@ -66,6 +66,7 @@ class Croak{
       'tags': tags.join(','),
       'timestamp': timestamp,
       'type': type.toString(),
+      'files': files.toString()
     };
   }
   

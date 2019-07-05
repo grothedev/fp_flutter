@@ -38,7 +38,7 @@ Future<List> getCroaks(double x, double y, int p_id, List<String> tl, bool at) a
 
 //takes file separately because Croak.toMap() had to give string representations of all of its instance vars
 Future<String> postCroak(Map<String, dynamic> req, File f) async {
-  
+  print(req.toString());
 
   if (f != null){
     //TODO 

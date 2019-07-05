@@ -130,6 +130,11 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                                 if (r){
                                   Scaffold.of(context).removeCurrentSnackBar();
                                   Scaffold.of(context).showSnackBar(SnackBar(content: Text('Success')));
+                                  setState((){
+                                    croakText.text = '';
+                                    tagsText.text = '';
+                                    file = null;
+                                  });
                                   //TabBarView b = context.ancestorWidgetOfExactType(TabBarView);
                                   //b.controller.animateTo(b.controller.previousIndex);
                                 } else {

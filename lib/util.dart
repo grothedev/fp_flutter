@@ -39,7 +39,9 @@ Future<List> getCroaks(Query query, int lastUpdated, LocationData location) asyn
   if (true || lastUpdated == null || DateTime.now().millisecondsSinceEpoch - lastUpdated > CROAKS_GET_TIMEOUT){
     List crks =  await queryCroaks(location, query.tags, query.exclusive);
     print('util got croaks (tags=' + query.tags.toString() + ') :' + crks.toString());
+    if (db.database == null) await db.initDB();
     db.saveCroaks(crks);
+    
     return crks;
   } else {
     print('last got croaks ' + lastUpdated.toString() + '. loading croaks from sqlite');

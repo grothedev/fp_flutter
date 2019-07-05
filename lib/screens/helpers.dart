@@ -300,12 +300,14 @@ class SuggestedTagsState extends State<SuggestedTags> with AutomaticKeepAliveCli
 
     chips = <Widget>[];
     util.getTags(10, location).then((r){
-      setState((){ 
-        tags = r;
-        loading = false;
-        //prefs.setStringList('tags', []);
+      if (mounted){
+        setState((){ 
+          tags = r;
+          loading = false;
+          //prefs.setStringList('tags', []);
 
-      });
+        });
+      }
     });    
   }
 
