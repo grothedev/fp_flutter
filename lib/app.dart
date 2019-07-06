@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
+import 'package:sqflite/sqflite.dart';
 import 'screens/home.dart';
 import 'screens/feed.dart';
 import 'screens/composecroak.dart';
+import 'screens/intro.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 import 'db.dart' as db;
@@ -10,8 +14,12 @@ import 'models.dart';
 
 class FrogPondApp extends StatelessWidget {
 
+  FrogPondApp();
+
   @override
   Widget build(BuildContext context) {
+    bool intro = !File('databases/fp.db').existsSync();
+
     return MaterialApp(
         title: 'FrogPond',
         theme: ThemeData(
@@ -35,7 +43,8 @@ class FrogPondApp extends StatelessWidget {
           
         ),
         
-        home: RootView()
+        home: intro ? IntroScreen() : RootView()
+        //home: IntroScreen()
       );
   }
 }

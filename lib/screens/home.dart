@@ -17,6 +17,9 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
   String locStr;
   StateContainerState store;
 
+  EdgeInsets formPadding = EdgeInsets.all(6.0);
+  EdgeInsets formElemMargin = EdgeInsets.all(8.0);
+
   initState(){
     SharedPreferences.getInstance().then((p){
       this.prefs = p;
@@ -60,6 +63,7 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
               ),
               //constraints: BoxConstraints(maxHeight: 20),
               padding: EdgeInsets.all(10),
+              
             ),
             Form(
               key: fk,
@@ -67,16 +71,23 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
                 padding: EdgeInsets.all(12.0),
                 child: Column(
                   children: [
-                    TextFormField( //TAGS INPUT
-                      controller: tagsText,
-                      decoration: InputDecoration(
-                        icon: Icon(Icons.category),
-                        labelText: 'Tags'
+                    Container(
+                      child: TextFormField( //TAGS INPUT
+                        controller: tagsText,
+                        decoration: InputDecoration(
+                          icon: Icon(Icons.category),
+                          labelText: 'Tags'
+                        ),
+                        maxLines: 3,
+                        minLines: 1,
+                        
                       ),
-                      maxLines: 3,
-                      minLines: 1,
+                      margin: formElemMargin
                     ),
-                    SuggestedTags(store.state.location, updateQueryTags), //tell it what to do when one of its chips is selected
+                    Container(
+                      margin: formElemMargin,
+                      child: SuggestedTags(store.state.location, updateQueryTags), //tell it what to do when one of its chips is selected
+                    ),
                     //phase 2: keywords
                     /*
                     TextFormField( //KEYWORDS INPUT
@@ -89,19 +100,23 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
                       minLines: 1,
                     ),
                     */
-                    CheckboxListTile(
-                      title: Text('All (on) or Some (off):'),
-                      value: kwdAll,
-                      onChanged: (v){
-                        setState((){
-                          SharedPreferences.getInstance().then((pref){
-                            pref.setBool("query_all", v);
+                    Container(
+                      child: CheckboxListTile(
+                        title: Text('All (on) or Some (off):'),
+                        value: kwdAll,
+                        onChanged: (v){
+                          setState((){
+                            SharedPreferences.getInstance().then((pref){
+                              pref.setBool("query_all", v);
+                            });
+                            kwdAll = v;
                           });
-                          kwdAll = v;
-                        });
-                        store.toggleExclusive();
-                      },
-                      activeColor: Colors.green,
+                          store.toggleExclusive();
+                        },
+                        activeColor: Colors.green,
+                        
+                      ),
+                      margin: formElemMargin
                     ),
                     
                     Container(

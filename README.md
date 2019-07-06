@@ -6,13 +6,9 @@ FrogPond mobile application, made with flutter. https://flutter.dev/
 TODO:
 * automatically update comments upon submit comment
 * intro "tutorial" and better homescreen text
-* better looking title/subtitle situation
-* word wrap for attached file
 * croak detail screen
 	- fix spacing
 	- implement threaded comments (or keep screen stack?)
-* compose croak screen
-	- clean up UIs
 * research MobX, rxdart, BloC, flux vs redux, get_it, provider, 
 * reply form on croak detail screen or dialog from floating action button?
 * verify the following features of API are working: get by keywords, get by location,
@@ -29,6 +25,7 @@ SharedPreferences:
   * tags (List<String>) : tags to query for
   * radius (int) : geographical radius of query
   * needs_update (bool) : does the main feed need to be updated?
+  * firstrun (bool) : if this is the first time the app has been run
 uses some packages:
   file picker: https://pub.dev/packages/file_picker
   toast: https://pub.dev/packages/toast

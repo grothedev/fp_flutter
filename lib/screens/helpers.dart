@@ -101,7 +101,7 @@ class CroakFeedState extends State<CroakFeed>{
             Spacer(
               flex: 2
             ),
-            Text(tags.join(', '))
+            ConstrainedBox(constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * .3), child: Text(tags.join(', '), textAlign: TextAlign.right,))
           ]
         ),
         onTap: (){

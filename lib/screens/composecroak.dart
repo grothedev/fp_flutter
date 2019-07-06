@@ -31,7 +31,6 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
   EdgeInsets formPadding = EdgeInsets.all(6.0);
   EdgeInsets formElemMargin = EdgeInsets.all(8.0);
 
-
   void initState(){
     SharedPreferences.getInstance().then((p){
       prefs = p;

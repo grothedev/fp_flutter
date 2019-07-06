@@ -34,6 +34,7 @@ dependencies:
   toast:
   scoped_model:
   dio:
+  splashscreen:
   
 dev_dependencies:
   flutter_test:

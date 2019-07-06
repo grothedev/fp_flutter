@@ -34,6 +34,10 @@ class CroakDetailState extends State<CroakDetailScreen>{
 
   @override
   Widget build(BuildContext context) {
+    List tags = [];
+    for (int j = 0; j < c['tags'].length; j++){
+      tags.add(c['tags'][j]['label']);
+    }
 
     return Scaffold( 
       appBar: AppBar(
@@ -54,20 +58,31 @@ class CroakDetailState extends State<CroakDetailScreen>{
           children: [
             Expanded(
               flex: 1,
-              child: Container( //croak content
-                child:  Text(c['content']), 
-                padding: EdgeInsets.only(bottom: 12.0),
-                decoration: BoxDecoration(
-                  
-                    border: Border(
-                      bottom: BorderSide(width: 1.0, color: Colors.black),
-                      top: BorderSide.none,
-                      right: BorderSide.none,
-                      left: BorderSide.none,
+              child: Column(
+                  children: [
+                    Container( //croak content
+                      child:  Text(c['content']), 
+                      //padding: EdgeInsets.only(bottom: 12.0),
+                      decoration: BoxDecoration(
+                        
+                        border: Border(
+                          bottom: BorderSide(width: 1.0, color: Colors.black),
+                          top: BorderSide.none,
+                          right: BorderSide.none,
+                          left: BorderSide.none,
+                          
+                        ),
+                      ),
+                      
+                      margin: EdgeInsets.only(bottom: 8.0),
                     ),
-                  ),
-                ),
+                    Container(
+                      child: Text(tags.join(', ')),
+                    ),
+                  ]
+              ),
             ),
+            
             
             Column(
               children: <Widget>[
