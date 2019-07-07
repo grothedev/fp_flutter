@@ -202,6 +202,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
 
   void getReplies(){
     util.getReplies(c['id']).then((r){
+      print('croak detail got replies: ' + r.length.toString());
       setState((){
         this.replies = r;
       });

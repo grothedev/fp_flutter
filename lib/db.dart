@@ -16,7 +16,7 @@ void initDB() async{
       //db.execute('CREATE TABLE croaks_tags(croak_id INTEGER, tag_id INTEGER)');
     },
     version: 1
-  ).then((db){
+  ).then((db){  
     database = db;
   });
 

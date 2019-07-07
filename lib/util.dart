@@ -84,7 +84,7 @@ Future<bool> submitReply(int p_id, String content, List tags, anon) async{ //TOD
   for (var t in tags){
     tagsStrArr.add(t['label']);
   }
-  Croak c = new Croak(content: content, timestamp: new DateTime.now().toString() , score: 0, pid: p_id, tags: tagsStrArr, type: 0);
+  Croak c = new Croak(content: content, timestamp: new DateTime.now().toString() , score: 0, pid: p_id, tags: tagsStrArr, type: 0, lat: 0, lon: 0);
   return await postCroak(c.toMap(), null); //for now will not handle files for replies, but should in the future TODO
 }
 
