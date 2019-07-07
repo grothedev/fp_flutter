@@ -35,6 +35,7 @@ dependencies:
   scoped_model:
   dio:
   splashscreen:
+  url_launcher:
   
 dev_dependencies:
   flutter_test:

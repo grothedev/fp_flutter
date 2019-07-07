@@ -54,7 +54,7 @@ Future<List> getCroaks(Query query, int lastUpdated, LocationData location) asyn
 }
 
 Future<List> getReplies(int pid) async{
-  List resJSON = await api.getCroaks(null, null, pid, null, null);
+  List resJSON = await api.getCroaks(null, null, pid, null, false);
   resJSON.sort((a, b){
     return DateTime.parse(b['created_at']).millisecondsSinceEpoch - DateTime.parse(a['created_at']).millisecondsSinceEpoch;
   });

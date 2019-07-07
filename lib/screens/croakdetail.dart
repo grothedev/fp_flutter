@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:toast/toast.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../util.dart' as util;
 import '../api.dart' as api;
@@ -34,10 +35,14 @@ class CroakDetailState extends State<CroakDetailScreen>{
 
   @override
   Widget build(BuildContext context) {
+    print(c['files'].toString());
     List tags = [];
     for (int j = 0; j < c['tags'].length; j++){
       tags.add(c['tags'][j]['label']);
     }
+
+    String croakURL = api.api_url+'croaks/'+c['id'].toString();
+    String fileURL = 'http://' + api.host + '/f/' + c['files'][0]['filename']; //will need to update after adding support for multiple files
 
     return Scaffold( 
       appBar: AppBar(
@@ -46,7 +51,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
           IconButton(
             icon: Icon(Icons.share),
             onPressed: (){
-              Clipboard.setData(ClipboardData(text: api.api_url+'croaks/'+c['id'].toString()));
+              Clipboard.setData(ClipboardData(text: croakURL));
               Toast.show('URL copied to clipboard', context);
             },
           )
@@ -73,17 +78,42 @@ class CroakDetailState extends State<CroakDetailScreen>{
                           
                         ),
                       ),
-                      
+                      padding: EdgeInsets.only(bottom: 4.0),
                       margin: EdgeInsets.only(bottom: 8.0),
                     ),
                     Container(
-                      child: Text(tags.join(', ')),
+                      child: Center( //tags
+                        child: Text(tags.join(', ')),
+                        
+                      ),
+                      margin: EdgeInsets.only(bottom: 8.0)
                     ),
+                    
+                    c['files'] != null ? 
+                    Column(
+                      children: <Widget>[
+                        Text('File: '),
+                        Center(
+                          child: RaisedButton(
+                            child: Text(c['files'][0]['filename'].toString()),
+                            onPressed: (){
+                              launch(fileURL);
+                            },
+                          ),
+                        )
+                      ],
+                    ) : Center(),
                   ]
               ),
             ),
-            
-            
+            Container(
+              margin: EdgeInsets.only(bottom: 8.0),
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(color: Theme.of(context).dividerColor),
+                )
+              ),
+            ),
             Column(
               children: <Widget>[
                 Title(
