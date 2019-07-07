@@ -54,7 +54,7 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
               key: fk,
               child: Center(
                 child: Column(
-
+                  
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(

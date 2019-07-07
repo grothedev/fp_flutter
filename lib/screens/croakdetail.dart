@@ -42,8 +42,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
     }
 
     String croakURL = api.api_url+'croaks/'+c['id'].toString();
-    String fileURL = 'http://' + api.host + '/f/' + c['files'][0]['filename']; //will need to update after adding support for multiple files
-
+    
     return Scaffold( 
       appBar: AppBar(
         title: Text(c['created_at']),
@@ -62,7 +61,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-              flex: 1,
+              flex: 2,
               child: Column(
                   children: [
                     Container( //croak content
@@ -89,7 +88,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
                       margin: EdgeInsets.only(bottom: 8.0)
                     ),
                     
-                    c['files'] != null ? 
+                    c['files'] != null && c['files'].length > 0 ? 
                     Column(
                       children: <Widget>[
                         Text('File: '),
@@ -97,36 +96,36 @@ class CroakDetailState extends State<CroakDetailScreen>{
                           child: RaisedButton(
                             child: Text(c['files'][0]['filename'].toString()),
                             onPressed: (){
-                              launch(fileURL);
+                              launch('http://' + api.host + '/f/' + c['files'][0]['filename']);
                             },
                           ),
                         )
                       ],
                     ) : Center(),
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(color: Theme.of(context).dividerColor),
+                        )
+                      ),
+                      margin: EdgeInsets.only(bottom: 12.0),
+                    ),
+                    Wrap(
+                      
+                      children: <Widget>[
+                        Title(
+                          
+                          child: Text('Comments'),
+                          color: Colors.black,
+                        ),
+                        CroakFeed(
+                          replies
+                        ),
+                      ],
+                       //comments
+                    ),
                   ]
               ),
-            ),
-            Container(
-              margin: EdgeInsets.only(bottom: 8.0),
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(color: Theme.of(context).dividerColor),
-                )
-              ),
-            ),
-            Column(
-              children: <Widget>[
-                Title(
-                  
-                  child: Text('Comments'),
-                  color: Colors.black,
-                ),
-                CroakFeed(
-                  replies
-                ),
-              ], //comments
-              
-               //getCroaks(parentId) . figure out how to support threaded system
             ),
             Container(
               padding: EdgeInsets.all(8.0),
