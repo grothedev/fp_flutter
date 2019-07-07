@@ -4,6 +4,7 @@ FrogPond mobile application, made with flutter. https://flutter.dev/
 4/30:  flutter is actually pretty awesome, so using it now.
 
 TODO:
+* implement location stuff in api
 * automatically update comments upon submit comment
 * intro "tutorial" and better homescreen text
 * croak detail screen

@@ -135,18 +135,10 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
         return;
       }
       List cs = List.from(cks);
-      
+      //removing croaks which are comments (actually this should probably be dealt with on server)
+      cs = cs.where( (c) => c['p_id'] == null || c['p_id'] == 0  ).toList(); 
       for (int i = 0; i < cs.length; i++){
-        /* this started erroring with 'read only'
-        if (cks[i]['p_id'] != null){ 
-          cks.removeAt(i);
-          i--;
-        }
-        */
-        if (cs[i]['p_id'] != null){
-          cs.removeAt(i);
-          //i--;
-        }
+        
         if (cs[i]['p_id'] == null){
           //cs.add(List.from(cks[i]));
           

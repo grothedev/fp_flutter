@@ -41,7 +41,7 @@ Future<List> getCroaks(Query query, int lastUpdated, LocationData location) asyn
     if (crks == null || crks.length == 0) return null; 
     print('util got croaks (tags=' + query.tags.toString() + ') :' + crks.toString());
     if (db.database == null) await db.initDB();
-    db.saveCroaks(crks);
+    //db.saveCroaks(crks);
     
     return crks;
   } else {

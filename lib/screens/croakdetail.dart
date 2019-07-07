@@ -110,7 +110,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
                       ),
                       margin: EdgeInsets.only(bottom: 12.0),
                     ),
-                    Wrap(
+                    Column(
                       
                       children: <Widget>[
                         Title(
