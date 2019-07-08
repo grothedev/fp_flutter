@@ -90,7 +90,9 @@ class CroakFeedState extends State<CroakFeed>{
           crossAxisAlignment: CrossAxisAlignment.start,
           //mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            RaisedButton( padding: EdgeInsets.all(2), key: new UniqueKey(), onPressed: (){fav(i);},  child: favs[i] ? Icon(Icons.favorite) : Icon(Icons.favorite_border) ), 
+            RaisedButton( padding: EdgeInsets.all(2), key: new UniqueKey(), 
+            onPressed: (){fav(i);},  
+            child: favs[i] ? Icon(Icons.favorite) : Icon(Icons.favorite_border) ), 
             //Text(croaksJSON[i]['score'].toString(), textAlign: TextAlign.center,)
           ],
           

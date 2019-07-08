@@ -1,10 +1,10 @@
 FrogPond mobile application, made with flutter. https://flutter.dev/
 
-
-4/30:  flutter is actually pretty awesome, so using it now.
-
 TODO:
 * implement location stuff in api
+  - lat lon to mercator, then normal distance eq
+    - store mercator on server, convert from loat lon on client to use for request 
+  - lat lon approximation
 * automatically update comments upon submit comment
 * intro "tutorial" and better homescreen text
 * croak detail screen
@@ -16,6 +16,8 @@ TODO:
 * about page
 * put entire roadmap and feature plans and vision here
 * URLS to simple display rather than API
+* going to need to devise a better way of storing and managing croaks to improve performance when there might be thousands of croaks 
+* incorporate way to publish locations of tool libraries, seed banks, general resource stocks
 
 SharedPreferences:
   * last_croaks_get (int) : ms since croaks were last retreived
