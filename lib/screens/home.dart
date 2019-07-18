@@ -147,7 +147,7 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
                               label: 'Distance',
                               value: radius,
                               min: 2,
-                              max: 200,
+                              max: 100,
                               divisions: 40,
                               
                             ),

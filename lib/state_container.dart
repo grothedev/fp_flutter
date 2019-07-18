@@ -132,6 +132,10 @@ class StateContainerState extends State<StateContainer>{
     });
   }
 
+  void setSortMethod(int s){
+    
+  }
+
   void needsUpdate(){
     setState(() {
       state.needsUpdate = true;

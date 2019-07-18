@@ -95,9 +95,24 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
               refresh();
             },
           ),
-          IconButton(
-            icon: Icon(Icons.sort),
-            onPressed: () => sortOptions() //TODO show sort options mini-dialog
+          PopupMenuButton(
+            itemBuilder: (BuildContext context) => <PopupMenuEntry<SortMethod>>[
+              const PopupMenuItem<SortMethod>(
+                value: SortMethod.date,
+                child: Text('date')
+              ),
+              const PopupMenuItem<SortMethod>(
+                value: SortMethod.dist,
+                child: Text('distance')
+              ),
+              const PopupMenuItem<SortMethod>(
+                value: SortMethod.score,
+                child: Text('popularity')
+              ),
+            ],
+            onSelected: (v){
+              sortOptions(v);
+            },
           )
         ],
       ),
@@ -188,8 +203,25 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
     
   }
 
-  void sortOptions(){ //currently just using this function for testing
-    
+  void sortOptions(SortMethod mthd){ //currently just using this function for testing
+    // sort methods: date, proximity, popularity 
+    switch(mthd){
+      case SortMethod.date:
+        croaksJSON.sort((a, b){
+          return a['created_at'] - b['created_at'];
+        });
+        break;
+      case SortMethod.dist:
+        croaksJSON.sort((a, b){
+          return util.distance(store.state.lat, store.state.lon, a['y'], a['x']).toInt() - util.distance(store.state.lat, store.state.lon, b['y'], b['x']).toInt();
+        });
+        break;
+      case SortMethod.score:
+        croaksJSON.sort((a, b){
+          return a['score'] - b['score'];
+        });
+        break;
+    }
   }
 
   

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:location/location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -140,5 +141,13 @@ Future<LocationData> initLocation() async{
     }
       
   }
+
+double distance(double latA, double lonA, double latB, double lonB){
+  latA = latA * pi/180;
+  latB = latB * pi/180;
+  lonA = lonA * pi/180;
+  lonB = lonB * pi/180;
+  return acos( sin(latA)*sin(latB) + cos(latA)*cos(latB)*cos(lonA-lonB) ) * 6371;
+}
 
 //TODO make functions for varying croak type inputs
