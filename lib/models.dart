@@ -3,6 +3,7 @@ import 'package:location/location.dart';
 import 'package:sqflite/sqflite.dart';
 import 'dart:async';
 
+import 'consts.dart';
 
 class AppState {
 
@@ -29,12 +30,14 @@ class Query{
   List<String> tags;
   bool exclusive; //get croaks with all or some tags
   int radius;
+  int distUnit;
   //TODO add keywords
 
   Query(){
     tags = List();
     exclusive = false;
-    radius = 10;
+    radius = 30;
+    distUnit = KM;
   }
 }
 

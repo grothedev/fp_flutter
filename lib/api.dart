@@ -10,8 +10,8 @@ import 'dart:convert';
 import 'models.dart';
 import 'package:dio/dio.dart';
 
-String host = 'grothe.ddns.net';
-//String host = '192.168.1.5'; //tmp while at cabin
+//String host = 'grothe.ddns.net';
+String host = '192.168.0.41'; //tmp local
 int port = 8090;
 String api_url = 'http://' + host + ':' + port.toString() + '/api/'; 
 

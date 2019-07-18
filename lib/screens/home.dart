@@ -5,6 +5,7 @@ import 'package:fp/screens/helpers.dart';
 import 'package:fp/state_container.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../consts.dart';
 
 class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMixin<HomeScreen>{
   
@@ -16,6 +17,8 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
   SharedPreferences prefs;
   String locStr;
   StateContainerState store;
+  double radius = 30;
+  int distUnit = KM;
 
   EdgeInsets formPadding = EdgeInsets.all(6.0);
   EdgeInsets formElemMargin = EdgeInsets.all(8.0);
@@ -118,7 +121,62 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
                       ),
                       margin: formElemMargin
                     ),
-                    
+                    Container(
+                      padding: EdgeInsets.only(left: 5, right: 8),
+                      child: Row( 
+                        children: <Widget>[
+                          Text(
+                            distUnit == KM ? 'Radius: ' +  radius.toInt().toString() + ' km '
+                                          : 'Radius: ' + (radius * .621).toInt().toString() + ' mi ' ,
+                          ),
+                          Expanded(
+                            child: Slider(
+                              onChanged: (v){
+                                double r = v;
+                                if (distUnit == MI){
+                                  r = 1.609344 * v;
+                                }
+                                setState(() {
+                                  radius = r;
+                                  SharedPreferences.getInstance().then((pref){
+                                    pref.setInt('radius', r.toInt());
+                                  });
+                                  store.setRadius(r.toInt());
+                                });
+                              },
+                              label: 'Distance',
+                              value: radius,
+                              min: 2,
+                              max: 200,
+                              divisions: 40,
+                              
+                            ),
+                          ),
+                          DropdownButton(
+                            items: [
+                              DropdownMenuItem<int>(
+                                child: Text('km'),
+                                value: KM
+                              ),
+                              DropdownMenuItem<int>(
+                                child: Text('Mi'),
+                                value: MI
+                              ),
+                            ],
+                            onChanged: (u){
+                              setState(() {
+                                distUnit = u;                              
+                              });
+                              SharedPreferences.getInstance().then((pref){
+                                pref.setInt('dist_unit', distUnit);
+                              });
+                              store.setDistUnit(u);
+                            },
+                            value: distUnit,
+                          )
+                        ],
+                      ),
+                    ),
                     Container(
                       child: (locStr == null) ? Text('Getting location...') : Text(locStr),
                       margin: EdgeInsets.only(bottom: 2),

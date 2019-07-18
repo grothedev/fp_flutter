@@ -1,17 +1,16 @@
 FrogPond mobile application, made with flutter. https://flutter.dev/
 
 TODO:
-* implement location stuff in api
-  - lat lon to mercator, then normal distance eq
-    - store mercator on server, convert from loat lon on client to use for request 
-  - lat lon approximation
+* actually implement sort on croak feed
+* display distance on croak list items
 * automatically update comments upon submit comment
 * intro "tutorial" and better homescreen text
 * croak detail screen
 	- implement threaded comments (or keep screen stack?)
 * research MobX, rxdart, BloC, flux vs redux, get_it, provider, 
 * reply form on croak detail screen or dialog from floating action button?
-* verify the following features of API are working: get by keywords, get by location,
+* get by keywords on API
+* radius slider with unit select
 * notifications
 * about page
 * put entire roadmap and feature plans and vision here
@@ -25,7 +24,8 @@ SharedPreferences:
   * lon (double) : longitude of user
   * exclusive (bool) : get croaks by contain all(1) or some(0) of given tags
   * tags (List<String>) : tags to query for
-  * radius (int) : geographical radius of query
+  * radius (int) : geographical radius of query (km)
+  * dist_unit (int) : 0 = kilometers ; 1 = miles
   * needs_update (bool) : does the main feed need to be updated?
   * firstrun (bool) : if this is the first time the app has been run
 uses some packages:

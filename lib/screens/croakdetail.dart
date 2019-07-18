@@ -110,16 +110,19 @@ class CroakDetailState extends State<CroakDetailScreen>{
                       ),
                       margin: EdgeInsets.only(bottom: 12.0),
                     ),
-                
-                    Title(
-                      child: Text('Comments'),
-                      color: Colors.black,
-                    ),
-                    Container(
-                      child: CroakFeed(
-                        replies
-                      ),
-                    ), 
+                    Column(
+                      children: [
+                        Title(
+                          child: Text('Comments'),
+                          color: Colors.black,
+                        ),
+                        Container(
+                            child: CroakFeed(
+                            replies
+                          ),
+                        ),
+                      ]
+                    ) 
                   ]
               ),
             ),

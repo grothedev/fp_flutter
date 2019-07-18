@@ -116,6 +116,22 @@ class StateContainerState extends State<StateContainer>{
     }); 
   }
 
+  void setRadius(int r){
+    if (state.query.radius != r){
+      setState((){
+        state.query.radius = r;
+        state.needsUpdate = true;
+      });
+    }
+  }
+
+  void setDistUnit(int u){
+    setState(() {
+      state.query.distUnit = u;
+      state.needsUpdate = true;
+    });
+  }
+
   void needsUpdate(){
     setState(() {
       state.needsUpdate = true;
