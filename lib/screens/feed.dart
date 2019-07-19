@@ -35,6 +35,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   bool fetching = true;
   List croaksJSON;
   bool fetchFailed = false;
+  Widget body;
 
   @override
   void initState(){
@@ -49,11 +50,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
     if (store.state.needsUpdate) refresh();
 
     if (fetching){
-      return Scaffold(
-        appBar: AppBar(
-          title: Text('Tha Pond'),
-        ),
-        body: Column(
+      body = Column(
           children: [
             Text("Finding your location and gathering nearby croaks..."),
             Center(
@@ -69,8 +66,12 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
                   
                 )
               
-              )]
             ),
+          ]
+      );
+    } else {
+      body = Container(
+        child: CroakFeed(croaksJSON)
       );
     }
 
@@ -116,9 +117,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
           )
         ],
       ),
-      body: Container(
-        child: CroakFeed(croaksJSON)
-      ),
+      body: body
 
       //still deciding whether to use button to dialog for composing croak, or separe entire screen
       /*   

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -89,19 +91,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
                     ),
                     
                     c['files'] != null && c['files'].length > 0 ? 
-                    Column(
-                      children: <Widget>[
-                        Text('File: '),
-                        Center(
-                          child: RaisedButton(
-                            child: Text(c['files'][0]['filename'].toString()),
-                            onPressed: (){
-                              launch('http://' + api.host + '/f/' + c['files'][0]['filename']);
-                            },
-                          ),
-                        )
-                      ],
-                    ) : Center(),
+                    fileView(c['files']) : Center(),
                     Container(
                       decoration: BoxDecoration(
                         border: Border(
@@ -209,6 +199,30 @@ class CroakDetailState extends State<CroakDetailScreen>{
 
   void copyURL(){
 
+  }
+
+  Widget fileView(List files){
+    String fn = files[0]['filename'].toString();
+    if (fn.endsWith('.mp4') || fn.endsWith('.mov') || fn.endsWith('mpeg')){
+
+    }
+    if (fn.endsWith('.png') || fn.endsWith('.jpg') || fn.endsWith('.gif')){
+
+    }
+
+    return Column(
+      children: <Widget>[
+        Text('File: '),
+        Center(
+          child: RaisedButton(
+            child: Text(c['files'][0]['filename'].toString()),
+            onPressed: (){
+              launch('http://' + api.host + '/f/' + c['files'][0]['filename']);
+            },
+          ),
+        )
+      ],
+    )
   }
 }
 
