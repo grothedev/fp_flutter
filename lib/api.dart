@@ -11,13 +11,13 @@ import 'models.dart';
 import 'package:dio/dio.dart';
 
 //String host = 'grothe.ddns.net';
-String host = '192.168.0.41'; //tmp local
+String host = '192.168.1.5'; //tmp local
 int port = 8090;
 String api_url = 'http://' + host + ':' + port.toString() + '/api/'; 
 
 
 //tl = taglist ; at = should get croaks with all(true) or some(false) given tags ; p_id = parent id
-Future<List> getCroaks(double x, double y, int p_id, List<String> tl, bool at) async {
+Future<List> getCroaks(double x, double y, int p_id, List<String> tl, bool at, int rad) async {
   var reqURL = api_url+'croaks?';
   if (tl != null && tl.length > 0){
     reqURL += 'tags=' + tl.join(',') + '&'; 
@@ -27,6 +27,9 @@ Future<List> getCroaks(double x, double y, int p_id, List<String> tl, bool at) a
   }
   if (at){
     reqURL += 'mode=1&';
+  }
+  if (rad != null){
+    reqURL += 'x='+x.toString() + '&y='+y.toString() + '&radius='+rad.toString() + '&';
   }
   print('api.getCroaks reqURL: ' + reqURL);
 

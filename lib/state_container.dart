@@ -136,6 +136,19 @@ class StateContainerState extends State<StateContainer>{
     
   }
 
+  void getLocation(){
+    util.initLocation().then((l){
+      setState(() {
+        state.location = l;
+        state.needsUpdate = true;
+      });
+      SharedPreferences.getInstance().then((p){
+        p.setDouble('lat', l.latitude);
+        p.setDouble('lon', l.longitude);
+      });
+    });
+  }
+
   void needsUpdate(){
     setState(() {
       state.needsUpdate = true;

@@ -222,7 +222,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
           ),
         )
       ],
-    )
+    );
   }
 }
 

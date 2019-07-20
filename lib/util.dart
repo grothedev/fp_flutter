@@ -34,11 +34,11 @@ Future<List> getCroaks(Query query, int lastUpdated, LocationData location) asyn
     await initLocation().timeout(new Duration(seconds: 12));
   }
 
-  print('util getcroaks: ' + query.toString());
+  print('util getcroaks: ' + query.toString() + ', ' + location.latitude.toString());
 
   //TODO fix sqlite
   if (true || lastUpdated == null || DateTime.now().millisecondsSinceEpoch - lastUpdated > CROAKS_GET_TIMEOUT){
-    List crks =  await queryCroaks(location, query.tags, query.exclusive);
+    List crks =  await queryCroaks(location, query.tags, query.exclusive, query.radius);
     if (crks == null || crks.length == 0) return null; 
     print('util got croaks (tags=' + query.tags.toString() + ') :' + crks.toString());
     if (db.database == null) await db.initDB();
@@ -55,14 +55,14 @@ Future<List> getCroaks(Query query, int lastUpdated, LocationData location) asyn
 }
 
 Future<List> getReplies(int pid) async{
-  List resJSON = await api.getCroaks(null, null, pid, null, false);
+  List resJSON = await api.getCroaks(null, null, pid, null, false, null);
   resJSON.sort((a, b){
     return DateTime.parse(b['created_at']).millisecondsSinceEpoch - DateTime.parse(a['created_at']).millisecondsSinceEpoch;
   });
   return resJSON;
 }
 
-Future<List> queryCroaks(loc, tagList, qa) async{
+Future<List> queryCroaks(loc, tagList, qa, radius) async{
     List resJSON;
     
     double x, y;
@@ -72,7 +72,7 @@ Future<List> queryCroaks(loc, tagList, qa) async{
     } else {
       x = y = null;
     }
-    resJSON = await api.getCroaks(x, y, 0, tagList, qa);
+    resJSON = await api.getCroaks(x, y, 0, tagList, qa, radius);
     if (resJSON == null) return null;
     resJSON.sort((a, b){
       return DateTime.parse(b['created_at']).millisecondsSinceEpoch - DateTime.parse(a['created_at']).millisecondsSinceEpoch;

@@ -2,17 +2,19 @@ FrogPond mobile application, made with flutter. https://flutter.dev/
 
 TODO:
 * actually implement sort on croak feed
-* display distance on croak list items
+* display distance on croak list items (actually only detail screen to start out)
 * automatically update comments upon submit comment
 * intro "tutorial" and better homescreen text
+* about page
 * croak detail screen
 	- implement threaded comments (or keep screen stack?)
 * research MobX, rxdart, BloC, flux vs redux, get_it, provider, 
-* reply form on croak detail screen or dialog from floating action button?
+* UI stuff
+  - reply form on croak detail screen or dialog from floating action button?
+  - show video or image or audio player based on file type
+  - mess around with material visual effects for croak list
 * get by keywords on API
-* radius slider with unit select
 * notifications
-* about page
 * put entire roadmap and feature plans and vision here
 * URLS to simple display rather than API
 * going to need to devise a better way of storing and managing croaks to improve performance when there might be thousands of croaks 
