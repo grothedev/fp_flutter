@@ -125,26 +125,33 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
                       margin: formElemMargin
                     ),
                     Container(
+                      constraints: BoxConstraints(
+                        maxWidth: .2 * MediaQuery.of(context).size.width
+                      ),
+                      child: TextFormField(
+                        keyboardType: TextInputType.number,
+                        controller: radText,
+                        onEditingComplete: (){
+                          //distUnit == KM ? radText.text = radius.toInt().toString()
+                            //              : radText.text = (radius * .621).toInt().toString();  
+                                          
+                        },
+                        decoration: InputDecoration(
+                          icon: Icon(Icons.directions),
+                          labelText: 'Radius',
+                            
+                        ),
+                        maxLines: 1,
+                        minLines: 1,
+                        expands: false,
+                      ),
+                      margin: formElemMargin
+                    ),
+                    Container(
                       padding: EdgeInsets.only(left: 5, right: 8),
                       child: Row( 
                         children: <Widget>[
-                          Container(
-                            child: TextFormField(
-                              controller: radText,
-                              onEditingComplete: (){
-                                distUnit == KM ? radText.text = 'Radius: ' +  radius.toInt().toString() + ' km '
-                                               : radText.text = 'Radius: ' + (radius * .621).toInt().toString() + ' mi ';  
-                                               
-                              },
-                              decoration: InputDecoration(
-                                icon: Icon(Icons.directions),
-                                labelText: 'Radius'
-                              ),
-                              maxLines: 1,
-                              minLines: 1,
-                            ),
-                            margin: formElemMargin
-                          ),
+                          
                           Expanded(
                             child: Slider(
                               onChanged: (v){
@@ -183,7 +190,7 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
                             ],
                             onChanged: (u){
                               setState(() {
-                                distUnit = u;                              
+                                distUnit = u;                    
                               });
                               SharedPreferences.getInstance().then((pref){
                                 pref.setInt('dist_unit', distUnit);
