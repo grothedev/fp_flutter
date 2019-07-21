@@ -12,6 +12,7 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
   TextEditingController dbgTC;
   final fk = GlobalKey<FormState>();
   TextEditingController tagsText = TextEditingController();
+  TextEditingController radText = TextEditingController();
   bool kwdAll = false;
   List tags;
   SharedPreferences prefs;
@@ -127,9 +128,22 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
                       padding: EdgeInsets.only(left: 5, right: 8),
                       child: Row( 
                         children: <Widget>[
-                          Text(
-                            distUnit == KM ? 'Radius: ' +  radius.toInt().toString() + ' km '
-                                          : 'Radius: ' + (radius * .621).toInt().toString() + ' mi ' ,
+                          Container(
+                            child: TextFormField(
+                              controller: radText,
+                              onEditingComplete: (){
+                                distUnit == KM ? radText.text = 'Radius: ' +  radius.toInt().toString() + ' km '
+                                               : radText.text = 'Radius: ' + (radius * .621).toInt().toString() + ' mi ';  
+                                               
+                              },
+                              decoration: InputDecoration(
+                                icon: Icon(Icons.directions),
+                                labelText: 'Radius'
+                              ),
+                              maxLines: 1,
+                              minLines: 1,
+                            ),
+                            margin: formElemMargin
                           ),
                           Expanded(
                             child: Slider(
@@ -140,6 +154,8 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
                                 }
                                 setState(() {
                                   radius = r;
+                                  distUnit == KM ? radText.text = 'Radius: ' +  radius.toInt().toString() + ' km '
+                                             : radText.text = 'Radius: ' + (radius * .621).toInt().toString() + ' mi '; 
                                   SharedPreferences.getInstance().then((pref){
                                     pref.setInt('radius', r.toInt());
                                   });

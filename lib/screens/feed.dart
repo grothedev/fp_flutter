@@ -32,13 +32,14 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   
   StateContainerState store;
   CroakFeed croakFeed;
-  bool fetching = true;
+  bool fetching;
   List croaksJSON;
-  bool fetchFailed = false;
+  bool stalled = false; //show a refresh button and don't fetch
   Widget body;
 
   @override
   void initState(){
+    fetching = true;
     super.initState();
   }
 
@@ -75,7 +76,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
       );
     }
 
-    if (fetchFailed){
+    if (stalled){
       return Center(
           child: RaisedButton(
             child: Text('Refresh'),
@@ -139,12 +140,21 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
     int lcg; //don't worry about time of last update if needUpdate, for example query changed
     if (!store.state.needsUpdate) lcg = store.state.lastCroaksGet; 
     util.getCroaks(store.state.query, lcg, store.state.location).then((cks){
-      if (cks == null || cks.length == 0){
+      store.state.needsUpdate = false;
+      if (cks == null){
         print('failed to fetch croaks');
-        Scaffold.of(context).showSnackBar(SnackBar(content: Text('Unable to Fetch Croaks') ));
+        Scaffold.of(context).showSnackBar(SnackBar(content: Text('There was a problem while attempting to fetch croaks') ));
         setState(() {
           fetching = false;
-          fetchFailed = true;
+          stalled = true;
+        });
+        return;
+      }
+      if (cks.length == 0){
+        Scaffold.of(context).showSnackBar(SnackBar(content: Text('There are no croaks within this area')));
+        setState(() {
+          fetching = false;
+          stalled = true;
         });
         return;
       }
@@ -195,7 +205,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
           Scaffold.of(context).showSnackBar(SnackBar(content: Text('Unable to Reach Server to Fetch Croaks') ));
           setState(() {
             fetching = false;
-            fetchFailed = true;
+            stalled = true;
           });
         }
       );
