@@ -18,24 +18,14 @@ int lastUpdated;
 
 //suggested tags for an area
 Future<List> getTags(int n, LocationData location) async{
-  if (location == null) {
-    initLocation().timeout(new Duration(seconds: 12)).then((loc){
-      location = loc;
-      return api.getTags(n, location.latitude, location.longitude);
-    });
-  } 
-  return api.getTags(n, null, null);
+  return api.getTags(n, location.latitude, location.longitude);
 }
 
 //should this function actually return the croaks or just say if it has written croaks to db?
 Future<List> getCroaks(Query query, int lastUpdated, LocationData location) async{
+
+  print('util getcroaks: ' + query.toString() + ', ' + query.exclusive.toString());
   
-  if (location == null){
-    await initLocation().timeout(new Duration(seconds: 12));
-  }
-
-  print('util getcroaks: ' + query.toString() + ', ' + location.latitude.toString());
-
   //TODO fix sqlite
   if (true || lastUpdated == null || DateTime.now().millisecondsSinceEpoch - lastUpdated > CROAKS_GET_TIMEOUT){
     List crks =  await queryCroaks(location, query.tags, query.exclusive, query.radius);

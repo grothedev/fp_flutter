@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:location/location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'models.dart';
@@ -37,25 +38,28 @@ class StateContainerState extends State<StateContainer>{
   @override
   void initState(){
     if (widget.state != null){
+      print('state container widget already has appstate');
       state = widget.state;
       prefs = widget.prefs;
     } else {
+      print('init state container widget appstate');
       state = AppState();
-      SharedPreferences.getInstance().then((p){
-        prefs = p;
-        restoreState();
-      });
+      restoreState();
+      
     }
 
     super.initState();
   }
 
   
-  void restoreState(){ //from saved session preferences
+  void restoreState() async{ //from saved session preferences
+    prefs = await SharedPreferences.getInstance();
+
     state.lastCroaksGet = prefs.getInt('last_croaks_get');
     state.lat = prefs.getDouble('lat');
     state.lon = prefs.getDouble('lon');
     state.query.exclusive = prefs.getBool('exclusive');
+    if (state.query.exclusive == null) state.query.exclusive = false;
     //state.query.tags = prefs.getStringList('tags'); //tmp for dbging
     state.query.radius = prefs.getInt('radius');
     state.needsUpdate = prefs.getBool('needs_update');
@@ -70,6 +74,10 @@ class StateContainerState extends State<StateContainer>{
           prefs.setDouble('lon', state.lon);
         }
       });
+    } else {
+      print('restored lat lon from shared prefs');
+      state.location = LocationData.fromMap({'latitude': state.lat, 'longitude': state.lon});
+      print(state.location.latitude.toString());
     }
 
     if (state.needsUpdate == null) state.needsUpdate = true;

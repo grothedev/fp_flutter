@@ -299,7 +299,6 @@ class SuggestedTagsState extends State<SuggestedTags> with AutomaticKeepAliveCli
   @override
   void initState() {
     super.initState();
-
     chips = <Widget>[];
     util.getTags(10, location).then((r){
       if (mounted){

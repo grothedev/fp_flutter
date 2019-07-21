@@ -27,11 +27,11 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
     SharedPreferences.getInstance().then((p){
       this.prefs = p;
       setState((){
-        if (store.state.location == null){
-          store.getLocation();
+        if (store.state.lat == null || store.state.lon == null){
+          //store.getLocation();
           locStr = 'Getting Location...';
         } else 
-        locStr = 'Location Data: ' + store.state.location.latitude.toString() + ', ' + store.state.location.longitude.toString();
+        locStr = 'Location Data: ' + store.state.lat.toString() + ', ' + store.state.lon.toString();
       });
       
     });

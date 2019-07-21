@@ -19,7 +19,8 @@ class FrogPondApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool intro = !File('databases/fp.db').existsSync();
-
+    print('db found? ' + intro.toString());
+    
     return MaterialApp(
         title: 'FrogPond',
         theme: ThemeData(
