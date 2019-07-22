@@ -9,6 +9,7 @@ TODO:
 * about page
 * research MobX, rxdart, BloC, flux vs redux, get_it, provider, 
 * UI stuff
+  - croak detail screen: left alignment for content text, tags as chips?, improve padding, 
   - reply form on croak detail screen or dialog from floating action button?
   - show video or image or audio player based on file type
   - mess around with material visual effects for croak list

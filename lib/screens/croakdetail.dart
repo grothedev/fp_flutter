@@ -122,7 +122,6 @@ class CroakDetailState extends State<CroakDetailScreen>{
               child: Form(
                   key: fk,
                   child: Column(
-                    //direction: Axis.vertical,
                     children: [
                       TextFormField(
                         controller: contentController,
@@ -131,8 +130,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
                         },
                         decoration: InputDecoration(
                           icon: Icon(Icons.message),
-                          labelText: 'Reply',
-
+                          labelText: 'Reply',      
                         ),
                         maxLines: 3,
                         minLines: 1,
@@ -166,7 +164,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
                             }
                           },
                           child: Text("Reply"),
-
+                          
                         )
                     ]
                   ),
