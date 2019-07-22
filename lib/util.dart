@@ -24,7 +24,7 @@ Future<List> getTags(int n, LocationData location) async{
 //should this function actually return the croaks or just say if it has written croaks to db?
 Future<List> getCroaks(Query query, int lastUpdated, LocationData location) async{
 
-  print('util getcroaks: ' + query.toString() + ', ' + query.exclusive.toString());
+  print('util getcroaks: ' + query.toString() + ', ' + query.radius.toString());
   
   //TODO fix sqlite
   if (true || lastUpdated == null || DateTime.now().millisecondsSinceEpoch - lastUpdated > CROAKS_GET_TIMEOUT){

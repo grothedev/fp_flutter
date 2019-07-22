@@ -125,6 +125,7 @@ class StateContainerState extends State<StateContainer>{
   }
 
   void setRadius(int r){
+    print('store setting rad ' + r.toString());
     if (state.query.radius != r){
       setState((){
         state.query.radius = r;

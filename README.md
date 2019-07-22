@@ -13,7 +13,6 @@ TODO:
   - reply form on croak detail screen or dialog from floating action button?
   - show video or image or audio player based on file type
   - mess around with material visual effects for croak list
-  - manual radius input
   - display distance on croak list items (actually only detail screen to start out)
 * get by keywords on API
 * notifications

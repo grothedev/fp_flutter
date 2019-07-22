@@ -19,8 +19,8 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
   String locStr;
   StateContainerState store;
   double radius = 30;
-  int distUnit = KM;
-
+  double radiusSlider = 30; //used just for the slider UI component
+  
   EdgeInsets formPadding = EdgeInsets.all(6.0);
   EdgeInsets formElemMargin = EdgeInsets.all(8.0);
 
@@ -32,7 +32,7 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
           //store.getLocation();
           locStr = 'Getting Location...';
         } else 
-        locStr = 'Location Data: ' + store.state.lat.toString() + ', ' + store.state.lon.toString();
+        locStr = 'Your Location: ' + store.state.lat.toString() + ', ' + store.state.lon.toString();
       });
       
     });
@@ -52,6 +52,8 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
   @override
   Widget build(BuildContext context){
     store = StateContainer.of(context);
+    radius = store.state.query.radius.toDouble();
+
     return Scaffold(
       //appBar: ScreenTitle('Welcome to FrogPond'),
       appBar: AppBar(
@@ -124,28 +126,36 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
                       ),
                       margin: formElemMargin
                     ),
-                    Container(
-                      constraints: BoxConstraints(
-                        maxWidth: .2 * MediaQuery.of(context).size.width
-                      ),
-                      child: TextFormField(
-                        keyboardType: TextInputType.number,
-                        controller: radText,
-                        onEditingComplete: (){
-                          //distUnit == KM ? radText.text = radius.toInt().toString()
-                            //              : radText.text = (radius * .621).toInt().toString();  
-                                          
-                        },
-                        decoration: InputDecoration(
-                          icon: Icon(Icons.directions),
-                          labelText: 'Radius',
-                            
+                    Row(
+                      children: [
+                        Container(
+                          constraints: BoxConstraints(
+                            maxWidth: .2 * MediaQuery.of(context).size.width
+                          ),
+                          child: TextFormField(
+                            keyboardType: TextInputType.number,
+                            controller: radText,
+                            onEditingComplete: (){
+                              radius = double.parse(radText.text);
+                              print('got rad ' + radius.toString());
+                              SharedPreferences.getInstance().then((pref){
+                                pref.setInt('radius', radius.toInt());
+                              });
+                              store.setRadius(radius.toInt());              
+                            },
+                            decoration: InputDecoration(
+                              icon: Icon(Icons.directions),
+                              labelText: 'Radius',
+                                
+                            ),
+                            maxLines: 1,
+                            minLines: 1,
+                            expands: false,
+                          ),
+                          margin: formElemMargin
                         ),
-                        maxLines: 1,
-                        minLines: 1,
-                        expands: false,
-                      ),
-                      margin: formElemMargin
+                        Text('km')
+                      ]
                     ),
                     Container(
                       padding: EdgeInsets.only(left: 5, right: 8),
@@ -156,13 +166,9 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
                             child: Slider(
                               onChanged: (v){
                                 double r = v;
-                                if (distUnit == MI){
-                                  r = 1.609344 * v;
-                                }
                                 setState(() {
                                   radius = r;
-                                  distUnit == KM ? radText.text = 'Radius: ' +  radius.toInt().toString() + ' km '
-                                             : radText.text = 'Radius: ' + (radius * .621).toInt().toString() + ' mi '; 
+                                  radText.text = radius.toString();
                                   SharedPreferences.getInstance().then((pref){
                                     pref.setInt('radius', r.toInt());
                                   });
@@ -170,35 +176,14 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
                                 });
                               },
                               label: 'Distance',
-                              value: radius,
+                              value: radiusSlider,
                               min: 2,
                               max: 100,
                               divisions: 40,
                               
                             ),
                           ),
-                          DropdownButton(
-                            items: [
-                              DropdownMenuItem<int>(
-                                child: Text('km'),
-                                value: KM
-                              ),
-                              DropdownMenuItem<int>(
-                                child: Text('Mi'),
-                                value: MI
-                              ),
-                            ],
-                            onChanged: (u){
-                              setState(() {
-                                distUnit = u;                    
-                              });
-                              SharedPreferences.getInstance().then((pref){
-                                pref.setInt('dist_unit', distUnit);
-                              });
-                              store.setDistUnit(u);
-                            },
-                            value: distUnit,
-                          )
+                          
                         ],
                       ),
                     ),

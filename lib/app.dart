@@ -44,8 +44,8 @@ class FrogPondApp extends StatelessWidget {
           
         ),
         
-        home: intro ? IntroScreen() : RootView()
-        //home: IntroScreen()
+        //home: intro ? IntroScreen() : RootView()
+        home: RootView()
       );
   }
 }
