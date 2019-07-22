@@ -106,11 +106,6 @@ class CroakDetailState extends State<CroakDetailScreen>{
                       ),
                       margin: EdgeInsets.only(bottom: 12.0),
                     ),
-                    Title(
-                      child: Text('Replies:', style: Theme.of(context).textTheme.caption),
-                      color: Colors.black,
-                      
-                    ),
                     Expanded(
                       key: GlobalKey(),
                       flex: 1,

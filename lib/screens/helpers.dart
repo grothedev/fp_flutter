@@ -47,7 +47,7 @@ class CroakFeedState extends State<CroakFeed>{
               child: feedItem(i),
             );
           },
-          shrinkWrap: true,
+          shrinkWrap: true,    
     ); 
   }
 
@@ -77,7 +77,7 @@ class CroakFeedState extends State<CroakFeed>{
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              child: Text( c['score'].toString(), ),
+              child: Text( c['replies'].toString(), ),
               padding: EdgeInsets.all(6),
               alignment: Alignment.center,
               constraints: BoxConstraints(
@@ -125,7 +125,10 @@ class CroakFeedState extends State<CroakFeed>{
             Spacer(
               flex: 2
             ),
-            ConstrainedBox(constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * .3), child: Text(tags.join(', '), textAlign: TextAlign.right,))
+            c['p_id'] == null ? //only show tags for root feed
+            ConstrainedBox(constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * .3), child: Text(tags.join(', '), textAlign: TextAlign.right,)) :
+            Container()
+          
           ]
         ),
         onTap: (){

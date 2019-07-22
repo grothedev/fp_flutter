@@ -249,7 +249,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
       case SortMethod.score_asc:
         setState(() {
           croaksJSON.sort((a, b){
-            return a['score'] - b['score'];
+            return a['replies'] - b['replies'];
           });
         });
         break;
@@ -270,7 +270,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
       case SortMethod.score_des:
         setState(() {
           croaksJSON.sort((a, b){
-            return b['score'] - a['score'];
+            return b['replies'] - a['replies'];
           });
         });
         break;

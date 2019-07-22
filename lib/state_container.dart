@@ -7,6 +7,10 @@ import 'util.dart' as util;
 
 class StateContainer extends StatefulWidget{
   
+  /*
+    for future reference, different state design patterns: MobX, rxdart, BloC, flux vs redux, get_it, provider
+  */
+
   final AppState state;
   final SharedPreferences prefs;
   Widget child;
