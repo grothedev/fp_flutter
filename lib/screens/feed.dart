@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fp/state_container.dart';
@@ -194,6 +196,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
       if (mounted){
         setState(() {
           fetching = false;
+          stalled = false;
           croaksJSON = cs;
         });
         print('feed got croaks.'); 
@@ -218,7 +221,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
       case SortMethod.date:
         setState(() {
           croaksJSON.sort((a, b){
-            return a['created_at'] - b['created_at'];
+            return a['created_at'].compareTo(b['created_at']);
           });  
         });
         break;
@@ -226,7 +229,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
         setState(() {
           croaksJSON.sort((a, b){
             print((a['distance'] - b['distance']).toString());
-            return (a['distance'] - b['distance']).toInt();
+            return a['distance'].toInt() - b['distance'].toInt();
           });
         });
         break;
