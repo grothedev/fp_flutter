@@ -1,7 +1,6 @@
 FrogPond mobile application, made with flutter. https://flutter.dev/
 
 TODO:
-* actually implement sort on croak feed
 * fix db stuff
 * implement voting
 * automatically update comments upon submit comment

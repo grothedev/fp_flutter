@@ -101,18 +101,31 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
           ),
           PopupMenuButton(
             itemBuilder: (BuildContext context) => <PopupMenuEntry<SortMethod>>[
-              const PopupMenuItem<SortMethod>(
-                value: SortMethod.date,
-                child: Text('date')
+              PopupMenuItem<SortMethod>(
+                value: SortMethod.date_asc,
+                child: Wrap( children: [ Icon(Icons.arrow_upward), Text('Time') ] ),
               ),
-              const PopupMenuItem<SortMethod>(
-                value: SortMethod.dist,
-                child: Text('distance')
+              PopupMenuItem<SortMethod>(
+                value: SortMethod.date_des,
+                child: Wrap( children: [ Icon(Icons.arrow_downward), Text('Time') ] ),
               ),
-              const PopupMenuItem<SortMethod>(
-                value: SortMethod.score,
-                child: Text('popularity')
+              PopupMenuItem<SortMethod>(
+                value: SortMethod.dist_asc,
+                child: Wrap( children: [ Icon(Icons.arrow_upward), Text('Distance') ] ),
               ),
+              PopupMenuItem<SortMethod>(
+                value: SortMethod.dist_des,
+                child: Wrap( children: [ Icon(Icons.arrow_downward), Text('Distance') ] ),
+              ),
+              PopupMenuItem<SortMethod>(
+                value: SortMethod.score_asc,
+                child: Wrap( children: [ Icon(Icons.arrow_upward), Text('Score') ] ),
+              ),
+              PopupMenuItem<SortMethod>(
+                value: SortMethod.score_des,
+                child: Wrap( children: [ Icon(Icons.arrow_downward), Text('Score') ] ),
+              ),
+              
             ],
             onSelected: (v){
               sortOptions(v);
@@ -218,14 +231,14 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   void sortOptions(SortMethod mthd){ //currently just using this function for testing
     // sort methods: date, proximity, popularity 
     switch(mthd){
-      case SortMethod.date:
+      case SortMethod.date_asc:
         setState(() {
           croaksJSON.sort((a, b){
             return a['created_at'].compareTo(b['created_at']);
           });  
         });
         break;
-      case SortMethod.dist:
+      case SortMethod.dist_asc:
         setState(() {
           croaksJSON.sort((a, b){
             print((a['distance'] - b['distance']).toString());
@@ -233,10 +246,31 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
           });
         });
         break;
-      case SortMethod.score:
+      case SortMethod.score_asc:
         setState(() {
           croaksJSON.sort((a, b){
             return a['score'] - b['score'];
+          });
+        });
+        break;
+      case SortMethod.date_des:
+        setState(() {
+          croaksJSON.sort((a, b){
+            return b['created_at'].compareTo(a['created_at']);
+          });  
+        });
+        break;
+      case SortMethod.dist_des:
+        setState(() {
+          croaksJSON.sort((a, b){
+            return b['distance'].toInt() - a['distance'].toInt();
+          });
+        });
+        break;
+      case SortMethod.score_des:
+        setState(() {
+          croaksJSON.sort((a, b){
+            return b['score'] - a['score'];
           });
         });
         break;
