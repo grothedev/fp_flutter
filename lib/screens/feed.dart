@@ -216,18 +216,24 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
     // sort methods: date, proximity, popularity 
     switch(mthd){
       case SortMethod.date:
-        croaksJSON.sort((a, b){
-          return a['created_at'] - b['created_at'];
+        setState(() {
+          croaksJSON.sort((a, b){
+            return a['created_at'] - b['created_at'];
+          });  
         });
         break;
       case SortMethod.dist:
-        croaksJSON.sort((a, b){
-          return util.distance(store.state.lat, store.state.lon, a['y'], a['x']).toInt() - util.distance(store.state.lat, store.state.lon, b['y'], b['x']).toInt();
+        setState(() {
+          croaksJSON.sort((a, b){
+            return util.distance(store.state.lat, store.state.lon, a['y'], a['x']).toInt() - util.distance(store.state.lat, store.state.lon, b['y'], b['x']).toInt();
+          });
         });
         break;
       case SortMethod.score:
-        croaksJSON.sort((a, b){
-          return a['score'] - b['score'];
+        setState(() {
+          croaksJSON.sort((a, b){
+            return a['score'] - b['score'];
+          });
         });
         break;
     }

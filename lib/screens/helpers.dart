@@ -62,7 +62,7 @@ class CroakFeedState extends State<CroakFeed>{
     
 
     favs.add(false);
-
+    Map c = croaksJSON[i];
     return new Container(
       padding: EdgeInsets.only(left: 6, right: 6),
       decoration: BoxDecoration(
@@ -73,12 +73,32 @@ class CroakFeedState extends State<CroakFeed>{
       ),
       child: ListTile(
         dense: false,
-        
+        leading: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              child: Text( c['score'].toString(), ),
+              padding: EdgeInsets.all(6),
+              alignment: Alignment.center,
+              constraints: BoxConstraints(
+                maxWidth: .03*MediaQuery.of(context).size.width,
+              ),
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.grey, width: 1, style: BorderStyle.solid,
+                ),
+                shape: BoxShape.circle
+              ),
+              
+            ),
+          ], 
+        ),
         title: RichText(
           
           text: TextSpan( 
             
-            text: croaksJSON[i]['content'],
+            text: c['content'],
             style: TextStyle(color: Colors.black),
           ),
           maxLines: 2,
@@ -91,15 +111,18 @@ class CroakFeedState extends State<CroakFeed>{
           //mainAxisAlignment: MainAxisAlignment.center,
           children: [
             RaisedButton( padding: EdgeInsets.all(2), key: new UniqueKey(), 
-            onPressed: (){fav(i);},  
-            child: favs[i] ? Icon(Icons.favorite) : Icon(Icons.favorite_border) ), 
-            //Text(croaksJSON[i]['score'].toString(), textAlign: TextAlign.center,)
+              onPressed: (){fav(i);},  
+              child: favs[i] ? Icon(Icons.favorite) : Icon(Icons.favorite_border) 
+            ), 
+            //Text(c['score'].toString(), textAlign: TextAlign.center,)
           ],
           
         ),
         subtitle: Row(
           children: <Widget>[
-            Text(croaksJSON[i]['created_at']),
+            c.containsKey('distance') ? 
+                              Text(c['created_at'] + ', ' + c['distance'].toInt().toString() + ' km')
+                              : Text(c['created_at']),
             Spacer(
               flex: 2
             ),
@@ -108,7 +131,7 @@ class CroakFeedState extends State<CroakFeed>{
         ),
         onTap: (){
           Navigator.push(this.context, MaterialPageRoute(
-            builder: (context) => CroakDetailScreen(croaksJSON[i])
+            builder: (context) => CroakDetailScreen(c)
           ));
         },
         contentPadding: EdgeInsets.all(4),
