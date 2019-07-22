@@ -29,7 +29,14 @@ class FrogPondApp extends StatelessWidget {
           backgroundColor: Color(0xFFEDEDED),
           textTheme: TextTheme(
             body1: TextStyle(
-              fontFamily: 'Roboto'
+              fontFamily: 'Roboto',
+              fontSize: 16,
+              color: Colors.black
+            ),
+            body2: TextStyle(
+              fontFamily: 'Roboto',
+              fontSize: 12,
+              color: Colors.black87 
             ),
             subhead: TextStyle(
               fontSize: 14,

@@ -65,29 +65,35 @@ class CroakDetailState extends State<CroakDetailScreen>{
             Expanded(
               flex: 2,
               child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Container( //croak content
-                      child:  Text(c['content']), 
-                      //padding: EdgeInsets.only(bottom: 12.0),
+                    Title(
+                      child: Text(' / | \\ ', 
+                              //style: TextStyle(decoration: TextDecoration.underline)
+                             ),
+                      color: Colors.black
+                    ),
+                    Container( //croak content  
+                      child: Text(c['content'], style: Theme.of(context).textTheme.body1),
+                      alignment: Alignment.topLeft,
                       decoration: BoxDecoration(
                         
                         border: Border(
-                          bottom: BorderSide(width: 1.0, color: Colors.black),
+                          bottom: BorderSide(width: 1.0, color: Theme.of(context).dividerColor),
                           top: BorderSide.none,
                           right: BorderSide.none,
                           left: BorderSide.none,
                           
                         ),
                       ),
-                      padding: EdgeInsets.only(bottom: 4.0),
+                      padding: EdgeInsets.only(left: 14.0, bottom: 6),
                       margin: EdgeInsets.only(bottom: 8.0),
                     ),
                     Container(
-                      child: Center( //tags
-                        child: Text(tags.join(', ')),
-                        
-                      ),
-                      margin: EdgeInsets.only(bottom: 8.0)
+                      alignment: Alignment.topLeft,
+                      child: Text(tags.join(', '), style: Theme.of(context).textTheme.body2),
+                      margin: EdgeInsets.only(bottom: 8.0),
+                      padding: EdgeInsets.only(left: 22.0, bottom: 6),
                     ),
                     
                     c['files'] != null && c['files'].length > 0 ? 
@@ -101,8 +107,9 @@ class CroakDetailState extends State<CroakDetailScreen>{
                       margin: EdgeInsets.only(bottom: 12.0),
                     ),
                     Title(
-                      child: Text('Comments'),
+                      child: Text('Replies:', style: Theme.of(context).textTheme.caption),
                       color: Colors.black,
+                      
                     ),
                     Expanded(
                       key: GlobalKey(),
