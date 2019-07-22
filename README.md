@@ -7,8 +7,6 @@ TODO:
 * automatically update comments upon submit comment
 * intro "tutorial" and better homescreen text
 * about page
-* croak detail screen
-	- implement threaded comments (or keep screen stack?)
 * research MobX, rxdart, BloC, flux vs redux, get_it, provider, 
 * UI stuff
   - reply form on croak detail screen or dialog from floating action button?

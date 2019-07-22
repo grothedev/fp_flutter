@@ -16,7 +16,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
 
   Map c;
   final contentController = TextEditingController();
-  static final fk = GlobalKey<FormState>();// form key
+  final fk = GlobalKey<FormState>();// form key
   List replies;
 
   //this stuff is now in the compose croak dialog
@@ -105,14 +105,14 @@ class CroakDetailState extends State<CroakDetailScreen>{
                       color: Colors.black,
                     ),
                     Expanded(
+                      key: GlobalKey(),
                       flex: 1,
-                      child: Container(
-                        child: CroakFeed(
+                      child: replies != null && replies.length > 0 ? 
+                        CroakFeed(
                           replies
-                        ),
-                      ),
+                        ) :
+                        Text('No Replies')
                     ), 
-                    
                   ]
               ),
             ),
@@ -136,7 +136,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
                         ),
                         maxLines: 3,
                         minLines: 1,
-                        autofocus: true,
+                        autofocus: false,
                         autovalidate: false,
                         
                       ),
@@ -160,6 +160,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
                                 if (success){
                                   Toast.show("Ribbit", context);
                                   contentController.clear();
+                                  getReplies();
                                 }
                               }); //TODO add functionality to add additional tags?
                             }
@@ -190,7 +191,6 @@ class CroakDetailState extends State<CroakDetailScreen>{
 
   void getReplies(){
     util.getReplies(c['id']).then((r){
-      print('croak detail got replies: ' + r.length.toString() + '; ' + r[0]['content'].toString());
       setState((){
         this.replies = r;
       });
