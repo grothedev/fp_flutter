@@ -225,7 +225,8 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
       case SortMethod.dist:
         setState(() {
           croaksJSON.sort((a, b){
-            return util.distance(store.state.lat, store.state.lon, a['y'], a['x']).toInt() - util.distance(store.state.lat, store.state.lon, b['y'], b['x']).toInt();
+            print((a['distance'] - b['distance']).toString());
+            return (a['distance'] - b['distance']).toInt();
           });
         });
         break;

@@ -3,6 +3,7 @@ FrogPond mobile application, made with flutter. https://flutter.dev/
 TODO:
 * actually implement sort on croak feed
 * fix db stuff
+* implement voting
 * automatically update comments upon submit comment
 * intro "tutorial" and better homescreen text
 * about page
@@ -13,7 +14,6 @@ TODO:
   - reply form on croak detail screen or dialog from floating action button?
   - show video or image or audio player based on file type
   - mess around with material visual effects for croak list
-  - display distance on croak list items (actually only detail screen to start out)
 * get by keywords on API
 * notifications
 * put entire roadmap and feature plans and vision here
