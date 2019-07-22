@@ -100,19 +100,19 @@ class CroakDetailState extends State<CroakDetailScreen>{
                       ),
                       margin: EdgeInsets.only(bottom: 12.0),
                     ),
-                    Column(
-                      children: [
-                        Title(
-                          child: Text('Comments'),
-                          color: Colors.black,
+                    Title(
+                      child: Text('Comments'),
+                      color: Colors.black,
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                        child: CroakFeed(
+                          replies
                         ),
-                        Container(
-                            child: CroakFeed(
-                            replies
-                          ),
-                        ),
-                      ]
-                    ) 
+                      ),
+                    ), 
+                    
                   ]
               ),
             ),
@@ -190,7 +190,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
 
   void getReplies(){
     util.getReplies(c['id']).then((r){
-      print('croak detail got replies: ' + r.length.toString());
+      print('croak detail got replies: ' + r.length.toString() + '; ' + r[0]['content'].toString());
       setState((){
         this.replies = r;
       });

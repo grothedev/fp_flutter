@@ -3,6 +3,7 @@ FrogPond mobile application, made with flutter. https://flutter.dev/
 TODO:
 * fix db stuff
 * implement voting
+  - make new db table 'votes' which associates ip with croak id, 
 * automatically update comments upon submit comment
 * intro "tutorial" and better homescreen text
 * about page

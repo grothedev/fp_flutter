@@ -40,7 +40,6 @@ class CroakFeedState extends State<CroakFeed>{
 
   @override
   Widget build(BuildContext context) {
-
     return ListView.builder(
           itemCount: croaksJSON == null ? 0 : croaksJSON.length,
           itemBuilder: (context, i) {
