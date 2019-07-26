@@ -96,29 +96,29 @@ class CroakDetailState extends State<CroakDetailScreen>{
                       padding: EdgeInsets.only(left: 22.0, bottom: 6),
                     ),
                     
-                    c['files'] != null && c['files'].length > 0 ? 
-                    fileView(c['files']) : Center(),
-                    Container(
-                      decoration: BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(color: Theme.of(context).dividerColor),
-                        )
-                      ),
-                      margin: EdgeInsets.only(bottom: 12.0),
-                    ),
-                    Expanded(
-                      key: GlobalKey(),
-                      flex: 1,
-                      child: replies != null && replies.length > 0 ? 
-                        CroakFeed(
-                          replies
-                        ) :
-                        Text('No Replies')
-                    ), 
-                  ]
+                        c['files'] != null && c['files'].length > 0 ? 
+                        fileView(c['files']) : Center(),
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border(
+                              bottom: BorderSide(color: Theme.of(context).dividerColor),
+                            )
+                          ),
+                          margin: EdgeInsets.only(bottom: 12.0),
+                        ),
+                        Expanded(
+                          key: GlobalKey(),
+                          flex: 1,
+                          child: replies != null && replies.length > 0 ? 
+                            CroakFeed(
+                              replies
+                            ) :
+                            Text('No Replies')
+                        ),
+                      ],
               ),
             ),
-            Container(
+            /*Container(
               padding: EdgeInsets.all(8.0),
               alignment: Alignment(0, 1),
               child: Form(
@@ -171,13 +171,13 @@ class CroakDetailState extends State<CroakDetailScreen>{
                     ]
                   ),
                 ),
-            )
+            )*/
           ],
         ),
         padding: EdgeInsets.all(12.0),
       ),
       //bottomSheet: Text('bottomsheet test'),
-      /*floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton(
         onPressed: (){
           showDialog(context: context, builder: (context) {
             return ComposeCroakDialog(c);
@@ -185,7 +185,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
         },
         child: Icon(Icons.reply),
 
-      ),*/
+      ),
     );
   }
 
@@ -207,21 +207,28 @@ class CroakDetailState extends State<CroakDetailScreen>{
 
     }
     if (fn.endsWith('.png') || fn.endsWith('.jpg') || fn.endsWith('.gif')){
-
-    }
-
-    return Column(
-      children: <Widget>[
-        Text('File: '),
-        Center(
-          child: RaisedButton(
-            child: Text(c['files'][0]['filename'].toString()),
-            onPressed: (){
-              launch('http://' + api.host + '/f/' + c['files'][0]['filename']);
-            },
+      return Center(
+        child: GestureDetector(
+          onTap: (){
+            launch('http://' + api.host + '/f/' + fn);
+          },
+          child: Image.network(
+            'http://' + api.host + '/f/' + fn,
+            fit: BoxFit.scaleDown,
+             
           ),
         )
-      ],
+      );
+    }
+
+    return Center(
+      child: RaisedButton(
+        child: Text(c['files'][0]['filename'].toString()),
+        onPressed: (){
+          launch('http://' + api.host + '/f/' + c['files'][0]['filename']);
+        },
+      ),
+    
     );
   }
 }

@@ -191,10 +191,11 @@ class ComposeCroakDialog extends Dialog{
                     //direction: Axis.vertical,
                     children: [
                       TextFormField(
+                        
                         controller: contentController,
-                        validator: (value){
+                        /*validator: (value){
                             if (value.isEmpty) return 'Enter some text';
-                        },
+                        },*/
                         decoration: InputDecoration(
                           icon: Icon(Icons.message),
                           labelText: 'Reply',
@@ -202,7 +203,7 @@ class ComposeCroakDialog extends Dialog{
                         ),
                         maxLines: 3,
                         minLines: 1,
-                        //autofocus: true,
+                        autofocus: false,
                         autovalidate: false,
                         
                       ),

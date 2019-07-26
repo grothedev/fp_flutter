@@ -5,16 +5,16 @@ TODO:
 * intro "tutorial" and better homescreen text
 * about page (feedback, source, )
 * UI stuff 
-  - reply form on croak detail screen or dialog from floating action button?
-  - show video or image or audio player based on file type
-  - mess around with material visual effects for croak list
-* get by keywords on API
+  - have decided to make reply form on croak detail a floating action button, fix auto-hide keyboard
+  - show video or image or audio player based on file type. scroll with img?
+  - fix feed list formatting
 * notifications
 * put entire roadmap and feature plans and vision here
 * post-initial-release features
   - voting
   - different croak types (poll, resource bank, plant, tool library, event)
   - going to need to devise a better way of storing and managing croaks to improve performance when there might be thousands of croaks 
+  - get by keywords on API
 
 SharedPreferences:
   * last_croaks_get (int) : ms since croaks were last retreived
