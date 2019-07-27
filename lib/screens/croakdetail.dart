@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:video_player/video_player.dart';
 
 import '../util.dart' as util;
 import '../api.dart' as api;
@@ -204,7 +205,20 @@ class CroakDetailState extends State<CroakDetailScreen>{
   Widget fileView(List files){
     String fn = files[0]['filename'].toString();
     if (fn.endsWith('.mp4') || fn.endsWith('.mov') || fn.endsWith('mpeg')){
-
+      VideoPlayerController vpc = VideoPlayerController.network('http://' + api.host + '/f/' + fn);
+      vpc.initialize().then((_){
+        return Center(
+          child: GestureDetector(
+            onTap: (){
+              launch('http://' + api.host + '/f/' + fn);
+            },
+            child: vpc.value.initialized ? 
+                    VideoPlayer(vpc) :
+                    Text('Loading video ...')
+          )
+        );  
+      });
+      
     }
     if (fn.endsWith('.png') || fn.endsWith('.jpg') || fn.endsWith('.gif')){
       return Center(
@@ -219,9 +233,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
           ),
         )
       );
-    }
-
-    return Center(
+    } else return Center(
       child: RaisedButton(
         child: Text(c['files'][0]['filename'].toString()),
         onPressed: (){

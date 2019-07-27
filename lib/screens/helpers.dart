@@ -177,7 +177,7 @@ class ComposeCroakDialog extends Dialog{
   bool anon = true;
 
   ComposeCroakDialog(this.parent);
-
+  
   @override
   Widget build(BuildContext context){
     return SimpleDialog( 
@@ -186,6 +186,7 @@ class ComposeCroakDialog extends Dialog{
               title: (this.parent != null) ? Text('Reply') : Text('Croak'),
               children: [
                 Form(
+
                   key: fk,
                   child: Column(
                     //direction: Axis.vertical,

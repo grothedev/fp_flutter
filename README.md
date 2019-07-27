@@ -4,6 +4,7 @@ TODO:
 * fix db stuff
 * intro "tutorial" and better homescreen text
 * about page (feedback, source, )
+* read-only webview for URL sharing
 * UI stuff 
   - have decided to make reply form on croak detail a floating action button, fix auto-hide keyboard
   - show video or image or audio player based on file type. scroll with img?
