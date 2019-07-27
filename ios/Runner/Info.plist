@@ -48,4 +48,9 @@
   <key>NSMicrophoneUsageDescription</key>
   <string>To record audio to attach to posts</string>
 </dict>
+<key>NSAppTransportSecurity</key>
+<dict>
+  <key>NSAllowsArbitraryLoads</key>
+  <true/>
+</dict>
 </plist>

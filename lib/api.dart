@@ -15,7 +15,6 @@ String host = 'grothe.ddns.net';
 int port = 8090;
 String api_url = 'http://' + host + ':' + port.toString() + '/api/'; 
 
-
 //tl = taglist ; at = should get croaks with all(true) or some(false) given tags ; p_id = parent id
 Future<List> getCroaks(double x, double y, int p_id, List<String> tl, bool at, int rad) async {
   var reqURL = api_url+'croaks?';

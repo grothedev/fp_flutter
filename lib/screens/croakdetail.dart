@@ -13,6 +13,8 @@ import '../db.dart' as db;
 import 'helpers.dart';
 
 
+final String ro_url_pre = 'http://' + api.host + '/c/'; //prefix of url for fancy read-only webview
+
 class CroakDetailState extends State<CroakDetailScreen>{
 
   Map c;
@@ -44,7 +46,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
       tags.add(c['tags'][j]['label']);
     }
 
-    String croakURL = api.api_url+'croaks/'+c['id'].toString();
+    String croakURL = ro_url_pre+c['id'].toString();
     
     return Scaffold( 
       appBar: AppBar(
@@ -98,7 +100,10 @@ class CroakDetailState extends State<CroakDetailScreen>{
                     ),
                     
                         c['files'] != null && c['files'].length > 0 ? 
-                        fileView(c['files']) : Center(),
+                        Container(
+                          height: MediaQuery.of(context).size.height * .3,
+                          child: fileView(c['files'])
+                         ) : Center(),
                         Container(
                           decoration: BoxDecoration(
                             border: Border(
@@ -204,7 +209,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
 
   Widget fileView(List files){
     String fn = files[0]['filename'].toString();
-    if (fn.endsWith('.mp4') || fn.endsWith('.mov') || fn.endsWith('mpeg')){
+    /*if (fn.endsWith('.mp4') || fn.endsWith('.mov') || fn.endsWith('mpeg')){
       VideoPlayerController vpc = VideoPlayerController.network('http://' + api.host + '/f/' + fn);
       vpc.initialize().then((_){
         return Center(
@@ -219,7 +224,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
         );  
       });
       
-    }
+    }*/
     if (fn.endsWith('.png') || fn.endsWith('.jpg') || fn.endsWith('.gif')){
       return Center(
         child: GestureDetector(
@@ -228,7 +233,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
           },
           child: Image.network(
             'http://' + api.host + '/f/' + fn,
-            fit: BoxFit.scaleDown,
+            fit: BoxFit.fitHeight,
              
           ),
         )
