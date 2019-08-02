@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fp/state_container.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
@@ -46,6 +47,8 @@ class CroakDetailState extends State<CroakDetailScreen>{
       tags.add(c['tags'][j]['label']);
     }
 
+    if (StateContainer.of(context).state.updateReplies) getReplies();
+
     String croakURL = ro_url_pre+c['id'].toString();
     return Scaffold( 
       appBar: AppBar(
@@ -57,6 +60,12 @@ class CroakDetailState extends State<CroakDetailScreen>{
               Clipboard.setData(ClipboardData(text: croakURL));
               Toast.show('URL copied to clipboard', context);
             },
+          ),
+          IconButton(
+            icon: Icon(Icons.refresh),
+            onPressed: (){
+              getReplies();
+            }
           )
         ]
       ),
@@ -189,7 +198,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
           });
         },
         child: Icon(Icons.reply),
-
+        
       ),
     );
   }
@@ -199,6 +208,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
       setState((){
         this.replies = r;
       });
+      StateContainer.of(context).gotReplies();
     });
   }
 

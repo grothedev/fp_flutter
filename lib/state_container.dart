@@ -162,9 +162,20 @@ class StateContainerState extends State<StateContainer>{
     });
   }
 
-  void needsUpdate(){
+  void needsUpdate(){ //this is just for croaks and location. i should rename it
     setState(() {
       state.needsUpdate = true;
+    });
+  }
+
+  void updateReplies(){
+    setState((){
+      state.updateReplies = true;
+    });
+  }
+  void gotReplies(){
+    setState(() {
+      state.updateReplies = false;
     });
   }
 

@@ -16,6 +16,7 @@ class AppState {
   LocationData location;
   double lat, lon;
   bool needsUpdate = true;
+  bool updateReplies = true;
   int lastCroaksGet;
 
   AppState(){

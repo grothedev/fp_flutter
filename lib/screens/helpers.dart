@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models.dart';
 import '../util.dart' as util;
+import 'composecroak.dart';
 import 'croakdetail.dart';
 import '../api.dart' as api;
 
@@ -224,7 +225,14 @@ class ComposeCroakDialog extends Dialog{
                             if (fk.currentState.validate()){
                               //Scaffold.of(context).showSnackBar(SnackBar(content: Text('Replying...')));
                               Croak r = Croak();
-                              util.submitReply(parent['pid'], contentController.text, parent['tags'], true); //TODO add functionality to add additional tags?
+                              util.submitReply(parent['id'], contentController.text, parent['tags'], true).then((s){
+                                if (s){
+                                  Navigator.pop(context);
+                                  StateContainer.of(context).updateReplies();
+                                } else {
+                                  Scaffold.of(context).showSnackBar(SnackBar(content: Text('Reply Failed')));
+                                }
+                              }); //TODO add functionality to add additional tags?
                             }
                           },
                           child: Text("Reply"),
