@@ -7,6 +7,7 @@ import 'package:location/location.dart';
 import 'dart:async';
 
 import 'package:flutter/services.dart';
+import 'package:pull_to_reach/pull_to_reach.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 
@@ -74,7 +75,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
       );
     } else {
       body = Container(
-        child: CroakFeed(croaksJSON)
+        child: ScrollToIndexConverter(child: CroakFeed(croaksJSON))
       );
     }
 
@@ -88,61 +89,69 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
       );
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        //title: ScreenTitle('Tha Pond'),
-        title: Text('Tha Pond'),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.refresh),
-            onPressed: () {
-              refresh();
-            },
-          ),
-          PopupMenuButton(
-            itemBuilder: (BuildContext context) => <PopupMenuEntry<SortMethod>>[
-              PopupMenuItem<SortMethod>(
-                value: SortMethod.date_asc,
-                child: Wrap( children: [ Icon(Icons.arrow_upward), Text('Time') ] ),
-              ),
-              PopupMenuItem<SortMethod>(
-                value: SortMethod.date_des,
-                child: Wrap( children: [ Icon(Icons.arrow_downward), Text('Time') ] ),
-              ),
-              PopupMenuItem<SortMethod>(
-                value: SortMethod.dist_asc,
-                child: Wrap( children: [ Icon(Icons.arrow_upward), Text('Distance') ] ),
-              ),
-              PopupMenuItem<SortMethod>(
-                value: SortMethod.dist_des,
-                child: Wrap( children: [ Icon(Icons.arrow_downward), Text('Distance') ] ),
-              ),
-              PopupMenuItem<SortMethod>(
-                value: SortMethod.score_asc,
-                child: Wrap( children: [ Icon(Icons.arrow_upward), Text('Score') ] ),
-              ),
-              PopupMenuItem<SortMethod>(
-                value: SortMethod.score_des,
-                child: Wrap( children: [ Icon(Icons.arrow_downward), Text('Score') ] ),
-              ),
-              
-            ],
-            onSelected: (v){
-              sortOptions(v);
-            },
-          )
-        ],
-      ),
-      body: body
+    return PullToReachContext(
+      indexCount: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          //title: ScreenTitle('Tha Pond'),
+          title: Text('Tha Pond'),
+          actions: <Widget>[
+            ReachableIcon(
+              icon: Icon(Icons.refresh),
+              onSelect: () {
+                refresh();
+              },
+              index: 1
+            ),
+            Reachable(
+              index: 2,
 
-      //still deciding whether to use button to dialog for composing croak, or separe entire screen
-      /*   
-      floatingActionButton: FloatingActionButton(
-            child: new Icon(Icons.add),
-            onPressed: makeCroak,
-          ),
-      */
-      );
+              child: PopupMenuButton(
+                itemBuilder: (BuildContext context) => <PopupMenuEntry<SortMethod>>[
+                  PopupMenuItem<SortMethod>(
+                    value: SortMethod.date_asc,
+                    child: Wrap( children: [ Icon(Icons.arrow_upward), Text('Time') ] ),
+                  ),
+                  PopupMenuItem<SortMethod>(
+                    value: SortMethod.date_des,
+                    child: Wrap( children: [ Icon(Icons.arrow_downward), Text('Time') ] ),
+                  ),
+                  PopupMenuItem<SortMethod>(
+                    value: SortMethod.dist_asc,
+                    child: Wrap( children: [ Icon(Icons.arrow_upward), Text('Distance') ] ),
+                  ),
+                  PopupMenuItem<SortMethod>(
+                    value: SortMethod.dist_des,
+                    child: Wrap( children: [ Icon(Icons.arrow_downward), Text('Distance') ] ),
+                  ),
+                  PopupMenuItem<SortMethod>(
+                    value: SortMethod.score_asc,
+                    child: Wrap( children: [ Icon(Icons.arrow_upward), Text('Score') ] ),
+                  ),
+                  PopupMenuItem<SortMethod>(
+                    value: SortMethod.score_des,
+                    child: Wrap( children: [ Icon(Icons.arrow_downward), Text('Score') ] ),
+                  ),
+                  
+                ],
+                //onSelected: (v){
+                  //sortOptions(v);
+                //},
+              ),
+            )
+          ],
+        ),
+        body: body
+
+        //still deciding whether to use button to dialog for composing croak, or separe entire screen
+        /*   
+        floatingActionButton: FloatingActionButton(
+              child: new Icon(Icons.add),
+              onPressed: makeCroak,
+            ),
+        */
+        ),
+    );
   }
 
   //fetch the croaks according to query

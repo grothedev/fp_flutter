@@ -123,6 +123,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.7.0"
+  pull_to_reach:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: dd4f32db82880523d707ef98cb0029f4c26197fb
+      url: "https://github.com/TiO-Design/pull_to_reach.git"
+    source: git
+    version: "0.0.1"
   quiver:
     dependency: transitive
     description:
