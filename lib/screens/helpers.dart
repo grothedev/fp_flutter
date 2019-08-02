@@ -172,7 +172,7 @@ class FeedItemOptionsDialog extends Dialog{
 class ComposeCroakDialog extends Dialog{
   
   final contentController = TextEditingController();
-  final fk = GlobalKey<FormState>();// form key
+  static final fk = GlobalKey<FormState>();// form key
   final Map parent; //croak replying to
   bool anon = true;
 

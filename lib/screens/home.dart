@@ -173,6 +173,7 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
                                     pref.setInt('radius', r.toInt());
                                   });
                                   store.setRadius(r.toInt());
+                                  radiusSlider = v;
                                 });
                               },
                               label: 'Distance',
