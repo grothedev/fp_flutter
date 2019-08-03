@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fp/state_container.dart';
 import 'package:location/location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:intl/intl.dart';
 
 import '../models.dart';
 import '../util.dart' as util;
@@ -37,6 +38,7 @@ class CroakFeedState extends State<CroakFeed>{
   @override
   void initState(){
     super.initState();
+    
   }
 
   @override
@@ -63,6 +65,8 @@ class CroakFeedState extends State<CroakFeed>{
 
     favs.add(false);
     Map c = croaksJSON[i];
+    String timestamp = DateFormat(c['created_at']).format(DateTime.parse(c['created_at']));
+
     return new Container(
       padding: EdgeInsets.only(left: 6, right: 6),
       decoration: BoxDecoration(
@@ -121,8 +125,8 @@ class CroakFeedState extends State<CroakFeed>{
         subtitle: Row(
           children: <Widget>[
             c.containsKey('distance') ? 
-                              Text(c['created_at'] + ', ' + c['distance'].toInt().toString() + ' km')
-                              : Text(c['created_at']),
+                              Text(timestamp + ', ' + c['distance'].toInt().toString() + ' km')
+                              : Text(timestamp),
             Spacer(
               flex: 2
             ),

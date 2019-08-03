@@ -40,6 +40,7 @@ dependencies:
   pull_to_reach:
     git:
       url: https://github.com/TiO-Design/pull_to_reach.git
+  intl:
   
 dev_dependencies:
   flutter_test:
