@@ -52,7 +52,7 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
   @override
   Widget build(BuildContext context){
     store = StateContainer.of(context);
-    radius = store.state.query.radius.toDouble();
+    if (store.state.query.radius != null) radius = store.state.query.radius.toDouble();
 
     return Scaffold(
       //appBar: ScreenTitle('Welcome to FrogPond'),
@@ -77,125 +77,131 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
               key: fk,
               child: Padding(
                 padding: EdgeInsets.all(12.0),
-                child: Column(
-                  children: [
-                    Container(
-                      child: TextFormField( //TAGS INPUT
+                child: Center(
+                  child: Column(
+                    children: [
+                      Container(
+                        child: TextFormField( //TAGS INPUT
+                          controller: tagsText,
+                          decoration: InputDecoration(
+                            icon: Icon(Icons.category),
+                            labelText: 'Tags'
+                          ),
+                          maxLines: 3,
+                          minLines: 1,
+                          
+                        ),
+                        margin: formElemMargin
+                      ),
+                      Container(
+                        margin: formElemMargin,
+                        child: (store.state.location == null) ? Text('Waiting for location...') 
+                                        : SuggestedTags(store.state.location, updateQueryTags), //tell it what to do when one of its chips is selected
+                      ),
+                      //phase 2: keywords
+                      /*
+                      TextFormField( //KEYWORDS INPUT
                         controller: tagsText,
                         decoration: InputDecoration(
-                          icon: Icon(Icons.category),
-                          labelText: 'Tags'
+                          icon: Icon(Icons.message),
+                          labelText: 'Keywords'
                         ),
                         maxLines: 3,
                         minLines: 1,
-                        
                       ),
-                      margin: formElemMargin
-                    ),
-                    Container(
-                      margin: formElemMargin,
-                      child: SuggestedTags(store.state.location, updateQueryTags), //tell it what to do when one of its chips is selected
-                    ),
-                    //phase 2: keywords
-                    /*
-                    TextFormField( //KEYWORDS INPUT
-                      controller: tagsText,
-                      decoration: InputDecoration(
-                        icon: Icon(Icons.message),
-                        labelText: 'Keywords'
-                      ),
-                      maxLines: 3,
-                      minLines: 1,
-                    ),
-                    */
-                    Container(
-                      child: CheckboxListTile(
-                        title: Text('All (on) or Some (off):'),
-                        value: kwdAll,
-                        onChanged: (v){
-                          setState((){
-                            SharedPreferences.getInstance().then((pref){
-                              pref.setBool("query_all", v);
-                            });
-                            kwdAll = v;
-                          });
-                          store.toggleExclusive();
-                        },
-                        activeColor: Colors.green,
-                        
-                      ),
-                      margin: formElemMargin
-                    ),
-                    Row(
-                      children: [
-                        Container(
-                          constraints: BoxConstraints(
-                            maxWidth: .2 * MediaQuery.of(context).size.width
-                          ),
-                          child: TextFormField(
-                            keyboardType: TextInputType.number,
-                            controller: radText,
-                            onEditingComplete: (){
-                              radius = double.parse(radText.text);
-                              print('got rad ' + radius.toString());
+                      */
+                      Container(
+                        child: CheckboxListTile(
+                          title: Text('Search for croaks with all (on) or some (off) of these tags?'),
+                          value: kwdAll,
+                          onChanged: (v){
+                            setState((){
                               SharedPreferences.getInstance().then((pref){
-                                pref.setInt('radius', radius.toInt());
+                                pref.setBool("query_all", v);
                               });
-                              store.setRadius(radius.toInt());              
-                            },
-                            decoration: InputDecoration(
-                              icon: Icon(Icons.directions),
-                              labelText: 'Radius',
-                                
-                            ),
-                            maxLines: 1,
-                            minLines: 1,
-                            expands: false,
-                          ),
-                          margin: formElemMargin
+                              kwdAll = v;
+                            });
+                            store.toggleExclusive();
+                          },
+                          activeColor: Colors.green,
+                          
                         ),
-                        Text('km')
-                      ]
-                    ),
-                    Container(
-                      padding: EdgeInsets.only(left: 5, right: 8),
-                      child: Row( 
-                        children: <Widget>[
-                          
-                          Expanded(
-                            child: Slider(
-                              onChanged: (v){
-                                double r = v;
-                                setState(() {
-                                  radius = r;
-                                  radText.text = radius.toString();
-                                  SharedPreferences.getInstance().then((pref){
-                                    pref.setInt('radius', r.toInt());
-                                  });
-                                  store.setRadius(r.toInt());
-                                  radiusSlider = v;
-                                });
-                              },
-                              label: 'Distance',
-                              value: radiusSlider,
-                              min: 2,
-                              max: 100,
-                              divisions: 40,
-                              
-                            ),
-                          ),
-                          
-                        ],
+                        //margin: formElemMargin,
+                        width: MediaQuery.of(context).size.width * .7
                       ),
-                    ),
-                    Container(
-                      child: (locStr == null) ? Text('Getting location...') : Text(locStr),
-                      margin: EdgeInsets.only(bottom: 2),
-                      padding: EdgeInsets.only(left: 8),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('Search for croaks within '),
+                          Container(
+                            constraints: BoxConstraints(
+                              maxWidth: .2 * MediaQuery.of(context).size.width
+                            ),
+                            child: TextFormField(
+                              keyboardType: TextInputType.number,
+                              controller: radText,
+                              onEditingComplete: (){
+                                radius = double.parse(radText.text);
+                                print('got rad ' + radius.toString());
+                                SharedPreferences.getInstance().then((pref){
+                                  pref.setInt('radius', radius.toInt());
+                                });
+                                store.setRadius(radius.toInt());              
+                              },
+                              decoration: InputDecoration(
+                                icon: Icon(Icons.directions),
+                                labelText: 'Radius',
+                                  
+                              ),
+                              maxLines: 1,
+                              minLines: 1,
+                              expands: false,
+                            ),
+                            margin: formElemMargin
+                          ),
+                          Text('km')
+                        ]
+                      ),
+                      Container(
+                        padding: EdgeInsets.only(left: 5, right: 8),
+                        child: Row( 
+                          children: <Widget>[
+                            
+                            Expanded(
+                              child: Slider(
+                                onChanged: (v){
+                                  double r = v;
+                                  setState(() {
+                                    radius = r;
+                                    radText.text = radius.toString();
+                                    SharedPreferences.getInstance().then((pref){
+                                      pref.setInt('radius', r.toInt());
+                                    });
+                                    store.setRadius(r.toInt());
+                                    radiusSlider = v;
+                                  });
+                                },
+                                label: 'Distance',
+                                value: radiusSlider,
+                                min: 2,
+                                max: 100,
+                                divisions: 40,
+                                
+                              ),
+                            ),
+                            
+                          ],
+                        ),
+                      ),
+                      Container(
+                        child: (locStr == null) ? Text('Getting location...') : Text(locStr),
+                        margin: EdgeInsets.only(bottom: 2),
+                        padding: EdgeInsets.only(left: 8),
 
-                    )
-                  ],
-                  
+                      )
+                    ],
+                    
+                  ),
                 )
               ),
             ),
