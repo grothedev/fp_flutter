@@ -80,13 +80,28 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
     }
 
     if (stalled){
-      return Center(
+      body = Container(
+        padding: EdgeInsets.only(bottom: 40),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Text('The pond is still...'),
+              RaisedButton(
+                child: Text('Refresh'),
+                onPressed: () => refresh(),
+              ),
+            ]
+          )
+        )
+      );
+      /*return Center(
           child: RaisedButton(
             child: Text('Refresh'),
             onPressed: () => refresh(),
           ),
           heightFactor: 10,
-      );
+      );*/
     }
 
     return PullToReachContext(

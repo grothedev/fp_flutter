@@ -92,6 +92,7 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                       ),
                     ),
                     Container(
+                      alignment: Alignment.center,
                       padding: formPadding,
                       margin: formElemMargin,
                       child: SuggestedTags(store.state.location, selectTagChip),
@@ -111,6 +112,7 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                         //border: Border(bottom: BorderSide(color: Theme.of(context).dividerColor)),
                       ),
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           RaisedButton(
                             onPressed: getFile,

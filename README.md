@@ -2,12 +2,16 @@ FrogPond mobile application, made with flutter. https://flutter.dev/
 
 TODO:
 * fix db stuff
-* intro "tutorial" and better homescreen text
+* intro "tutorial" 
+* better homescreen text
 * about page (feedback, source, )
 * UI stuff 
   - show video or image or audio player based on file type. 
   - fix feed list formatting
   - load screen upon submit croak
+  - feed screen when no croaks in area: add appbar and message
+  - pull to refresh
+  - ripple-like watermarks??
 * notifications
 * put entire roadmap and feature plans and vision here
 * post-initial-release features
