@@ -116,7 +116,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
                             c['files'] != null && c['files'].length > 0 ? 
                             Container(
                               height: MediaQuery.of(context).size.height * .3,
-                              child: fileView(c['files'])
+                              child: Padding( padding: EdgeInsets.only(bottom: 6), child: fileView(c['files']) ),
                              ) : Center(),
                             Container(
                               decoration: BoxDecoration(

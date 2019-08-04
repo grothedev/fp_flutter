@@ -60,7 +60,6 @@ Future<String> postCroak(Map<String, dynamic> req, File f) async {
     req.forEach((k, v) {
       print(k + ': ' +v.toString());
     });
-
     var res = await http.Client().post(api_url+'croaks', body: req);
     print('rest response: ' + res.body);
     return res.body;

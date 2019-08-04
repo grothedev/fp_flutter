@@ -160,7 +160,7 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                           onPressed: (){
                             if (fk.currentState.validate()){
                               Scaffold.of(context).showSnackBar(SnackBar(content: Text('Croaking...')));
-                              tags.addAll(tagsText.text.split(' '));
+                              tags.addAll(tagsText.text.split(' ')); // i have no idea why this would generate duplicate tags with no duplicate input
                               tags.removeWhere((t) => t==''); //for some reason there are empty strings ending up in the list
                               
                               print('croakin with tags: ' + tags.toString());

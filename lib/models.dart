@@ -55,7 +55,14 @@ class Croak{
   final int type;
 
   
-  Croak({this.id, this.pid, this.content, this.timestamp, this.score, this.lat, this.lon, this.type, this.tags, this.files});
+  Croak({this.id, this.pid, this.content, this.timestamp, this.score, this.lat, this.lon, this.type, this.tags, this.files}){
+    
+    List<String> ts = []; //temp list to fix duplicates
+    tags.forEach((t){ 
+      if (!ts.contains(t)) ts.add(t);
+    });
+    this.tags = ts;
+  }
 
 
   Map<String, dynamic> toMap(){

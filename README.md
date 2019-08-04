@@ -5,6 +5,7 @@ TODO:
 * intro "tutorial" 
 * better homescreen text
 * about page (feedback, source, )
+* looks like feed sort stopped working so will have to fix that
 * UI stuff 
   - show video or image or audio player based on file type. 
   - fix feed list formatting
@@ -12,8 +13,8 @@ TODO:
   - feed screen when no croaks in area: add appbar and message
   - pull to refresh
   - ripple-like watermarks??
+* attach file to reply
 * notifications
-* put entire roadmap and feature plans and vision here
 * post-initial-release features
   - voting
   - different croak types (poll, resource bank, plant, tool library, event)
@@ -34,3 +35,6 @@ uses some packages:
   file picker: https://pub.dev/packages/file_picker
   toast: https://pub.dev/packages/toast
 
+Development Timeline:
+  Initial release by August 20th (optimistic), latest 24th
+  have docker and server hosting ready by 12th
