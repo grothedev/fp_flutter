@@ -52,26 +52,22 @@ class CroakDetailState extends State<CroakDetailScreen>{
     if (StateContainer.of(context).state.updateReplies) getReplies();
 
     String croakURL = ro_url_pre+c['id'].toString();
-    return PullToReachContext(
-      indexCount: 2,
-      child: Scaffold( 
+    return Scaffold( 
         appBar: AppBar(
           title: Text(c['created_at']),
           actions: [
-            ReachableIcon(
+            IconButton(
               icon: Icon(Icons.share),
-              onSelect: (){
+              onPressed: (){
                 Clipboard.setData(ClipboardData(text: croakURL));
                 Toast.show('URL copied to clipboard', context);
               },
-              index: 1
             ),
-            ReachableIcon(
+            IconButton(
               icon: Icon(Icons.refresh),
-              onSelect: (){
+              onPressed: (){
                 getReplies();
               },
-              index: 2
             )
           ]
         ),
@@ -130,10 +126,9 @@ class CroakDetailState extends State<CroakDetailScreen>{
                               key: GlobalKey(),
                               flex: 1,
                               child: replies != null && replies.length > 0 ? 
-                                ScrollToIndexConverter(
-                                  child: CroakFeed(
+                                CroakFeed(
                                   replies
-                                )) :
+                                ) :
                                 Text('No Replies')
                             ),
                           ],
@@ -207,7 +202,6 @@ class CroakDetailState extends State<CroakDetailScreen>{
           child: Icon(Icons.reply),
           
         ),
-      ),
     );
   }
 
