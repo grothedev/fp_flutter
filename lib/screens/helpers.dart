@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fp/state_container.dart';
 import 'package:location/location.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 
@@ -16,12 +17,13 @@ import '../api.dart' as api;
 class CroakFeed extends StatefulWidget{
   //final int pid; //don't think this is needed anymore
   final List croaksJSON;
+  final Function refresh;
 
-  CroakFeed(this.croaksJSON);
+  CroakFeed(this.croaksJSON, this.refresh);
 
   @override
   State<StatefulWidget> createState() {
-    return CroakFeedState(croaksJSON);
+    return CroakFeedState(croaksJSON, refresh);
   }
 }
 
@@ -30,8 +32,10 @@ class CroakFeedState extends State<CroakFeed>{
   List croaksJSON; //json array
   List<bool> favs;
   StateContainerState store;
+  RefreshController refreshController = RefreshController(initialRefresh: false);
+  Function refresh;
 
-  CroakFeedState(this.croaksJSON){
+  CroakFeedState(this.croaksJSON, this.refresh){
     favs = new List<bool>();
   }
 
@@ -43,6 +47,26 @@ class CroakFeedState extends State<CroakFeed>{
 
   @override
   Widget build(BuildContext context) {
+
+    return SmartRefresher(
+        enablePullDown: true,
+        enablePullUp: false,
+       // header: Text('uhh'),
+        controller: refreshController,
+        onRefresh: () => (){
+          refresh(croaksJSON);
+        },
+        child: ListView.builder(
+            itemCount: croaksJSON == null ? 0 : croaksJSON.length,
+            itemBuilder: (context, i) {
+              return new Container(
+                child: feedItem(i),
+              );
+            },
+            shrinkWrap: true,    
+         )
+      );
+
     return ListView.builder(
           itemCount: croaksJSON == null ? 0 : croaksJSON.length,
           itemBuilder: (context, i) {

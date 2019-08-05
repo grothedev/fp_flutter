@@ -4,8 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fp/state_container.dart';
-import 'package:pull_to_reach/pull_to_reach.dart';
-import 'package:pull_to_reach/widgets/pull_to_reach_scope.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
@@ -127,7 +125,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
                               flex: 1,
                               child: replies != null && replies.length > 0 ? 
                                 CroakFeed(
-                                  replies
+                                  replies, getRepliesList
                                 ) :
                                 Text('No Replies')
                             ),
@@ -212,6 +210,13 @@ class CroakDetailState extends State<CroakDetailScreen>{
       });
       StateContainer.of(context).gotReplies();
     });
+  }
+
+  void getRepliesList(croaks){
+    util.getReplies(c['id']).then((r){
+      croaks = r;
+    });
+    StateContainer.of(context).gotReplies(); 
   }
 
   void copyURL(){

@@ -7,7 +7,7 @@ import 'package:location/location.dart';
 import 'dart:async';
 
 import 'package:flutter/services.dart';
-import 'package:pull_to_reach/pull_to_reach.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 
@@ -39,6 +39,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   List croaksJSON;
   bool stalled = false; //show a refresh button and don't fetch
   Widget body;
+  RefreshController refreshController = RefreshController(initialRefresh: false);
 
   @override
   void initState(){
@@ -74,9 +75,9 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
           ]
       );
     } else {
-      body = Container(
-        child: CroakFeed(croaksJSON)
-      );
+     body = Container(
+       child: CroakFeed(croaksJSON, refresh)
+     );
     }
 
     if (stalled){
@@ -179,6 +180,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
           fetching = false;
           stalled = true;
         });
+        refreshController.refreshCompleted();
         return;
       }
       if (cks.length == 0){
@@ -227,6 +229,81 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
           fetching = false;
           stalled = false;
           croaksJSON = cs;
+        });
+        print('feed got croaks.'); 
+      }
+      
+    }).timeout(new Duration(seconds: 15), 
+        onTimeout: (){
+          print('timed out while fetching croaks');
+          Scaffold.of(context).showSnackBar(SnackBar(content: Text('Unable to Reach Server to Fetch Croaks') ));
+          setState(() {
+            fetching = false;
+            stalled = true;
+          });
+        }
+      );
+    
+  }
+
+  refreshList(croaks){ //new function for being passed the list to populate with results, for the croakfeed widget which now takes a onRefresh function (to get the fancy pull-to-refresh graphics working)
+    //store.fetchCroaks(pid);
+    int lcg; //don't worry about time of last update if needUpdate, for example query changed
+    if (!store.state.needsUpdate) lcg = store.state.lastCroaksGet; 
+    util.getCroaks(store.state.query, lcg, store.state.location).then((cks){
+      if (cks == null){
+        print('failed to fetch croaks');
+        Scaffold.of(context).showSnackBar(SnackBar(content: Text('There was a problem while attempting to fetch croaks') ));
+        setState(() {
+          fetching = false;
+          stalled = true;
+        });
+        refreshController.refreshCompleted();
+        return;
+      }
+      if (cks.length == 0){
+        Scaffold.of(context).showSnackBar(SnackBar(content: Text('There are no croaks within this area')));
+        setState(() {
+          fetching = false;
+          stalled = true;
+        });
+        return;
+      }
+      List cs = List.from(cks);
+      //removing croaks which are comments (actually this should probably be dealt with on server)
+      cs = cs.where( (c) => c['p_id'] == null || c['p_id'] == 0  ).toList(); 
+      for (int i = 0; i < cs.length; i++){
+        
+        if (cs[i]['p_id'] == null){
+          //cs.add(List.from(cks[i]));
+          
+          if (cs[i]['tags'] is String){
+            String tagsStr = cs[i]['tags'];
+            cs[i]['tags'] = List();
+            List tags = tagsStr.split(',');
+            for (int j = 0; j < tags.length; j++){
+              cs[i]['tags'].add({'label': tags[j]});
+            } //to make compatible with CroakFeed parsing
+          }
+
+          /*
+          if (cs.last['tags'] is String){
+            String tagsStr = cs.last['tags'];
+            cs.last['tags'] = [];
+            List tags = tagsStr.split(',');
+            for (int j = 0; j < tags.length; j++){
+              cs.last['tags'].add({'label': tags[j]});
+            } //to make compatible with CroakFeed parsing
+          } */
+            
+        }
+      }
+      if (mounted){
+        setState(() {
+          fetching = false;
+          stalled = false;
+          croaksJSON = cs;
+          croaks = cs;
         });
         print('feed got croaks.'); 
       }
