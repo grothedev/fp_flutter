@@ -36,11 +36,20 @@ class FrogPondApp extends StatelessWidget {
             body2: TextStyle(
               fontFamily: 'Roboto',
               fontSize: 12,
-              color: Colors.black87 
+              color: Colors.black87,
+              fontWeight: FontWeight.w500
             ),
             subhead: TextStyle(
               fontSize: 14,
+            ),
+            subtitle: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w300,
               
+            ),
+            caption: TextStyle(
+              fontSize: 12,
+
             ),
             headline: TextStyle(
               fontSize: 16,

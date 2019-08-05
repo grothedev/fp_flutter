@@ -70,124 +70,127 @@ class CroakDetailState extends State<CroakDetailScreen>{
           ]
         ),
         body: Container(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Title(
-                          child: Text(' / | \\ ', 
-                                  //style: TextStyle(decoration: TextDecoration.underline)
-                                 ),
-                          color: Colors.black
-                        ),
-                        Container( //croak content  
-                          child: Text(c['content'], style: Theme.of(context).textTheme.body1),
-                          alignment: Alignment.topLeft,
-                          decoration: BoxDecoration(
-                            
-                            border: Border(
-                              bottom: BorderSide(width: 1.0, color: Theme.of(context).dividerColor),
-                              top: BorderSide.none,
-                              right: BorderSide.none,
-                              left: BorderSide.none,
-                              
-                            ),
-                          ),
-                          padding: EdgeInsets.only(left: 14.0, bottom: 6),
-                          margin: EdgeInsets.only(bottom: 8.0),
-                        ),
-                        Container(
-                          alignment: Alignment.topLeft,
-                          child: Text(tags.join(', '), style: Theme.of(context).textTheme.body2),
-                          margin: EdgeInsets.only(bottom: 8.0),
-                          padding: EdgeInsets.only(left: 22.0, bottom: 6),
-                        ),
-                        
-                            c['files'] != null && c['files'].length > 0 ? 
-                            Container(
-                              height: MediaQuery.of(context).size.height * .3,
-                              child: Padding( padding: EdgeInsets.only(bottom: 6), child: fileView(c['files']) ),
-                             ) : Center(),
-                            Container(
-                              decoration: BoxDecoration(
-                                border: Border(
-                                  bottom: BorderSide(color: Theme.of(context).dividerColor),
-                                )
-                              ),
-                              margin: EdgeInsets.only(bottom: 12.0),
-                            ),
-                            Expanded(
-                              key: GlobalKey(),
-                              flex: 1,
-                              child: replies != null && replies.length > 0 ? 
-                                CroakFeed(
-                                  replies, getReplies
-                                ) :
-                                Text('No Replies')
-                            ),
-                          ],
-                  ),
-                ),
-                /*Container(
-                  padding: EdgeInsets.all(8.0),
-                  alignment: Alignment(0, 1),
-                  child: Form(
-                      key: fk,
-                      child: Column(
+         
+            
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: ListView(
+                        //mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          TextFormField(
-                            controller: contentController,
-                            validator: (value){
-                                if (value.isEmpty) return 'Enter some text';
-                            },
-                            decoration: InputDecoration(
-                              icon: Icon(Icons.message),
-                              labelText: 'Reply',      
-                            ),
-                            maxLines: 3,
-                            minLines: 1,
-                            autofocus: false,
-                            autovalidate: false,
-                            
+                          Title(
+                            child: Text(' / | \\ ', 
+                                    //style: TextStyle(decoration: TextDecoration.underline)
+                                   ),
+                            color: Colors.black,
                           ),
-                            //force anon for phase 1
-                            /*
-                            CheckboxListTile(
-                              value: this.anon,
-                              title: Text('anon'),
-                              onChanged: (v){
-                                anon = !anon;
-                              },
-
-                            ),
-                            */
-                            RaisedButton(
-                              onPressed: (){
-                                if (fk.currentState.validate()){
-                                  //Scaffold.of(context).showSnackBar(SnackBar(content: Text('Replying...')));
-                                  print('attempting to reply: ' + c['tags'].toString());
-                                  util.submitReply(c['id'], contentController.text, c['tags'], true).then((success){
-                                    if (success){
-                                      Toast.show("Ribbit", context);
-                                      contentController.clear();
-                                      getReplies();
-                                    }
-                                  }); //TODO add functionality to add additional tags?
-                                }
-                              },
-                              child: Text("Reply"),
+                          Container( //croak content  
+                            child: Text(c['content'], style: Theme.of(context).textTheme.body1),
+                            alignment: Alignment.topLeft,
+                            decoration: BoxDecoration(
                               
-                            )
-                        ]
-                      ),
+                              border: Border(
+                                bottom: BorderSide(width: 1.0, color: Theme.of(context).dividerColor),
+                                top: BorderSide.none,
+                                right: BorderSide.none,
+                                left: BorderSide.none,
+                                
+                              ),
+                            ),
+                            padding: EdgeInsets.only(left: 14.0, bottom: 6),
+                            margin: EdgeInsets.only(bottom: 8.0),
+                          ),
+                          Container(
+                            alignment: Alignment.topLeft,
+                            child: Text(tags.join(', '), style: Theme.of(context).textTheme.body2),
+                            margin: EdgeInsets.only(bottom: 8.0),
+                            padding: EdgeInsets.only(left: 22.0, bottom: 6),
+                          ),
+                          
+                              c['files'] != null && c['files'].length > 0 ? 
+                              Container(
+                                height: MediaQuery.of(context).size.height * .3,
+                                child: Padding( padding: EdgeInsets.only(bottom: 6), child: fileView(c['files']) ),
+                               ) : Center(),
+                              Container(
+                                decoration: BoxDecoration(
+                                  border: Border(
+                                    bottom: BorderSide(color: Theme.of(context).dividerColor),
+                                  )
+                                ),
+                                margin: EdgeInsets.only(bottom: 12.0),
+                              ),
+                              Expanded(
+                                key: GlobalKey(),
+                                flex: 1,
+                                child: replies != null && replies.length > 0 ? 
+                                  CroakFeed(
+                                    replies, getReplies
+                                  ) :
+                                  Text('No Replies')
+                              ),
+                            ],
                     ),
-                )*/
-              ],
-            ),
+                  ),
+                  /*Container(
+                    padding: EdgeInsets.all(8.0),
+                    alignment: Alignment(0, 1),
+                    child: Form(
+                        key: fk,
+                        child: Column(
+                          children: [
+                            TextFormField(
+                              controller: contentController,
+                              validator: (value){
+                                  if (value.isEmpty) return 'Enter some text';
+                              },
+                              decoration: InputDecoration(
+                                icon: Icon(Icons.message),
+                                labelText: 'Reply',      
+                              ),
+                              maxLines: 3,
+                              minLines: 1,
+                              autofocus: false,
+                              autovalidate: false,
+                              
+                            ),
+                              //force anon for phase 1
+                              /*
+                              CheckboxListTile(
+                                value: this.anon,
+                                title: Text('anon'),
+                                onChanged: (v){
+                                  anon = !anon;
+                                },
+
+                              ),
+                              */
+                              RaisedButton(
+                                onPressed: (){
+                                  if (fk.currentState.validate()){
+                                    //Scaffold.of(context).showSnackBar(SnackBar(content: Text('Replying...')));
+                                    print('attempting to reply: ' + c['tags'].toString());
+                                    util.submitReply(c['id'], contentController.text, c['tags'], true).then((success){
+                                      if (success){
+                                        Toast.show("Ribbit", context);
+                                        contentController.clear();
+                                        getReplies();
+                                      }
+                                    }); //TODO add functionality to add additional tags?
+                                  }
+                                },
+                                child: Text("Reply"),
+                                
+                              )
+                          ]
+                        ),
+                      ),
+                  )*/
+                ],
+              ),
+            
             padding: EdgeInsets.all(12.0),
         ),
         //bottomSheet: Text('bottomsheet test'),

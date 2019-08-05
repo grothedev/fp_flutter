@@ -1,11 +1,13 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fp/state_container.dart';
 import 'package:location/location.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
+import 'package:toast/toast.dart';
 
 import '../models.dart';
 import '../util.dart' as util;
@@ -100,39 +102,40 @@ class CroakFeedState extends State<CroakFeed>{
       ),
       child: ListTile(
         dense: false,
-        leading: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              child: Text( c['replies'].toString(), ),
-              padding: EdgeInsets.all(6),
-              alignment: Alignment.center,
-              constraints: BoxConstraints(
-                maxWidth: .03*MediaQuery.of(context).size.width,
-              ),
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.grey, width: 1, style: BorderStyle.solid,
+        leading: Container(
+              child: Container(
+                child: Text( c['replies'].toString(), ),
+                padding: EdgeInsets.all(2),
+                alignment: Alignment.center,
+                constraints: BoxConstraints(
+                  maxWidth: .06*MediaQuery.of(context).size.width,
+                  maxHeight: .06*MediaQuery.of(context).size.width,
                 ),
-                shape: BoxShape.circle
               ),
-              
-            ),
-          ], 
+                
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.grey, width: 1, style: BorderStyle.solid,
+                  ),
+                  shape: BoxShape.circle
+                ),
+                
         ),
+        
         title: RichText(
           
           text: TextSpan( 
             
             text: c['content'],
-            style: TextStyle(color: Colors.black),
+            style: Theme.of(context).textTheme.body2
           ),
-          maxLines: 2,
-          overflow: TextOverflow.fade,
+          maxLines: 4,
+          overflow: TextOverflow.clip,
           
         ),
-        trailing: Column(
+        
+        //favorite/upvote button disabled now because the app will probably start off just going by popularity (# replies)
+        /*trailing: Column(
           
           crossAxisAlignment: CrossAxisAlignment.start,
           //mainAxisAlignment: MainAxisAlignment.center,
@@ -144,31 +147,40 @@ class CroakFeedState extends State<CroakFeed>{
             //Text(c['score'].toString(), textAlign: TextAlign.center,)
           ],
           
-        ),
-        subtitle: Row(
-          children: <Widget>[
-            c.containsKey('distance') ? 
-                              Text(timestamp + ', ' + c['distance'].toInt().toString() + ' km')
-                              : Text(timestamp),
-            Spacer(
-              flex: 2
-            ),
-            c['p_id'] == null ? //only show tags for root feed
-            ConstrainedBox(constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * .3), child: Text(tags.join(', '), textAlign: TextAlign.right,)) :
-            Container()
-          
-          ]
+        ),*/
+        subtitle: Container(
+          margin: EdgeInsets.only(top: 2),
+          child: Row(
+            children: <Widget>[
+              c.containsKey('distance') ? 
+                                Text(timestamp + ', ' + c['distance'].toInt().toString() + ' km', style: Theme.of(context).textTheme.subtitle,)
+                                : Text(timestamp, style: Theme.of(context).textTheme.subtitle),
+              Spacer(
+                flex: 2
+              ),
+              c['p_id'] == null ? //only show tags for root feed
+              ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * .3), 
+                child: Text(tags.join(', '), 
+                        textAlign: TextAlign.right,
+                        style: Theme.of(context).textTheme.caption
+                      )
+                  
+              ) 
+              : Container()
+            
+            ]
+          ),
         ),
         onTap: (){
           Navigator.push(this.context, MaterialPageRoute(
             builder: (context) => CroakDetailScreen(c)
           ));
         },
-        contentPadding: EdgeInsets.all(4),
-        onLongPress: ((){
-          Navigator.push(this.context, MaterialPageRoute(
-            builder: (context) => FeedItemOptionsDialog()
-          ));
+        contentPadding: EdgeInsets.all(1),
+        onLongPress: ((){ 
+          Clipboard.setData(ClipboardData(text: c['content']));
+          Toast.show('Croak content copied to clipboard', context);
         }),
       )
       );
@@ -193,11 +205,15 @@ class CroakFeedState extends State<CroakFeed>{
 
 }
 
-//pop-up of list of actions when long press a croak on the feed
+//pop-up of list of actions when long press a croak on the feed. currently unused as there is only one option (copy). what other options should there be? copy url as well
 class FeedItemOptionsDialog extends Dialog{
   @override
   Widget build(BuildContext context){
-
+    return SimpleDialog(
+      children: [
+        
+      ]
+    );
   }
 }
 

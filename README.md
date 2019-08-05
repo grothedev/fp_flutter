@@ -2,18 +2,20 @@ FrogPond mobile application, made with flutter. https://flutter.dev/
 
 TODO:
 * fix db stuff
+* save sort preferences
 * intro "tutorial" 
 * better homescreen text
 * about page (feedback, source, )
-* looks like feed sort stopped working so will have to fix that
 * UI stuff 
   - show video or image or audio player based on file type. 
   - fix feed list formatting
+  - time format
   - load screen upon submit croak
-  - pull to refresh
   - ripple-like watermarks??
+  - change wording: score to popularity?
 * attach file to reply
 * notifications
+* docker and aws or google app engine
 * post-initial-release features
   - voting
   - different croak types (poll, resource bank, plant, tool library, event)
@@ -40,3 +42,13 @@ uses some packages:
 Development Timeline:
   Initial release by August 20th (optimistic), latest 24th
   have docker and server hosting ready by 12th
+  release beta test by end of tues:
+    general info: what the app is supposed to do, purpose, how to submit bugs and feature suggestions, take screenshots of bugs
+    come up with list of specific suggestions i am seeking
+      options for long press croak
+      voting? or just stick with num of comments?
+      should identity association choice eventually be added?
+      signify OP in comments
+      attach file on replies
+  keep tackling as many tasks as possible everyday this week
+  write the about page and stuff while at airport
