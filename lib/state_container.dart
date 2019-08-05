@@ -66,6 +66,8 @@ class StateContainerState extends State<StateContainer>{
     if (state.query.exclusive == null) state.query.exclusive = false;
     //state.query.tags = prefs.getStringList('tags'); //tmp for dbging
     state.query.radius = prefs.getInt('radius');
+    if (state.query.radius == null) state.query.radius = 15;
+    
     state.needsUpdate = prefs.getBool('needs_update');
     
     if (state.lat == null || state.lon == null){

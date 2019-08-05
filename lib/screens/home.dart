@@ -18,7 +18,7 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
   SharedPreferences prefs;
   String locStr;
   StateContainerState store;
-  double radius = 30;
+  double radius;
   double radiusSlider = 30; //used just for the slider UI component
   
   EdgeInsets formPadding = EdgeInsets.all(6.0);
@@ -31,8 +31,8 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
         if (store.state.lat == null || store.state.lon == null){
           //store.getLocation();
           locStr = 'Getting Location...';
-        } else 
-        locStr = 'Your Location: ' + store.state.lat.toString() + ', ' + store.state.lon.toString();
+        } else locStr = 'Your Location: ' + store.state.lat.toString() + ', ' + store.state.lon.toString();
+        
       });
       
     });
@@ -52,7 +52,12 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
   @override
   Widget build(BuildContext context){
     store = StateContainer.of(context);
-    if (store.state.query.radius != null) radius = store.state.query.radius.toDouble();
+    if (store.state.query.radius != null) {
+      setState(() {
+        radius = store.state.query.radius.toDouble();
+        radText.text = radius.toString();
+      });
+    } 
 
     return Scaffold(
       //appBar: ScreenTitle('Welcome to FrogPond'),

@@ -144,9 +144,9 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
                 ),
                 
               ],
-              //onSelected: (v){
-                //sortOptions(v);
-              //},
+              onSelected: (v){
+                sortOptions(v);
+              },
             )
           ],
         ),
