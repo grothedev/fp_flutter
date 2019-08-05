@@ -7,6 +7,7 @@ TODO:
 * better homescreen text
 * about page (feedback, source, )
 * UI stuff 
+  - more hints (no spaces in tags, etc.)
   - show video or image or audio player based on file type. 
   - fix feed list formatting
   - time format

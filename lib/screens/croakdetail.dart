@@ -16,6 +16,21 @@ import 'helpers.dart';
 
 final String ro_url_pre = 'http://' + api.host + '/c/'; //prefix of url for fancy read-only webview
 
+
+class CroakDetailScreen extends StatefulWidget{
+  Map c;
+
+  CroakDetailScreen(Map c){
+    this.c = c;
+  }
+
+  @override
+  State<StatefulWidget> createState() {
+    return CroakDetailState(c);
+  }
+  
+}
+
 class CroakDetailState extends State<CroakDetailScreen>{
 
   Map c;
@@ -69,17 +84,9 @@ class CroakDetailState extends State<CroakDetailScreen>{
             )
           ]
         ),
-        body: Container(
-         
-            
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+        body: Wrap(
                 children: [
-                  Expanded(
-                    flex: 2,
-                    child: ListView(
-                        //mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
+                
                           Title(
                             child: Text(' / | \\ ', 
                                     //style: TextStyle(decoration: TextDecoration.underline)
@@ -87,7 +94,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
                             color: Colors.black,
                           ),
                           Container( //croak content  
-                            child: Text(c['content'], style: Theme.of(context).textTheme.body1),
+                            child: Flex( mainAxisSize: MainAxisSize.min, direction: Axis.vertical, children: [ Expanded(flex: 1, child: Text(c['content'], style: Theme.of(context).textTheme.body1) ) ]),
                             alignment: Alignment.topLeft,
                             decoration: BoxDecoration(
                               
@@ -132,7 +139,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
                                   Text('No Replies')
                               ),
                             ],
-                    ),
+                  
                   ),
                   /*Container(
                     padding: EdgeInsets.all(8.0),
@@ -167,6 +174,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
 
                               ),
                               */
+                              /*
                               RaisedButton(
                                 onPressed: (){
                                   if (fk.currentState.validate()){
@@ -184,15 +192,9 @@ class CroakDetailState extends State<CroakDetailScreen>{
                                 child: Text("Reply"),
                                 
                               )
-                          ]
-                        ),
-                      ),
-                  )*/
-                ],
-              ),
-            
-            padding: EdgeInsets.all(12.0),
-        ),
+                              */
+                          
+                       
         //bottomSheet: Text('bottomsheet test'),
         floatingActionButton: FloatingActionButton(
           onPressed: (){
@@ -260,18 +262,4 @@ class CroakDetailState extends State<CroakDetailScreen>{
     
     );
   }
-}
-
-class CroakDetailScreen extends StatefulWidget{
-  Map c;
-
-  CroakDetailScreen(Map c){
-    this.c = c;
-  }
-
-  @override
-  State<StatefulWidget> createState() {
-    return CroakDetailState(c);
-  }
-  
 }

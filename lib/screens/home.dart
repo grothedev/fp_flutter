@@ -69,7 +69,7 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
         child: Column(
           children: [
             Container(
-              child: Text('Welcome to the pond, young tadpole! Come grow some legs and croak with your frog breathren. \n Configure your search query and preferences on this screen. Swipe right to go for a swim or croak your own croak.',
+              child: Text('Welcome to the pond',
                 style: Theme.of(context).textTheme.headline,
                 maxLines: 5,
                 overflow: TextOverflow.visible,
