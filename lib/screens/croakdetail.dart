@@ -125,7 +125,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
                               flex: 1,
                               child: replies != null && replies.length > 0 ? 
                                 CroakFeed(
-                                  replies, getRepliesList
+                                  replies, getReplies
                                 ) :
                                 Text('No Replies')
                             ),
@@ -210,13 +210,6 @@ class CroakDetailState extends State<CroakDetailScreen>{
       });
       StateContainer.of(context).gotReplies();
     });
-  }
-
-  void getRepliesList(croaks){
-    util.getReplies(c['id']).then((r){
-      croaks = r;
-    });
-    StateContainer.of(context).gotReplies(); 
   }
 
   void copyURL(){

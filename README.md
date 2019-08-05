@@ -19,6 +19,9 @@ TODO:
   - different croak types (poll, resource bank, plant, tool library, event)
   - going to need to devise a better way of storing and managing croaks to improve performance when there might be thousands of croaks 
   - get by keywords on API
+  - possibly take picture from app https://flutter.dev/docs/cookbook/plugins/picture-using-camera
+      https://pub.dev/packages/camera
+* make a test class with test data structures etc. 
 
 SharedPreferences:
   * last_croaks_get (int) : ms since croaks were last retreived

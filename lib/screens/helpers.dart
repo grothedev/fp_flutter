@@ -1,3 +1,4 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fp/state_container.dart';
@@ -53,9 +54,7 @@ class CroakFeedState extends State<CroakFeed>{
         enablePullUp: false,
        // header: Text('uhh'),
         controller: refreshController,
-        onRefresh: () => (){
-          refresh(croaksJSON);
-        },
+        onRefresh: refresh,
         child: ListView.builder(
             itemCount: croaksJSON == null ? 0 : croaksJSON.length,
             itemBuilder: (context, i) {
@@ -175,6 +174,16 @@ class CroakFeedState extends State<CroakFeed>{
       );
   }
 
+  void testRefresh() async{
+    print('test refresh');
+    refreshController.refreshCompleted();
+    setState(() {
+      croaksJSON.add( {'id': 99, 'content': 'testrefresh', 'created_at': 'a time', 'p_id': null, 'tags': [], 'files': []} );
+    });
+    refreshController.loadComplete();
+
+  }
+
   //toggles "favorite" or normal for a croak  
   void fav(int id){
     setState((){
@@ -238,7 +247,14 @@ class ComposeCroakDialog extends Dialog{
                         
                       ),
                       RaisedButton(
-                        onPressed: ,
+                        onPressed: () => { 
+                              FilePicker.getFile(type: FileType.ANY).then((f){
+                                f.stat().then((s){
+                                  //todo file size check
+                                  //wat do here cause can't set state
+                                  print('reply attach file ' + f.path + ': ' + s.size.toString());
+                                });
+                            }) },
                         child: Text('Attach File')
                       ),
                         //force anon for phase 1
