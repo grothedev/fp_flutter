@@ -18,6 +18,7 @@ int lastUpdated;
 
 //suggested tags for an area
 Future<List> getTags(int n, LocationData location) async{
+  if (location==null) return api.getTags(n, null, null);
   return api.getTags(n, location.latitude, location.longitude);
 }
 
@@ -134,6 +135,7 @@ Future<LocationData> initLocation() async{
     }
       
   }
+
 
 double distance(double latA, double lonA, double latB, double lonB){
   latA = latA * pi/180;

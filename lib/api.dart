@@ -68,10 +68,10 @@ Future<String> postCroak(Map<String, dynamic> req, File f) async {
 
 //get most referenced n tags
 Future<List> getTags(int n, double lat, double lon) async{
-  if (lat == null) lat = 0; //TODO make a request option which bypasses location
+  if (lat == null) lat = 0;
   if (lon == null) lon = 0;
-  print('api get tags: ' + lat.toString() + ', ' + lon.toString());
-  var res = await http.get(api_url+'tags?n='+n.toString()+'&lat='+lat.toString()+'&lon='+lon.toString()).catchError((e){return null;});
+  //var res = await http.get(api_url+'tags?n='+n.toString()+'&lat='+lat.toString()+'&lon='+lon.toString()).catchError((e){return null;});
+  var res = await http.get(api_url+'tags?n='+n.toString()).catchError((e){return null;});
   print('api request: ' + api_url+'tags?n='+n.toString() );
   print('api response: ' + res.body.toString());
   return json.decode(res.body);

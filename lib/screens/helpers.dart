@@ -237,6 +237,10 @@ class ComposeCroakDialog extends Dialog{
                         autovalidate: false,
                         
                       ),
+                      RaisedButton(
+                        onPressed: ,
+                        child: Text('Attach File')
+                      ),
                         //force anon for phase 1
                         /*
                         CheckboxListTile(

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 //import 'sugtags.dart';
 import '../state_container.dart';
 import '../util.dart' as util;
+import '../utilwidg.dart' as utilw;
 import 'package:location/location.dart';
 import 'dart:async';
 
@@ -115,7 +116,15 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           RaisedButton(
-                            onPressed: getFile,
+                            onPressed: () => { 
+                              FilePicker.getFile(type: FileType.ANY).then((f){
+                                f.stat().then((s){
+                                  //todo file size check
+                                  setState(() {
+                                    file = f;
+                                  });
+                                });
+                            }) },
                             child: Text('Attach File'),
                             padding: EdgeInsets.all(8),
                           ),
@@ -196,13 +205,6 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
         )
       )
     );
-  }
-
-  Future getFile() async{ //currently supports one file; will provide multiple files in future if necessary
-    var f = await FilePicker.getFile(type: FileType.ANY);
-    setState((){
-      file = f;
-    });
   }
 
   @override
