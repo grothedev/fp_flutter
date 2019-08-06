@@ -288,7 +288,8 @@ class ComposeCroakDialog extends Dialog{
                           onPressed: (){
                             if (fk.currentState.validate()){
                               //Scaffold.of(context).showSnackBar(SnackBar(content: Text('Replying...')));
-                              Croak r = Croak();
+                              //Croak r = Croak();
+                              print('replying ' + parent.toString());
                               util.submitReply(parent['id'], contentController.text, parent['tags'], true).then((s){
                                 if (s){
                                   Navigator.pop(context);
@@ -297,7 +298,7 @@ class ComposeCroakDialog extends Dialog{
                                   Scaffold.of(context).showSnackBar(SnackBar(content: Text('Reply Failed')));
                                 }
                               }); //TODO add functionality to add additional tags?
-                            }
+                            } else print('invalid');
                           },
                           child: Text("Reply"),
 
