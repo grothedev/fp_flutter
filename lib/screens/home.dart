@@ -85,6 +85,7 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
                 child: Center(
                   child: Column(
                     children: [
+                      
                       Container(
                         child: TextFormField( //TAGS INPUT
                           controller: tagsText,
@@ -97,6 +98,9 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
                           
                         ),
                         margin: formElemMargin
+                      ),
+                      Text('Tags must be seperated by spaces, and cannot contain spaces or special characters',
+                        style: Theme.of(context).textTheme.caption
                       ),
                       Container(
                         margin: formElemMargin,

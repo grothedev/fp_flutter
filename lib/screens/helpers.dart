@@ -262,7 +262,7 @@ class ComposeCroakDialog extends Dialog{
                         autovalidate: false,
                         
                       ),
-                      RaisedButton(
+                     /*RaisedButton(
                         onPressed: () => { 
                               FilePicker.getFile(type: FileType.ANY).then((f){
                                 f.stat().then((s){
@@ -272,7 +272,7 @@ class ComposeCroakDialog extends Dialog{
                                 });
                             }) },
                         child: Text('Attach File')
-                      ),
+                      ),*/
                         //force anon for phase 1
                         /*
                         CheckboxListTile(
@@ -425,7 +425,7 @@ class SuggestedTagsState extends State<SuggestedTags> with AutomaticKeepAliveCli
       return Flex(
         direction: Axis.vertical,
         children: [
-          Text('Popular Tags', style: Theme.of(context).textTheme.subtitle,),
+          Text('Popular Tags', style: Theme.of(context).textTheme.subhead,),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Wrap(
