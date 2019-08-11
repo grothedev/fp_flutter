@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fp/state_container.dart';
+import 'package:intl/intl.dart';
 import 'package:location/location.dart';
 import 'dart:async';
 
@@ -196,7 +197,10 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
       //removing croaks which are comments (actually this should probably be dealt with on server)
       cs = cs.where( (c) => c['p_id'] == null || c['p_id'] == 0  ).toList(); 
       for (int i = 0; i < cs.length; i++){
+        DateTime dt = DateFormat('yyyy-mm-d HH:mm').parse(cs[i]['created_at']).toLocal();
+        cs[i]['timestampStr'] = dt.year.toString() + '/' + dt.month.toString() + '/' + dt.day.toString() + ' - ' + dt.hour.toString() + ':' + dt.minute.toString();
         
+
         if (cs[i]['p_id'] == null){
           //cs.add(List.from(cks[i]));
           

@@ -91,10 +91,6 @@ class CroakFeedState extends State<CroakFeed>{
 
     favs.add(false);
     Map c = croaksJSON[i];
-    DateTime dt = DateFormat('yyyy-mm-d HH:mm').parse(c['created_at']).toLocal();
-    String timestamp = dt.year.toString() + '/' + dt.month.toString() + '/' + dt.day.toString() + ' - ' + dt.hour.toString() + ':' + dt.minute.toString();
-    //String timestamp = "wtf";
-    //String timeStr = timestamp.
 
     return new Container(
       padding: EdgeInsets.only(left: 6, right: 6),
@@ -157,8 +153,8 @@ class CroakFeedState extends State<CroakFeed>{
           child: Row(
             children: <Widget>[
               c.containsKey('distance') ? 
-                                Text(timestamp + ', ' + c['distance'].toInt().toString() + ' km', style: Theme.of(context).textTheme.subtitle,)
-                                : Text(timestamp, style: Theme.of(context).textTheme.subtitle),
+                                Text(c['timestampStr'] + ', ' + c['distance'].toInt().toString() + ' km', style: Theme.of(context).textTheme.subtitle,)
+                                : Text(c['timestampStr'], style: Theme.of(context).textTheme.subtitle),
               Spacer(
                 flex: 2
               ),

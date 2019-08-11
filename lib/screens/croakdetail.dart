@@ -67,7 +67,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
     String croakURL = ro_url_pre+c['id'].toString();
     return Scaffold( 
         appBar: AppBar(
-          title: Text(c['created_at']),
+          title: Text(c['timestampStr']),
           actions: [
             IconButton(
               icon: Icon(Icons.share),
