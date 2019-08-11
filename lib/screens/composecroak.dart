@@ -165,35 +165,40 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                     Padding( //CROAK SUBMIT
                       padding: EdgeInsets.symmetric(vertical: 12.0),
                       child: Center(
-                        child: RaisedButton(
-                        
-                          onPressed: (){
-                            if (fk.currentState.validate()){
-                              Scaffold.of(context).showSnackBar(SnackBar(content: Text('Croaking...')));
-                              tags.addAll(tagsText.text.split(' ')); // i have no idea why this would generate duplicate tags with no duplicate input
-                              tags.removeWhere((t) => t==''); //for some reason there are empty strings ending up in the list
-                              
-                              print('croakin with tags: ' + tags.toString());
-                              util.submitCroak(croakText.text, tags, true, store.state.lat, store.state.lon, file).then((r){
-                                if (r){
-                                  Scaffold.of(context).removeCurrentSnackBar();
-                                  Scaffold.of(context).showSnackBar(SnackBar(content: Text('Success')));
-                                  setState((){
-                                    croakText.text = '';
-                                    tagsText.text = '';
-                                    file = null;
-                                  });
-                                  //TabBarView b = context.ancestorWidgetOfExactType(TabBarView);
-                                  //b.controller.animateTo(b.controller.previousIndex);
-                                } else {
-                                  Scaffold.of(context).removeCurrentSnackBar();
-                                  Scaffold.of(context).showSnackBar(SnackBar(content: Text('Croak failed to post')));
+                        child: IgnorePointer(
+                          ignoring: false,
 
-                                }
-                              });
-                            }
-                          },
-                          child: Text('Croak')
+                          child: RaisedButton(
+                            
+                            onPressed: (){
+                              if (fk.currentState.validate()){
+                                Scaffold.of(context).showSnackBar(SnackBar(content: Text('Croaking...')));
+                                tags.addAll(tagsText.text.split(' ')); // i have no idea why this would generate duplicate tags with no duplicate input
+                                tags.removeWhere((t) => t==''); //for some reason there are empty strings ending up in the list
+                                
+                                print('croakin with tags: ' + tags.toString());
+                                util.submitCroak(croakText.text, tags, true, store.state.lat, store.state.lon, file).then((r){
+                                  if (r){
+                                    
+                                    Scaffold.of(context).removeCurrentSnackBar();
+                                    Scaffold.of(context).showSnackBar(SnackBar(content: Text('Success')));
+                                    setState((){
+                                      croakText.text = '';
+                                      tagsText.text = '';
+                                      file = null;
+                                    });
+                                    //TabBarView b = context.ancestorWidgetOfExactType(TabBarView);
+                                    //b.controller.animateTo(b.controller.previousIndex);
+                                  } else {
+                                    Scaffold.of(context).removeCurrentSnackBar();
+                                    Scaffold.of(context).showSnackBar(SnackBar(content: Text('Croak failed to post')));
+
+                                  }
+                                });
+                              }
+                            },
+                            child: Text('Croak')
+                          ),
                         ),
                       )
                     )

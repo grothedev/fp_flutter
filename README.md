@@ -1,15 +1,14 @@
 FrogPond mobile application, made with flutter. https://flutter.dev/
 
 TODO:
-* fix db stuff
+* fix db stuff (is this necessary for the initial release?)
+    - when there are a lot of croaks, you certainly don't want so many people making requests all the time and repeatedly downloading so much data. 
 * save sort preferences
 * intro "tutorial" 
 * better homescreen text
 * about page (feedback, source, )
 * UI stuff 
-  - more hints (no spaces in tags, etc.)
-  - show video or image or audio player based on file type. 
-  - fix feed list formatting
+  - show video or audio player based on file type. 
   - time format
   - load screen upon submit croak
   - ripple-like watermarks??
@@ -25,6 +24,7 @@ TODO:
   - possibly take picture from app https://flutter.dev/docs/cookbook/plugins/picture-using-camera
       https://pub.dev/packages/camera
 * make a test class with test data structures etc. 
+* implement usage stats for API
 
 SharedPreferences:
   * last_croaks_get (int) : ms since croaks were last retreived

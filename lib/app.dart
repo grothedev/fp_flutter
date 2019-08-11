@@ -20,49 +20,48 @@ class FrogPondApp extends StatelessWidget {
   Widget build(BuildContext context) {
     bool intro = !File('databases/fp.db').existsSync();
     print('db found? ' + intro.toString());
-    
     return MaterialApp(
-        title: 'FrogPond',
-        theme: ThemeData(
-          primarySwatch: Colors.green,
-          accentColor: Colors.green,
-          backgroundColor: Color(0xFFEDEDED),
-          textTheme: TextTheme(
-            body1: TextStyle(
-              fontFamily: 'Roboto',
-              fontSize: 16,
-              color: Colors.black
-            ),
-            body2: TextStyle(
-              fontFamily: 'Roboto',
-              fontSize: 12,
-              color: Colors.black87,
-              fontWeight: FontWeight.w500
-            ),
-            subhead: TextStyle(
-              fontSize: 14,
-            ),
-            subtitle: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w300,
-              
-            ),
-            caption: TextStyle(
-              fontSize: 12,
-
-            ),
-            headline: TextStyle(
-              fontSize: 16,
-              fontFamily: 'Roboto',
-              fontWeight: FontWeight.bold,
-            )
+      title: 'FrogPond',
+      theme: ThemeData(
+        primarySwatch: Colors.green,
+        accentColor: Colors.green,
+        backgroundColor: Color(0xFFEDEDED),
+        textTheme: TextTheme(
+          body1: TextStyle(
+            fontFamily: 'Roboto',
+            fontSize: 16,
+            color: Colors.black
           ),
-          
+          body2: TextStyle(
+            fontFamily: 'Roboto',
+            fontSize: 12,
+            color: Colors.black87,
+            fontWeight: FontWeight.w500
+          ),
+          subhead: TextStyle(
+            fontSize: 14,
+          ),
+          subtitle: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w300,
+            
+          ),
+          caption: TextStyle(
+            fontSize: 12,
+
+          ),
+          headline: TextStyle(
+            fontSize: 16,
+            fontFamily: 'Roboto',
+            fontWeight: FontWeight.bold,
+          )
         ),
         
-        //home: intro ? IntroScreen() : RootView()
-        home: RootView()
-      );
+      ),
+      
+      //home: intro ? IntroScreen() : RootView()
+      home: RootView()
+    );
   }
 }
 
@@ -99,10 +98,11 @@ class RootState extends State<RootView> with SingleTickerProviderStateMixin, Aut
 
     SharedPreferences.getInstance().then((p){
       //TODO set things here, get filter specs, etc.
-      if (p.getInt('last_launch') == null){
-        p.setInt('last_launch', DateTime.now().millisecondsSinceEpoch);
-      }
-      if (p.getBool('query_all') == null) p.setBool('query_all', false);
+      
+        if (p.getInt('last_launch') == null){
+          p.setInt('last_launch', DateTime.now().millisecondsSinceEpoch);
+        }
+        if (p.getBool('query_all') == null) p.setBool('query_all', false);
       
     });
 

@@ -115,10 +115,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
             ),
 
             c['files'] != null && c['files'].length > 0 ? //FILE
-            Container(
-              height: MediaQuery.of(context).size.height * .16,
-              child: Padding( padding: EdgeInsets.only(bottom: 6), child: fileView(c['files']) ),
-            ) : Center(),
+            fileView(c['files']) : Center(),
 
             Container( //DIVIDER
               decoration: BoxDecoration(
@@ -185,27 +182,34 @@ class CroakDetailState extends State<CroakDetailScreen>{
       });
       
     }*/
-    if (fn.endsWith('.png') || fn.endsWith('.jpg') || fn.endsWith('.gif')){
-      return Center(
-        child: GestureDetector(
-          onTap: (){
-            launch('http://' + api.host + '/f/' + fn);
-          },
-          child: Image.network(
-            'http://' + api.host + '/f/' + fn,
-            fit: BoxFit.fitHeight,
-             
-          ),
-        )
-      );
-    } else return Center(
-      child: RaisedButton(
-        child: Text(c['files'][0]['filename'].toString()),
-        onPressed: (){
-          launch('http://' + api.host + '/f/' + c['files'][0]['filename']);
-        },
-      ),
     
+    if (fn.endsWith('.png') || fn.endsWith('.jpg') || fn.endsWith('.gif')){
+      return Container(
+        height: MediaQuery.of(context).size.height * .16, //was gonna try to figure out how to adjust the size based on resolution of image
+        child: Center(
+          child: GestureDetector(
+            onTap: (){
+              launch('http://' + api.host + '/f/' + fn);
+            },
+            child: Image.network(
+              'http://' + api.host + '/f/' + fn,
+              fit: BoxFit.fitHeight,
+              
+            ),
+          )
+        ),
+      );
+    } else return Container(
+      height: MediaQuery.of(context).size.height * .16,
+      child: Center(
+        child: RaisedButton(
+          child: Text(c['files'][0]['filename'].toString()),
+          onPressed: (){
+            launch('http://' + api.host + '/f/' + c['files'][0]['filename']);
+          },
+        ),
+      
+      ),
     );
   }
 }

@@ -3,10 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fp/state_container.dart';
+import 'package:intl/date_symbol_data_http_request.dart';
 import 'package:location/location.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:intl/intl.dart';
 import 'package:toast/toast.dart';
 
 import '../models.dart';
@@ -38,14 +38,15 @@ class CroakFeedState extends State<CroakFeed>{
   RefreshController refreshController = RefreshController(initialRefresh: false);
   Function refresh;
 
+
   CroakFeedState(this.croaksJSON, this.refresh){
     favs = new List<bool>();
   }
 
   @override
-  void initState(){
+  void initState() async{
     super.initState();
-    
+    await initializeDateFormatting('en_us', null);
   }
 
   @override
@@ -90,7 +91,9 @@ class CroakFeedState extends State<CroakFeed>{
 
     favs.add(false);
     Map c = croaksJSON[i];
-    String timestamp = DateFormat(c['created_at']).format(DateTime.parse(c['created_at']));
+    //String timestamp = DateFormat.yMMMMd('en-US').parse(c['created_at']).toString();
+    String timestamp = "wtf";
+    //String timeStr = timestamp.
 
     return new Container(
       padding: EdgeInsets.only(left: 6, right: 6),
