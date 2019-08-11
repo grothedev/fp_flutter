@@ -3,7 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fp/state_container.dart';
-import 'package:intl/date_symbol_data_http_request.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
 import 'package:location/location.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -44,9 +45,8 @@ class CroakFeedState extends State<CroakFeed>{
   }
 
   @override
-  void initState() async{
+  void initState(){
     super.initState();
-    await initializeDateFormatting('en_us', null);
   }
 
   @override
@@ -91,8 +91,9 @@ class CroakFeedState extends State<CroakFeed>{
 
     favs.add(false);
     Map c = croaksJSON[i];
-    //String timestamp = DateFormat.yMMMMd('en-US').parse(c['created_at']).toString();
-    String timestamp = "wtf";
+    DateTime dt = DateFormat('yyyy-mm-d HH:mm').parse(c['created_at']).toLocal();
+    String timestamp = dt.year.toString() + '/' + dt.month.toString() + '/' + dt.day.toString() + ' - ' + dt.hour.toString() + ':' + dt.minute.toString();
+    //String timestamp = "wtf";
     //String timeStr = timestamp.
 
     return new Container(
