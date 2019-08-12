@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -46,6 +48,13 @@ class CroakFeedState extends State<CroakFeed>{
   @override
   void initState(){
     super.initState();
+    
+    if (pip == null) return; //only do color association if this is a comment thread
+    Map ip_color = {};
+    for (var c in croaksJSON){
+      if (!ip_color.keys.contains(c['ip'])) ip_color[c['ip']] = Color(Random().nextInt(0xCC + 1<<24)); 
+      c['color'] = ip_color[c['ip']];
+    }
   }
 
   @override
@@ -76,8 +85,6 @@ class CroakFeedState extends State<CroakFeed>{
       tags.add(croaksJSON[i]['tags'][j]['label']);
     }
 
-    
-
     favs.add(false);
     Map c = croaksJSON[i];
 
@@ -86,7 +93,8 @@ class CroakFeedState extends State<CroakFeed>{
       decoration: BoxDecoration(
         border: Border.all(
           color: c['ip'] == pip ? Colors.green : Colors.grey,
-          width: .2,
+          //color: c['color'],
+          width: .3,
         ),
       ),
       child: ListTile(
@@ -105,7 +113,9 @@ class CroakFeedState extends State<CroakFeed>{
                 margin: EdgeInsets.only(left: 6, top: 2),
                 decoration: BoxDecoration(
                   border: Border.all(
-                    color: Colors.grey, width: 1, style: BorderStyle.solid,
+                    //color: Colors.grey,
+                    color: pip != null ? c['color'] : Colors.grey ,
+                    width: 1, style: BorderStyle.solid,
                   ),
                   shape: BoxShape.circle
                 ),

@@ -88,7 +88,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
         body: Column(
           children: [
             Container( //CONTENT
-              padding: EdgeInsets.only(left: 6, right: 6, top: 2, bottom: 2),
+              padding: EdgeInsets.all(6),
               margin: EdgeInsets.all(4),
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(

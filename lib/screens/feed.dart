@@ -41,7 +41,8 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   bool stalled = false; //show a refresh button and don't fetch
   Widget body;
   RefreshController refreshController = RefreshController(initialRefresh: false);
-
+  SortMethod sortMethod = SortMethod.date_asc;
+  
   @override
   void initState(){
     fetching = true;
@@ -146,7 +147,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
                 
               ],
               onSelected: (v){
-                sortOptions(v);
+                sortFeedList(v);
               },
             )
           ],
@@ -235,6 +236,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
           stalled = false;
           croaksJSON = cs;
         });
+        sortFeedList(sortMethod);
         print('feed got croaks.'); 
       }
       
@@ -251,7 +253,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
     
   }
 
-  void sortOptions(SortMethod mthd){ //currently just using this function for testing
+  void sortFeedList(SortMethod mthd){
     // sort methods: date, proximity, popularity 
     switch(mthd){
       case SortMethod.date_asc:

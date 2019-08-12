@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 
 import 'package:file_picker/file_picker.dart';
@@ -147,7 +148,15 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                                           constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * .6),
                                           child: Text( file.toString(), style: Theme.of(context).textTheme.subtitle),
                                       ),
-                            )
+                            ),
+                          IconButton(
+                            icon: Icon(Icons.cancel),
+                            onPressed: ()=>setState((){
+                              file = null;
+                            }),
+                            color: Color(0xCC550005)
+                            
+                          )
                           
                         ],
                         
