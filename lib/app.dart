@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'screens/home.dart';
 import 'screens/feed.dart';
 import 'screens/composecroak.dart';
@@ -10,6 +11,7 @@ import 'screens/intro.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 import 'db.dart' as db;
+import 'api.dart' as api;
 import 'models.dart';
 
 class FrogPondApp extends StatelessWidget {
@@ -101,11 +103,11 @@ class RootState extends State<RootView> with SingleTickerProviderStateMixin, Aut
       
         if (p.getInt('last_launch') == null){
           p.setInt('last_launch', DateTime.now().millisecondsSinceEpoch);
-        }
+          p.setBool('firstrun', true);
+        } else p.setBool('firstrun', false);
         if (p.getBool('query_all') == null) p.setBool('query_all', false);
       
     });
-
 
   }
 
@@ -138,6 +140,7 @@ class RootState extends State<RootView> with SingleTickerProviderStateMixin, Aut
         ),
         type: MaterialType.canvas
       ),
+
     );
   }
 

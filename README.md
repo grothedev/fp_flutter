@@ -49,6 +49,18 @@ uses some packages:
   toast: https://pub.dev/packages/toast
 
 Development Timeline:
+  tues:
+    fix server file upload issue
+    verify croak compose file upload
+    start working on graphics
+  wed:
+    set up server in room
+    finalize description and all meta-info
+    continue graphics
+  thurs:
+    release an open beta? post on isu subreddit
+    continue graphics
+
   Initial release by August 20th (optimistic), latest 24th
   have docker and server hosting ready by 12th
   release beta test by end of tues:

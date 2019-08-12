@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:fp/main.dart';
 import 'package:fp/screens/helpers.dart';
 import 'package:fp/state_container.dart';
@@ -29,6 +30,21 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
   initState(){
     SharedPreferences.getInstance().then((p){
       this.prefs = p;
+      if (prefs.getBool('firstrun') || true){
+        Scaffold.of(context).showSnackBar(
+          SnackBar(
+            content: Text('First time?'), 
+            action: SnackBarAction(
+                label: 'Tap here to learn',
+                onPressed: ()=>launch('http://' + api.host + ':8090/about'),
+
+              ),
+              duration: Duration(seconds: 8),
+              //animation: (),
+               
+          )
+        );
+      }
       setState((){
         if (store.state.lat == null || store.state.lon == null){
           //store.getLocation();
@@ -47,6 +63,21 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
         }
       }
       prefs.setStringList('tags', tl);
+    });
+    */
+    /*
+    SchedulerBinding.instance.addPostFrameCallback((_){
+      if (prefs.getBool('firstrun')){
+        Scaffold.of(context).showSnackBar(SnackBar(
+          content: Text('First time? Learn more here'), 
+         action: SnackBarAction(
+            label: 'Learn',
+            onPressed: ()=>launch('http://' + api.host + '/about'),
+
+          ),
+          duration: Duration(seconds: 8), 
+        ));
+      }
     });
     */
   }
