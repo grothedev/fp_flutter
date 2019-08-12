@@ -19,28 +19,27 @@ import '../api.dart' as api;
 //things that are not full screens, like widgets and dialogs
 
 class CroakFeed extends StatefulWidget{
-  //final int pid; //don't think this is needed anymore
   final List croaksJSON;
   final Function refresh;
+  final String pip; //ip address of parent croak, to check for replies by OP
 
-  CroakFeed(this.croaksJSON, this.refresh);
+  CroakFeed(this.croaksJSON, this.refresh, {this.pip});
 
   @override
   State<StatefulWidget> createState() {
-    return CroakFeedState(croaksJSON, refresh);
+    return CroakFeedState(croaksJSON, refresh, pip: pip);
   }
 }
 
 class CroakFeedState extends State<CroakFeed>{
-  int pid;
   List croaksJSON; //json array
   List<bool> favs;
   StateContainerState store;
   RefreshController refreshController = RefreshController(initialRefresh: false);
   Function refresh;
+  String pip;
 
-
-  CroakFeedState(this.croaksJSON, this.refresh){
+  CroakFeedState(this.croaksJSON, this.refresh, {this.pip}){
     favs = new List<bool>();
   }
 
@@ -68,16 +67,6 @@ class CroakFeedState extends State<CroakFeed>{
             shrinkWrap: true,    
          )
       );
-
-    return ListView.builder(
-          itemCount: croaksJSON == null ? 0 : croaksJSON.length,
-          itemBuilder: (context, i) {
-            return new Container(
-              child: feedItem(i),
-            );
-          },
-          shrinkWrap: true,    
-    ); 
   }
 
   Widget feedItem(i){
@@ -96,7 +85,7 @@ class CroakFeedState extends State<CroakFeed>{
       padding: EdgeInsets.only(left: 6, right: 6),
       decoration: BoxDecoration(
         border: Border.all(
-          color: Colors.grey,
+          color: c['ip'] == pip ? Colors.green : Colors.grey,
           width: .2,
         ),
       ),
@@ -406,7 +395,6 @@ class SuggestedTagsState extends State<SuggestedTags> with AutomaticKeepAliveCli
           tags = r;
           loading = false;
           //prefs.setStringList('tags', []);
-
         });
       }
     });    

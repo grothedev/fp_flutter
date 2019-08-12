@@ -26,6 +26,7 @@ TODO:
 * notifications
 * post-initial-release features
   - voting
+  - identify commenters or just OP
   - different croak types (poll, resource bank, plant, tool library, event)
   - going to need to devise a better way of storing and managing croaks to improve performance when there might be thousands of croaks 
   - get by keywords on API
@@ -53,6 +54,7 @@ Development Timeline:
     fix server file upload issue
     verify croak compose file upload
     start working on graphics
+    write out vision and philosophy
   wed:
     set up server in room
     finalize description and all meta-info
