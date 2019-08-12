@@ -95,13 +95,14 @@ class CroakFeedState extends State<CroakFeed>{
               child: Container(
                 child: Text( c['replies'].toString(), ),
                 padding: EdgeInsets.all(2),
+                
                 alignment: Alignment.center,
                 constraints: BoxConstraints(
                   maxWidth: .06*MediaQuery.of(context).size.width,
                   maxHeight: .06*MediaQuery.of(context).size.width,
                 ),
               ),
-                
+                margin: EdgeInsets.only(left: 6, top: 2),
                 decoration: BoxDecoration(
                   border: Border.all(
                     color: Colors.grey, width: 1, style: BorderStyle.solid,

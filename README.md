@@ -9,6 +9,7 @@ TODO:
 * better homescreen text
   - link to vision. make clear that it is a platform which is supposed to evolve naturally
 * about page (feedback, source, )
+* questions from the dev on top of croak list for effective feed back. emphasize collaborative development process
 * UI stuff 
   - show video or audio player based on file type. 
   - ripple-like watermarks??
