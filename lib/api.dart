@@ -52,7 +52,9 @@ Future<String> postCroak(Map<String, dynamic> req, File f) async {
     FormData fd = FormData.from(req);
     
     print('api post croak: ' + fd.toString());
-    Response res =  await Dio().post(api_url+'croaks', data: fd);
+    Response res =  await Dio().post(api_url+'croaks', data: fd).catchError((e){
+      print('Dio error: ' + e.toString());
+    });
     return res.data;
 
   } else {

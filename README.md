@@ -11,8 +11,6 @@ TODO:
 * about page (feedback, source, )
 * UI stuff 
   - show video or audio player based on file type. 
-  - time format
-  - load screen upon submit croak !!! probably just disable scaffold or all input
   - ripple-like watermarks??
   - change wording: score to popularity?
   - icons and animation
@@ -26,7 +24,6 @@ TODO:
   - log each request
   - 
 * notifications
-* docker and aws or google app engine
 * post-initial-release features
   - voting
   - different croak types (poll, resource bank, plant, tool library, event)

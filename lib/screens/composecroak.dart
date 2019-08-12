@@ -204,9 +204,14 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                                     //b.controller.animateTo(b.controller.previousIndex);
                                   } else {
                                     Scaffold.of(context).removeCurrentSnackBar();
-                                    Scaffold.of(context).showSnackBar(SnackBar(content: Text('Croak failed to post')));
+                                    Scaffold.of(context).showSnackBar(SnackBar(content: Text('Failed to Croak')));
                                   }
                                   store.croaked();
+                                }).catchError((e){
+                                  print('compose croak error: ' + e.toString());
+                                  store.croaked();
+                                  Scaffold.of(context).removeCurrentSnackBar();
+                                  Scaffold.of(context).showSnackBar(SnackBar(content: Text('Failed to Croak'),));
                                 });
                               }
                             },

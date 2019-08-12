@@ -68,7 +68,7 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
         actions: [
           IconButton(
             icon: Icon(Icons.help_outline),
-            onPressed: () => launch('http://' + api.host + '/about'),
+            onPressed: () => launch('http://' + api.host + ':8090/about'),
             tooltip: 'Help',
           ),
         ]
