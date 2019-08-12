@@ -4,8 +4,10 @@ import 'package:fp/main.dart';
 import 'package:fp/screens/helpers.dart';
 import 'package:fp/state_container.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../consts.dart';
+import '../api.dart' as api;
 
 class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMixin<HomeScreen>{
   
@@ -63,6 +65,13 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
       //appBar: ScreenTitle('Welcome to FrogPond'),
       appBar: AppBar(
         title: Text('Frog Pond'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.help_outline),
+            onPressed: () => launch('http://' + api.host + '/about'),
+            tooltip: 'Help',
+          ),
+        ]
       ),
       body:  SingleChildScrollView(
         
@@ -207,7 +216,23 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
                         margin: EdgeInsets.only(bottom: 2),
                         padding: EdgeInsets.only(left: 8),
 
-                      )
+                      ),
+
+                      //had help here, but moved it to the app bar
+                      /*
+                      Container(
+                        child: GestureDetector( 
+                          child: Text('New? Tap here to learn.'),
+                          onTap: () => launch('http://' + api.host + '/about'),
+                        ),
+                        margin: EdgeInsets.only(top: 40),
+                        alignment: Alignment.bottomCenter,
+                        padding: EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          border: Border.all(width: .5, color: Colors.grey),
+                        ),
+                        )
+                        */
                     ],
                     
                   ),

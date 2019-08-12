@@ -43,6 +43,17 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
   Widget build(BuildContext context){
     store = StateContainer.of(context);
     
+    if (store.state.croaking){
+      //originally i had a more dynamic implementation, where screens could still be switched between while uploading, but i was having some issues dealing with the widget tree stuff.
+      //so i will leave it like this for now. eventually i should implement the original idea, because that would useful for large files
+        return SimpleDialog(
+          contentPadding: EdgeInsets.all(8),
+          children: <Widget>[
+            Text('Croaking...'),
+          ],elevation: 3,
+        );
+    
+    }
     return Scaffold(
       //appBar: ScreenTitle('Croak with your fellow tadpoles'),
       appBar: AppBar(
@@ -172,14 +183,16 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                             
                             onPressed: (){
                               if (fk.currentState.validate()){
+
                                 Scaffold.of(context).showSnackBar(SnackBar(content: Text('Croaking...')));
+                                store.croaking();
+
                                 tags.addAll(tagsText.text.split(' ')); // i have no idea why this would generate duplicate tags with no duplicate input
                                 tags.removeWhere((t) => t==''); //for some reason there are empty strings ending up in the list
                                 
                                 print('croakin with tags: ' + tags.toString());
                                 util.submitCroak(croakText.text, tags, true, store.state.lat, store.state.lon, file).then((r){
                                   if (r){
-                                    
                                     Scaffold.of(context).removeCurrentSnackBar();
                                     Scaffold.of(context).showSnackBar(SnackBar(content: Text('Success')));
                                     setState((){
@@ -192,8 +205,8 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                                   } else {
                                     Scaffold.of(context).removeCurrentSnackBar();
                                     Scaffold.of(context).showSnackBar(SnackBar(content: Text('Croak failed to post')));
-
                                   }
+                                  store.croaked();
                                 });
                               }
                             },
@@ -216,9 +229,18 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
   @override
   bool get wantKeepAlive => true;
   
+  /*
+  @override
+  void didChangeDependencies(){
+    super.didChangeDependencies();
+    context.inheritFromWidgetOfExactType(Scaffold);
+  }
+*/
   void selectTagChip(String tag, bool sel){
     sel ? tags.add(tag) : tags.remove(tag);
   }
+
+  
 
 }
 

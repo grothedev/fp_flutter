@@ -417,6 +417,7 @@ class SuggestedTagsState extends State<SuggestedTags> with AutomaticKeepAliveCli
     if (this.loading){
       return Text('loading');
     } else {
+      if (tags == null) return Text('Unable to retreive tags');
       if (chips.length == 0){
         for (var i = 0; i < tags.length; i++){
           chips.add(TagChip(label: tags[i]['label'], prefs: prefs, onSelected: widget.onChipSelected));  

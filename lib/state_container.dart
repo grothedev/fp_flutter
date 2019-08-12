@@ -216,6 +216,18 @@ class StateContainerState extends State<StateContainer>{
     */
   }
 
+  void croaking(){
+    setState(() {
+      state.croaking = true;
+    });
+  }
+
+  void croaked(){
+    setState(() {
+      state.croaking = false;
+    });
+  }
+
 }
 
 class InheritedStateContainer extends InheritedWidget{

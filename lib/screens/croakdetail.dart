@@ -200,7 +200,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
         ),
       );
     } else return Container(
-      height: MediaQuery.of(context).size.height * .16,
+      //height: MediaQuery.of(context).size.height * .16,
       child: Center(
         child: RaisedButton(
           child: Text(c['files'][0]['filename'].toString()),

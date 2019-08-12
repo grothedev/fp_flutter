@@ -11,7 +11,7 @@ import 'models.dart';
 import 'package:dio/dio.dart';
 
 String host = 'grothe.ddns.net';
-//String host = '192.168.1.5'; //tmp local
+//String host = '192.168.1.18'; //tmp local
 int port = 8090;
 String api_url = 'http://' + host + ':' + port.toString() + '/api/'; 
 
@@ -60,7 +60,10 @@ Future<String> postCroak(Map<String, dynamic> req, File f) async {
     req.forEach((k, v) {
       print(k + ': ' +v.toString());
     });
-    var res = await http.Client().post(api_url+'croaks', body: req);
+    var res = await http.Client().post(api_url+'croaks', body: req).catchError((e){
+      print('api post failed: ' + e.toString());
+    });
+    if (res == null) return null;
     print('rest response: ' + res.body);
     return res.body;
   }
@@ -73,6 +76,7 @@ Future<List> getTags(int n, double lat, double lon) async{
   //var res = await http.get(api_url+'tags?n='+n.toString()+'&lat='+lat.toString()+'&lon='+lon.toString()).catchError((e){return null;});
   var res = await http.get(api_url+'tags?n='+n.toString()).catchError((e){return null;});
   print('api request: ' + api_url+'tags?n='+n.toString() );
+  if (res == null) return null;
   print('api response: ' + res.body.toString());
   return json.decode(res.body);
 }
