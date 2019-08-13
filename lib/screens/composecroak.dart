@@ -93,7 +93,7 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                       child: TextFormField( //TAGS INPUT
                         controller: tagsText,
                         validator: (value){
-                          if (value.isEmpty && tags.length == 0) return 'Enter some tags, seperated by spaces, or select one below.';
+                          if (value.isEmpty && tags.length == 0) return 'Enter some tags, seperated by spaces, or select one below. Keep tags as concise as possible, use underscores if necessary.';
                         },
                         decoration: InputDecoration(
                           icon: Icon(Icons.category),

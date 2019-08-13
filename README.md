@@ -5,11 +5,8 @@ TODO:
     - when there are a lot of croaks, you certainly don't want so many people making requests all the time and repeatedly downloading so much data. 
 * save sort preferences
 * implement data analysis (show locations of croaks w/ tags etc. )
-* intro "tutorial" 
-* better homescreen text
-  - link to vision. make clear that it is a platform which is supposed to evolve naturally
+* tutorial mode?
 * about page (feedback, source, )
-* questions from the dev on top of croak list for effective feed back. emphasize collaborative development process
 * UI stuff 
   - show video or audio player based on file type. 
   - ripple-like watermarks??
@@ -20,10 +17,16 @@ TODO:
     - app icon
     -   
 * attach file to reply
+* add infinite radius checkbox
+* copy croak content
+* android app linkify  https://pub.dev/packages/flutter_linkify
+* underscore suggestion
+* color based on ip address instead of random
 * server stuff
   - monitor bandwidth
   - log each request
   - 
+* button to show complete list of tags
 * notifications
 * post-initial-release features
   - voting

@@ -103,8 +103,7 @@ class RootState extends State<RootView> with SingleTickerProviderStateMixin, Aut
       
         if (p.getInt('last_launch') == null){
           p.setInt('last_launch', DateTime.now().millisecondsSinceEpoch);
-          p.setBool('firstrun', true);
-        } else p.setBool('firstrun', false);
+        }
         if (p.getBool('query_all') == null) p.setBool('query_all', false);
       
     });

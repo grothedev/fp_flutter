@@ -44,6 +44,7 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
                
           )
         );
+        prefs.setBool('firstrun', false);
       }
       setState((){
         if (store.state.lat == null || store.state.lon == null){

@@ -52,7 +52,15 @@ class CroakFeedState extends State<CroakFeed>{
     if (pip == null) return; //only do color association if this is a comment thread
     Map ip_color = {};
     for (var c in croaksJSON){
-      if (!ip_color.keys.contains(c['ip'])) ip_color[c['ip']] = Color(Random().nextInt(0xCC + 1<<24)); 
+      //if (!ip_color.keys.contains(c['ip'])) ip_color[c['ip']] = Color(Random().nextInt(0xAA + 1<<24)); 
+      if (!ip_color.keys.contains(c['ip'])){
+        List colorVals = c['ip'].split('.');
+        int a = 10 * 16^3;
+        int r = int.parse(colorVals[1]) * 16^2;
+        int g = int.parse(colorVals[2]) * 16;
+        int b = int.parse(colorVals[3]); 
+        ip_color[c['ip']] = Color(a+r+g+b);
+      }
       c['color'] = ip_color[c['ip']];
     }
   }
@@ -388,7 +396,7 @@ class SuggestedTags extends StatefulWidget{
 
 class SuggestedTagsState extends State<SuggestedTags> with AutomaticKeepAliveClientMixin<SuggestedTags>{
   List chips;
-  int n = 10; //# tags to retreive
+  int n = 8; //# tags to retreive
   bool loading = true;
   SharedPreferences prefs;
   List tags; //suggested tags retrieved from server
@@ -400,15 +408,7 @@ class SuggestedTagsState extends State<SuggestedTags> with AutomaticKeepAliveCli
   void initState() {
     super.initState();
     chips = <Widget>[];
-    util.getTags(10, location).then((r){
-      if (mounted){
-        setState((){ 
-          tags = r;
-          loading = false;
-          //prefs.setStringList('tags', []);
-        });
-      }
-    });    
+    getTags();    
   }
 
   @override
@@ -421,6 +421,13 @@ class SuggestedTagsState extends State<SuggestedTags> with AutomaticKeepAliveCli
         for (var i = 0; i < tags.length; i++){
           chips.add(TagChip(label: tags[i]['label'], prefs: prefs, onSelected: widget.onChipSelected));  
         }
+        chips.add(
+          TagChip(
+            label: 'More',
+            prefs: prefs,
+            onSelected: ()=>(){n+=8; getTags();},
+          )
+        );
       }
       
       return Flex(
@@ -437,6 +444,18 @@ class SuggestedTagsState extends State<SuggestedTags> with AutomaticKeepAliveCli
         ]
       );
     }
+  }
+
+  void getTags(){
+    util.getTags(n, location).then((r){
+      if (mounted){
+        setState((){ 
+          tags = r;
+          loading = false;
+          //prefs.setStringList('tags', []);
+        });
+      }
+    });
   }
 
   @override
