@@ -50,7 +50,7 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
   initState(){
     SharedPreferences.getInstance().then((p){
       this.prefs = p;
-      if (prefs.getBool('firstrun')){
+      if (prefs.getBool('firstrun') == null || prefs.getBool('firstrun')){
         Scaffold.of(context).showSnackBar(
           SnackBar(
             content: Text('First time?'), 

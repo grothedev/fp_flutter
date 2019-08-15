@@ -41,8 +41,5 @@ SharedPreferences:
   * dist_unit (int) : 0 = kilometers ; 1 = miles
   * needs_update (bool) : does the main feed need to be updated?
   * firstrun (bool) : if this is the first time the app has been run
-uses some packages:
-  file picker: https://pub.dev/packages/file_picker
-  toast: https://pub.dev/packages/toast
 
 
