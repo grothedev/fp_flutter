@@ -417,7 +417,7 @@ class SuggestedTags extends StatefulWidget{
 
 class SuggestedTagsState extends State<SuggestedTags> with AutomaticKeepAliveClientMixin<SuggestedTags>{
   List chips;
-  int n = 8; //# tags to retreive
+  int n = 16; //# tags to retreive
   bool loading = true;
   SharedPreferences prefs;
   List tags; //suggested tags retrieved from server
@@ -442,13 +442,15 @@ class SuggestedTagsState extends State<SuggestedTags> with AutomaticKeepAliveCli
         for (var i = 0; i < tags.length; i++){
           chips.add(TagChip(label: tags[i]['label'], prefs: prefs, onSelected: widget.onChipSelected));  
         }
+        /* TODO
         chips.add(
           TagChip(
             label: 'More',
             prefs: prefs,
-            onSelected: ()=>(){n+=8; getTags();},
+            onSelected: ()=>(){n+=2; getTags();},
           )
         );
+        */
       }
       
       return Flex(

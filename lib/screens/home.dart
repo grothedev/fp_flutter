@@ -226,10 +226,12 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
                               maxLines: 1,
                               minLines: 1,
                               expands: false,
+                              //initialValue: '0 = infinity',
                             ),
                             margin: formElemMargin
                           ),
-                          Text('km')
+                          Text('km'),
+                          
                         ]
                       ),
                       Container(

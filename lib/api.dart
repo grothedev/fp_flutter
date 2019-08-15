@@ -47,7 +47,7 @@ Future<List> getCroaks(double x, double y, int p_id, List<String> tl, bool at, i
   if (at){
     reqURL += 'mode=1&';
   }
-  if (rad != null){
+  if (rad != null && rad != 0){
     reqURL += 'x='+x.toString() + '&y='+y.toString() + '&radius='+rad.toString() + '&';
   }
   print('api.getCroaks reqURL: ' + reqURL);
