@@ -1,3 +1,23 @@
+/*
+Frog Pond mobile application
+Copyright (C) 2019  Thomas Grothe
+
+This file is part of FrogPond.
+
+FrogPond is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+FrogPond is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 import 'dart:math';
 
 import 'package:file_picker/file_picker.dart';
@@ -52,15 +72,16 @@ class CroakFeedState extends State<CroakFeed>{
     if (pip == null) return; //only do color association if this is a comment thread
     Map ip_color = {};
     for (var c in croaksJSON){
-      //if (!ip_color.keys.contains(c['ip'])) ip_color[c['ip']] = Color(Random().nextInt(0xAA + 1<<24)); 
-      if (!ip_color.keys.contains(c['ip'])){
+      if (!ip_color.keys.contains(c['ip'])) ip_color[c['ip']] = Color(Random().nextInt(0xAA + 1<<24)); 
+      /*if (!ip_color.keys.contains(c['ip'])){
         List colorVals = c['ip'].split('.');
-        int a = 10 * 16^3;
+        int a = 15 * 16^3;
         int r = int.parse(colorVals[1]) * 16^2;
         int g = int.parse(colorVals[2]) * 16;
         int b = int.parse(colorVals[3]); 
-        ip_color[c['ip']] = Color(a+r+g+b);
-      }
+        ip_color[c['ip']] = Color(1<<24+r+g+b);
+        print(a.toString() + ',' + r.toString() + ',' + g.toString() + ',' + b.toString());
+      }*/
       c['color'] = ip_color[c['ip']];
     }
   }

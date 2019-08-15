@@ -1,8 +1,29 @@
+/*
+Frog Pond mobile application
+Copyright (C) 2019  Thomas Grothe
+
+This file is part of FrogPond.
+
+FrogPond is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+FrogPond is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:fp/state_container.dart';
 import 'package:intl/intl.dart';
 import 'package:toast/toast.dart';
@@ -103,9 +124,9 @@ class CroakDetailState extends State<CroakDetailScreen>{
                   maxHeight: MediaQuery.of(context).size.height * .5
                 ),
                 child: SingleChildScrollView(
-                  child: Text(c['content'])
+                  child: Linkify(text: c['content'], onOpen: (link)=>{ launch(link.url) }, )
                 )
-              ),
+              ),                                                                                                                                                                          
             ),
 
             ConstrainedBox( //TAGS

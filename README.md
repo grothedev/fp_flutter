@@ -2,41 +2,35 @@ FrogPond mobile application, made with flutter. https://flutter.dev/
 
 TODO:
 * fix db stuff (this is not necessary for the initial release, but will be once there are > 20 users)
-    - when there are a lot of croaks, you certainly don't want so many people making requests all the time and repeatedly downloading so much data. 
+    - when there are a lot of croaks, you certainly don't want so many people making requests all the time and repeatedly downloading so much data.
 * save sort preferences
 * implement data analysis (show locations of croaks w/ tags etc. )
 * tutorial mode?
 * about page (feedback, source, )
-* UI stuff 
-  - show video or audio player based on file type. 
+* UI stuff
+  - show video or audio player based on file type.
   - ripple-like watermarks??
   - change wording: score to popularity?
   - icons and animation
     - submit croak (croaking)
     - fetch croaks (ripples)
     - app icon
-    -   
+    -
 * attach file to reply
 * add infinite radius checkbox
 * copy croak content
-* android app linkify  https://pub.dev/packages/flutter_linkify
-* underscore suggestion
-* color based on ip address instead of random
-* server stuff
-  - monitor bandwidth
-  - log each request
-  - 
 * button to show complete list of tags
 * notifications
 * post-initial-release features
   - voting
   - identify commenters or just OP
   - different croak types (poll, resource bank, plant, tool library, event)
-  - going to need to devise a better way of storing and managing croaks to improve performance when there might be thousands of croaks 
+  - going to need to devise a better way of storing and managing croaks to improve performance when there might be thousands
+   of croaks
   - get by keywords on API
   - possibly take picture from app https://flutter.dev/docs/cookbook/plugins/picture-using-camera
       https://pub.dev/packages/camera
-* make a test class with test data structures etc. 
+* make a test class with test data structures etc.
 * implement usage stats for API
 
 SharedPreferences:
@@ -59,6 +53,7 @@ Development Timeline:
     verify croak compose file upload
     start working on graphics
     write out vision and philosophy
+      explain ip identity and why it doesn't break anonyminity
   wed:
     set up server in room
     finalize description and all meta-info
@@ -70,6 +65,6 @@ Development Timeline:
   Initial release by August 20th (optimistic), latest 24th
   have docker and server hosting ready by 12th
   release beta test by end of tues:
-    
+
   keep tackling as many tasks as possible everyday this week
   write the about page and stuff

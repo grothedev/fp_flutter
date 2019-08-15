@@ -1,3 +1,23 @@
+/*
+Frog Pond mobile application
+Copyright (C) 2019  Thomas Grothe
+
+This file is part of FrogPond.
+
+FrogPond is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+FrogPond is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -103,6 +123,7 @@ class RootState extends State<RootView> with SingleTickerProviderStateMixin, Aut
       
         if (p.getInt('last_launch') == null){
           p.setInt('last_launch', DateTime.now().millisecondsSinceEpoch);
+          p.setBool('firstrun', true);
         }
         if (p.getBool('query_all') == null) p.setBool('query_all', false);
       
