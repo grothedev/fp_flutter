@@ -177,7 +177,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
     util.getReplies(c['id']).then((r){
       setState((){
         for (int i = 0; i < r.length; i++){
-          DateTime dt = DateFormat('yyyy-mm-d HH:mm').parse(r[i]['created_at']).toLocal();
+          DateTime dt = DateFormat('yyyy-MM-d HH:mm').parse(r[i]['created_at']).toLocal();
           r[i]['timestampStr'] = dt.year.toString() + '/' + dt.month.toString() + '/' + dt.day.toString() + ' - ' + dt.hour.toString() + ':' + dt.minute.toString();
         }
         this.replies = r;
