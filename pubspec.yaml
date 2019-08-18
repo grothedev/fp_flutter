@@ -39,6 +39,8 @@ dependencies:
   video_player:
   pull_to_refresh:
   intl:
+  flutter_linkify: ^2.1.0
+  flutter_local_notifications:
   
 dev_dependencies:
   flutter_test:

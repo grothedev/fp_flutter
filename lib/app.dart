@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:location/location.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -10,6 +11,8 @@ import 'screens/composecroak.dart';
 import 'screens/intro.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
+
+
 import 'db.dart' as db;
 import 'api.dart' as api;
 import 'models.dart';
@@ -103,10 +106,13 @@ class RootState extends State<RootView> with SingleTickerProviderStateMixin, Aut
       
         if (p.getInt('last_launch') == null){
           p.setInt('last_launch', DateTime.now().millisecondsSinceEpoch);
+          p.setBool('firstrun', true);
         }
         if (p.getBool('query_all') == null) p.setBool('query_all', false);
       
     });
+
+    initNotifications();
 
   }
 
@@ -141,6 +147,22 @@ class RootState extends State<RootView> with SingleTickerProviderStateMixin, Aut
       ),
 
     );
+  }
+
+  void initNotifications() async{
+    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
+    // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
+    var initializationSettingsAndroid = new AndroidInitializationSettings('app_icon');
+    var initializationSettingsIOS = new IOSInitializationSettings( ); //onDidReceiveLocalNotification: onDidReceiveLocalNotification);
+    var initializationSettings = new InitializationSettings( initializationSettingsAndroid, initializationSettingsIOS);
+    flutterLocalNotificationsPlugin.initialize(initializationSettings, ); //onSelectNotification: onSelectNotification);
+  
+    var scheduledNotificationDateTime = new DateTime.now().add(new Duration(seconds: 5));
+    var androidPlatformChannelSpecifics = new AndroidNotificationDetails('your other channel id',
+        'your other channel name', 'your other channel description');
+    var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
+    NotificationDetails platformChannelSpecifics = new NotificationDetails(androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.schedule(0, 'someone has replied to you', '# frogs have croaked back since [time]', scheduledNotificationDateTime, platformChannelSpecifics);
   }
 
   @override

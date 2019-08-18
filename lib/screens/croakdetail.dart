@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:fp/state_container.dart';
 import 'package:intl/intl.dart';
 import 'package:toast/toast.dart';
@@ -103,9 +104,9 @@ class CroakDetailState extends State<CroakDetailScreen>{
                   maxHeight: MediaQuery.of(context).size.height * .5
                 ),
                 child: SingleChildScrollView(
-                  child: Text(c['content'])
+                  child: Linkify(text: c['content'], onOpen: (link)=>{ launch(link.url) }, )
                 )
-              ),
+              ),                                                                                                                                                                          
             ),
 
             ConstrainedBox( //TAGS
