@@ -1,5 +1,5 @@
 name: fp
-description: A new Flutter project.
+description: An anonymous, tag-based, location-based, discussion board with threaded comments and the file sharing capabilities. 
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -40,12 +40,22 @@ dependencies:
   pull_to_refresh:
   intl:
   flutter_linkify: ^2.1.0
+<<<<<<< HEAD
   flutter_local_notifications:
   
+=======
+  flutter_launcher_icons: "^0.7.2"
+
+>>>>>>> abed1da5d65b601a96f4ebd1120617a201f056f2
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  
 
+flutter_icons:
+    android: "launcher_icon"
+    ios: true
+    image_path: "assets/fp_icon_hr.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec

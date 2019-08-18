@@ -1,3 +1,23 @@
+/*
+Frog Pond mobile application
+Copyright (C) 2019  Thomas Grothe
+
+This file is part of FrogPond.
+
+FrogPond is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+FrogPond is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
@@ -138,11 +158,11 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
                 ),
                 PopupMenuItem<SortMethod>(
                   value: SortMethod.score_asc,
-                  child: Wrap( children: [ Icon(Icons.arrow_upward), Text('Score') ] ),
+                  child: Wrap( children: [ Icon(Icons.arrow_upward), Text('Replies') ] ),
                 ),
                 PopupMenuItem<SortMethod>(
                   value: SortMethod.score_des,
-                  child: Wrap( children: [ Icon(Icons.arrow_downward), Text('Score') ] ),
+                  child: Wrap( children: [ Icon(Icons.arrow_downward), Text('Replies') ] ),
                 ),
                 
               ],
@@ -198,7 +218,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
       //removing croaks which are comments (actually this should probably be dealt with on server)
       cs = cs.where( (c) => c['p_id'] == null || c['p_id'] == 0  ).toList(); 
       for (int i = 0; i < cs.length; i++){
-        DateTime dt = DateFormat('yyyy-mm-d HH:mm').parse(cs[i]['created_at']).toLocal();
+        DateTime dt = DateFormat('yyyy-MM-d HH:mm').parse(cs[i]['created_at']).toLocal();
         cs[i]['timestampStr'] = dt.year.toString() + '/' + dt.month.toString() + '/' + dt.day.toString() + ' - ' + dt.hour.toString() + ':' + dt.minute.toString();
         
 

@@ -1,3 +1,23 @@
+/*
+Frog Pond mobile application
+Copyright (C) 2019  Thomas Grothe
+
+This file is part of FrogPond.
+
+FrogPond is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+FrogPond is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -31,7 +51,7 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
   initState(){
     SharedPreferences.getInstance().then((p){
       this.prefs = p;
-      if (prefs.getBool('firstrun')){
+      if (prefs.getBool('firstrun') == null || prefs.getBool('firstrun')){
         Scaffold.of(context).showSnackBar(
           SnackBar(
             content: Text('First time?'), 
@@ -207,10 +227,12 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
                               maxLines: 1,
                               minLines: 1,
                               expands: false,
+                              //initialValue: '0 = infinity',
                             ),
                             margin: formElemMargin
                           ),
-                          Text('km')
+                          Text('km'),
+                          
                         ]
                       ),
                       Container(

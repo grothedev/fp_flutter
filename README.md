@@ -6,20 +6,19 @@ TODO:
 * save sort preferences
 * implement data analysis (show locations of croaks w/ tags etc. )
 * tutorial mode?
-* about page (feedback, source, )
 * UI stuff
   - show video or audio player based on file type.
   - ripple-like watermarks??
-  - change wording: score to popularity?
   - icons and animation
     - submit croak (croaking)
     - fetch croaks (ripples)
     - app icon
     -
 * attach file to reply
-* add infinite radius checkbox
+* tag exclusion
 * copy croak content
-* button to show complete list of tags
+* button to show complete list of tags (also get more popular tags)
+* up/downvoting
 * notifications
 * post-initial-release features
   - voting
@@ -43,28 +42,3 @@ SharedPreferences:
   * dist_unit (int) : 0 = kilometers ; 1 = miles
   * needs_update (bool) : does the main feed need to be updated?
   * firstrun (bool) : if this is the first time the app has been run
-uses some packages:
-  file picker: https://pub.dev/packages/file_picker
-  toast: https://pub.dev/packages/toast
-
-Development Timeline:
-  tues:
-    fix server file upload issue
-    verify croak compose file upload
-    start working on graphics
-    write out vision and philosophy
-      explain ip identity and why it doesn't break anonyminity
-  wed:
-    set up server in room
-    finalize description and all meta-info
-    continue graphics
-  thurs:
-    release an open beta? post on isu subreddit
-    continue graphics
-
-  Initial release by August 20th (optimistic), latest 24th
-  have docker and server hosting ready by 12th
-  release beta test by end of tues:
-
-  keep tackling as many tasks as possible everyday this week
-  write the about page and stuff

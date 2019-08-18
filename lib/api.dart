@@ -1,3 +1,23 @@
+/*
+Frog Pond mobile application
+Copyright (C) 2019  Thomas Grothe
+
+This file is part of FrogPond.
+
+FrogPond is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+FrogPond is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 //TODO is sqlite caching as clean as it can be?
  
 import 'dart:io';
@@ -11,7 +31,9 @@ import 'models.dart';
 import 'package:dio/dio.dart';
 
 //String host = 'grothe.ddns.net';
-String host = '192.168.1.5'; //tmp local
+//String host = '192.168.1.5'; //tmp local
+String host = '173.22.78.225';
+//String host = '192.168.1.5'; //tmp local
 int port = 8090;
 String api_url = 'http://' + host + ':' + port.toString() + '/api/'; 
 
@@ -27,7 +49,7 @@ Future<List> getCroaks(double x, double y, int p_id, List<String> tl, bool at, i
   if (at){
     reqURL += 'mode=1&';
   }
-  if (rad != null){
+  if (rad != null && rad != 0){
     reqURL += 'x='+x.toString() + '&y='+y.toString() + '&radius='+rad.toString() + '&';
   }
   print('api.getCroaks reqURL: ' + reqURL);

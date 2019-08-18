@@ -1,3 +1,23 @@
+/*
+Frog Pond mobile application
+Copyright (C) 2019  Thomas Grothe
+
+This file is part of FrogPond.
+
+FrogPond is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+FrogPond is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 import 'dart:math';
 
 import 'package:file_picker/file_picker.dart';
@@ -397,7 +417,7 @@ class SuggestedTags extends StatefulWidget{
 
 class SuggestedTagsState extends State<SuggestedTags> with AutomaticKeepAliveClientMixin<SuggestedTags>{
   List chips;
-  int n = 8; //# tags to retreive
+  int n = 16; //# tags to retreive
   bool loading = true;
   SharedPreferences prefs;
   List tags; //suggested tags retrieved from server
@@ -422,13 +442,15 @@ class SuggestedTagsState extends State<SuggestedTags> with AutomaticKeepAliveCli
         for (var i = 0; i < tags.length; i++){
           chips.add(TagChip(label: tags[i]['label'], prefs: prefs, onSelected: widget.onChipSelected));  
         }
+        /* TODO
         chips.add(
           TagChip(
             label: 'More',
             prefs: prefs,
-            onSelected: ()=>(){n+=8; getTags();},
+            onSelected: ()=>(){n+=2; getTags();},
           )
         );
+        */
       }
       
       return Flex(
