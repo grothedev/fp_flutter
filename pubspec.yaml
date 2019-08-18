@@ -39,14 +39,10 @@ dependencies:
   video_player:
   pull_to_refresh:
   intl:
-  flutter_linkify: ^2.1.0
-<<<<<<< HEAD
+  flutter_linkify:
   flutter_local_notifications:
-  
-=======
   flutter_launcher_icons: "^0.7.2"
 
->>>>>>> abed1da5d65b601a96f4ebd1120617a201f056f2
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -77,26 +77,20 @@ packages:
       name: dio
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.13"
+    version: "2.1.10"
   file_picker:
     dependency: "direct main"
     description:
       name: file_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.3.8"
+    version: "1.3.4+1"
   flutter:
     dependency: "direct main"
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_launcher_icons:
-    dependency: "direct main"
-    description:
-      name: flutter_launcher_icons
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.7.2+1"
+<<<<<<< HEAD
   flutter_linkify:
     dependency: "direct main"
     description:
@@ -111,6 +105,22 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.8.1+1"
+=======
+  flutter_launcher_icons:
+    dependency: "direct main"
+    description:
+      name: flutter_launcher_icons
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.7.2+1"
+  flutter_linkify:
+    dependency: "direct main"
+    description:
+      name: flutter_linkify
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.1.0"
+>>>>>>> abed1da5d65b601a96f4ebd1120617a201f056f2
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -143,7 +153,7 @@ packages:
       name: image_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.1+3"
+    version: "0.6.0+2"
   intl:
     dependency: "direct main"
     description:
@@ -193,13 +203,7 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.7.0"
-  petitparser:
-    dependency: transitive
-    description:
-      name: petitparser
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.4.0"
+<<<<<<< HEAD
   platform:
     dependency: transitive
     description:
@@ -207,13 +211,22 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.2.1"
+=======
+  petitparser:
+    dependency: transitive
+    description:
+      name: petitparser
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.4.0"
+>>>>>>> abed1da5d65b601a96f4ebd1120617a201f056f2
   pull_to_refresh:
     dependency: "direct main"
     description:
       name: pull_to_refresh
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.5.4"
+    version: "1.5.3"
   quiver:
     dependency: transitive
     description:
@@ -234,7 +247,7 @@ packages:
       name: shared_preferences
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.3+4"
+    version: "0.5.2"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -260,7 +273,7 @@ packages:
       name: sqflite
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.6+3"
+    version: "1.1.5"
   stack_trace:
     dependency: transitive
     description:
@@ -288,7 +301,7 @@ packages:
       name: synchronized
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.0+1"
+    version: "2.1.0"
   term_glyph:
     dependency: transitive
     description:
@@ -309,7 +322,7 @@ packages:
       name: toast
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.5"
+    version: "0.1.4"
   typed_data:
     dependency: transitive
     description:
@@ -323,7 +336,7 @@ packages:
       name: url_launcher
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.1.2"
+    version: "5.0.3"
   vector_math:
     dependency: transitive
     description:
@@ -337,7 +350,7 @@ packages:
       name: video_player
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.10.1+6"
+    version: "0.10.1+5"
   xml:
     dependency: transitive
     description:
