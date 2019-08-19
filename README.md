@@ -5,6 +5,7 @@ TODO:
     - when there are a lot of croaks, you certainly don't want so many people making requests all the time and repeatedly downloading so much data.
 * save sort preferences
 * implement data analysis (show locations of croaks w/ tags etc. )
+* reply submit loading
 * tutorial mode?
 * UI stuff
   - show video or audio player based on file type.

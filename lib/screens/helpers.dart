@@ -147,10 +147,8 @@ class CroakFeedState extends State<CroakFeed>{
                     width: 1, style: BorderStyle.solid,
                   ),
                   shape: BoxShape.circle
-                ),
-                
+                ),      
         ),
-        
         title: RichText(
           
           text: TextSpan( 
@@ -164,19 +162,27 @@ class CroakFeedState extends State<CroakFeed>{
         ),
         
         //favorite/upvote button disabled now because the app will probably start off just going by popularity (# replies)
-        /*trailing: Column(
-          
-          crossAxisAlignment: CrossAxisAlignment.start,
-          //mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            RaisedButton( padding: EdgeInsets.all(2), key: new UniqueKey(), 
-              onPressed: (){fav(i);},  
-              child: favs[i] ? Icon(Icons.favorite) : Icon(Icons.favorite_border) 
-            ), 
-            //Text(c['score'].toString(), textAlign: TextAlign.center,)
-          ],
-          
-        ),*/
+        trailing: Container(
+              child: Container(
+                child: Text( c['score'].toString(), ),
+                padding: EdgeInsets.all(2),
+                
+                alignment: Alignment.center,
+                constraints: BoxConstraints(
+                  maxWidth: .06*MediaQuery.of(context).size.width,
+                  maxHeight: .06*MediaQuery.of(context).size.width,
+                ),
+              ),
+                margin: EdgeInsets.only(left: 6, top: 2),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    //color: Colors.grey,
+                    color: pip != null ? c['color'] : Colors.grey ,
+                    width: 1, style: BorderStyle.solid,
+                  ),
+                  shape: BoxShape.circle
+                ),      
+        ),
         subtitle: Container(
           margin: EdgeInsets.only(top: 2),
           child: Row(
@@ -208,8 +214,45 @@ class CroakFeedState extends State<CroakFeed>{
         },
         contentPadding: EdgeInsets.all(1),
         onLongPress: ((){ 
+          showMenu(
+            context: context,
+            position: RelativeRect.fromRect(Rect.fromCenter(width: 60, height: 50), Rect.largest),
+          
+            items: <PopupMenuEntry>[
+              PopupMenuItem(
+                value: 'cl_copy-content',
+                child: Row(
+                  children: <Widget>[
+                    Icon(Icons.content_copy),
+                    Text("Copy to Clipboard"),
+                  ],
+                ),
+              ),
+              PopupMenuItem(
+                value: 'cl_upvote',
+                child: Row(
+                  children: <Widget>[
+                    Icon(Icons.arrow_upward),
+                    Text("up-vote"),
+                  ],
+                ),
+              ),
+              PopupMenuItem(
+                value: 'cl_downvote',
+                child: Row(
+                  children: <Widget>[
+                    Icon(Icons.arrow_downward),
+                    Text("down-vote"),
+                  ],
+                ),
+              )
+            ],
+          );
+
+          /*
           Clipboard.setData(ClipboardData(text: c['content']));
           Toast.show('Croak content copied to clipboard', context);
+          */
         }),
       )
       );
@@ -319,6 +362,7 @@ class ComposeCroakDialog extends Dialog{
                               //Scaffold.of(context).showSnackBar(SnackBar(content: Text('Replying...')));
                               //Croak r = Croak();
                               print('replying ' + parent.toString());
+                              //TODO disable button here or do loading feedback
                               util.submitReply(parent['id'], contentController.text, parent['tags'], true).then((s){
                                 if (s){
                                   Navigator.pop(context);
