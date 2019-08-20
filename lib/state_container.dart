@@ -121,13 +121,13 @@ class StateContainerState extends State<StateContainer>{
   //actions for dealing with state data are here
   void addTag(String t){
     setState((){
-      state.query.tags.add(t);
+      state.query.tagsI.add(t);
       state.needsUpdate = true;
     });
   }
   void removeTag(String t){
     setState((){
-      state.query.tags.remove(t);
+      state.query.tagsI.remove(t);
       state.needsUpdate = true;
     });
   }

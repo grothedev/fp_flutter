@@ -35,7 +35,8 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
   
   TextEditingController dbgTC;
   final fk = GlobalKey<FormState>();
-  TextEditingController tagsText = TextEditingController();
+  TextEditingController tagsIText = TextEditingController();
+  TextEditingController tagsEText = TextEditingController();
   TextEditingController radText = TextEditingController();
   bool kwdAll = false;
   List tags;
@@ -143,7 +144,6 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                             margin: formElemMargin
                           ),
                           Text('km'),
-                          
                         ]
                       ),
                       Container(
@@ -181,26 +181,32 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                       ),
                       
                       TextFormField( //TAGS INPUT
-                        controller: tagsText,
+                        controller: tagsIText,
                         decoration: InputDecoration(
                           icon: Icon(Icons.category),
                           labelText: 'Looking for something more specific? Query some tags of your own'
                         ),
                         maxLines: 3,
                         minLines: 1,
-                      ),
-                      
-                      
+                      ),  
                       Text('Tags must be separated by spaces',
                         style: Theme.of(context).textTheme.caption
+                      ),
+                      TextFormField( //EXCLUDED TAGS INPUT
+                        controller: tagsEText,
+                        decoration: InputDecoration(
+                          icon: Icon(Icons.category),
+                          labelText: 'Are there any tags you don\'t want to read about?'
+                        ),
+                        maxLines: 3,
+                        minLines: 1,
                       ),
                       Container(
                         child: (locStr == null) ? Text('Getting location...') : Text(locStr),
                         margin: EdgeInsets.only(bottom: 2),
                         padding: EdgeInsets.only(left: 8),
-
                       ),
-
+                      Text('TODO: notification interval and other settings')
                       //had help here, but moved it to the app bar
                       /*
                       Container(
