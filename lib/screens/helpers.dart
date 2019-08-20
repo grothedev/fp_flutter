@@ -216,7 +216,7 @@ class CroakFeedState extends State<CroakFeed>{
         onLongPress: ((){ 
           showMenu(
             context: context,
-            position: RelativeRect.fromRect(Rect.fromCenter(width: 60, height: 50), Rect.largest),
+            position: RelativeRect.fromSize(Rect.fromLTWH(20, 30, 400, 300), Size.fromHeight(400)),
           
             items: <PopupMenuEntry>[
               PopupMenuItem(

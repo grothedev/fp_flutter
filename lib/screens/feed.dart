@@ -290,10 +290,17 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
           });
         });
         break;
-      case SortMethod.score_asc:
+      case SortMethod.pop_asc:
         setState(() {
           croaksJSON.sort((a, b){
             return a['replies'] - b['replies'];
+          });
+        });
+        break;
+      case SortMethod.score_asc:
+        setState(() {
+          croaksJSON.sort((a, b){
+            return a['score'] - b['score'];
           });
         });
         break;
@@ -311,10 +318,17 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
           });
         });
         break;
-      case SortMethod.score_des:
+      case SortMethod.pop_des:
         setState(() {
           croaksJSON.sort((a, b){
             return b['replies'] - a['replies'];
+          });
+        });
+        break;
+      case SortMethod.score_des:
+        setState(() {
+          croaksJSON.sort((a, b){
+            return b['score'] - a['score'];
           });
         });
         break;

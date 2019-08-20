@@ -19,7 +19,6 @@ TODO:
 * tag exclusion
 * copy croak content
 * button to show complete list of tags (also get more popular tags)
-* up/downvoting
 * notifications
 * post-initial-release features
   - voting
