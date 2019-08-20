@@ -25,7 +25,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:location/location.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'screens/home.dart';
+import 'screens/settings.dart';
 import 'screens/feed.dart';
 import 'screens/composecroak.dart';
 import 'screens/intro.dart';
@@ -150,14 +150,14 @@ class RootState extends State<RootView> with SingleTickerProviderStateMixin, Aut
         title: new Text("FrogPond"),
       ),*/
       body: new TabBarView(
-        children: <Widget>[new HomeScreen(), new FeedScreen(), new ComposeScreen()],
+        children: <Widget>[ new FeedScreen(), new SettingsScreen(), new ComposeScreen()],
         controller: controller,
       ),
       bottomNavigationBar: new Material(
         child: new TabBar(
           tabs: <Tab>[
-            new Tab(icon: new Icon(Icons.home)),
             new Tab(icon: new Icon(Icons.rss_feed)),
+            new Tab(icon: new Icon(Icons.settings)),
             new Tab(icon: new Icon(Icons.add_box))
           ],
           controller: controller,

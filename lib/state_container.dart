@@ -132,15 +132,22 @@ class StateContainerState extends State<StateContainer>{
     });
   }
 
-  void toggleExclusive(){
+  void tagsIncludeAll(bool a){
     setState(() {
-      if (state.query.exclusive != null) state.query.exclusive = !state.query.exclusive;
-      else state.query.exclusive = false;
+      //if (state.query.tags_include_all != null) state.query.tags_include_all = !state.query.tags_include_all;
+      //else state.query.tags_include_all = false;
+      state.query.tags_include_all = a;
       state.needsUpdate = true;
-      prefs.setBool('exclusive', state.query.exclusive);
-
+      prefs.setBool('tags_include_all', state.query.tags_include_all);
     });
-    print(state.query.exclusive.toString());
+  }
+
+  void tagsExcludeAll(bool a){
+    setState(() {
+      state.query.tags_exclude_all = a;
+      state.needsUpdate = true;
+      prefs.setBool('tags_exclude_all', state.query.tags_exclude_all);
+    });
   }
 
   void setCroakFeed(List crks){
@@ -160,6 +167,7 @@ class StateContainerState extends State<StateContainer>{
     }
   }
 
+  //currently obsolete because only using km
   void setDistUnit(int u){
     setState(() {
       state.query.distUnit = u;
@@ -168,7 +176,7 @@ class StateContainerState extends State<StateContainer>{
   }
 
   void setSortMethod(int s){
-    
+    //TODO
   }
 
   void getLocation(){
@@ -219,21 +227,6 @@ class StateContainerState extends State<StateContainer>{
       });
     });
     prefs.setInt('last_croaks_get', state.lastCroaksGet);
-
-    /*
-    util.getCroaks(state.query).then((cks){
-      setState(() {
-        for (int i = 0; i < cks.length; i++){
-        if (cks[i]['p_id'] != pid){ 
-            cks.removeAt(i);
-            i--;
-          }
-        }
-        state.feed = cks;
-        state.fetchingCroaks = false;
-      });    
-    });
-    */
   }
 
   void croaking(){

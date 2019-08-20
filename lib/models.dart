@@ -27,7 +27,6 @@ import 'consts.dart';
 
 class AppState {
 
-  String test = 'inherit widget test';
   List feed; //current croaks in the main feed
   bool gettingLocation;
   bool fetchingCroaks;
@@ -51,14 +50,16 @@ class AppState {
 
 class Query{
   List<String> tags;
-  bool exclusive; //get croaks with all or some tags
+  bool tags_include_all; //get croaks which are associated with all (true) or some (false) of selected tags
+  bool tags_exclude_all; //get croaks which are not associated with all (true) some (false) of selected tags
   int radius;
   int distUnit;
   //TODO add keywords
 
   Query(){
     tags = List();
-    exclusive = false;
+    tags_include_all = false;
+    tags_exclude_all = false;
     radius = 30;
     distUnit = KM;
   }

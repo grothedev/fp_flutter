@@ -31,7 +31,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../consts.dart';
 import '../api.dart' as api;
 
-class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMixin<HomeScreen>{
+class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveClientMixin<SettingsScreen>{
   
   TextEditingController dbgTC;
   final fk = GlobalKey<FormState>();
@@ -76,32 +76,6 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
       });
       
     });
-    /*tagsText.addListener((){
-      List tagsFromText = tagsText.text.split(' ');
-      List tl = prefs.getStringList('tags');
-      for (String t in tagsFromText){ //TODO this does not account for deleting tags
-        if (!tl.contains(t)){
-          tl.add(t);
-        }
-      }
-      prefs.setStringList('tags', tl);
-    });
-    */
-    /*
-    SchedulerBinding.instance.addPostFrameCallback((_){
-      if (prefs.getBool('firstrun')){
-        Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text('First time? Learn more here'), 
-         action: SnackBarAction(
-            label: 'Learn',
-            onPressed: ()=>launch('http://' + api.host + '/about'),
-
-          ),
-          duration: Duration(seconds: 8), 
-        ));
-      }
-    });
-    */
   }
 
   @override
@@ -115,7 +89,6 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
     } 
 
     return Scaffold(
-      //appBar: ScreenTitle('Welcome to FrogPond'),
       appBar: AppBar(
         title: Text('Frog Pond'),
         actions: [
@@ -131,14 +104,13 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
         child: Column(
           children: [
             Container(
-              child: Text('Welcome to the pond',
+              child: Text('Adjust your settings here',
                 style: Theme.of(context).textTheme.headline,
                 maxLines: 5,
                 overflow: TextOverflow.visible,
               ),
               //constraints: BoxConstraints(maxHeight: 20),
               padding: EdgeInsets.all(10),
-              
             ),
             Form(
               key: fk,
@@ -147,17 +119,21 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
                 child: Center(
                   child: Column(
                     children: [
-                      
+                      Text('Here are some popular tags in your area; tap them to include them in your query'),
+                      Container(
+                        margin: formElemMargin,
+                        child: (store.state.location == null) ? Text('Waiting for location...') 
+                                        : SuggestedTags(store.state.location, updateQueryTags), //tell it what to do when one of its chips is selected
+                      ),
                       Container(
                         child: TextFormField( //TAGS INPUT
                           controller: tagsText,
                           decoration: InputDecoration(
                             icon: Icon(Icons.category),
-                            labelText: 'Tags'
+                            labelText: 'Tags of your own: '
                           ),
                           maxLines: 3,
                           minLines: 1,
-                          
                         ),
                         margin: formElemMargin
                       ),
@@ -165,37 +141,13 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
                         style: Theme.of(context).textTheme.caption
                       ),
                       Container(
-                        margin: formElemMargin,
-                        child: (store.state.location == null) ? Text('Waiting for location...') 
-                                        : SuggestedTags(store.state.location, updateQueryTags), //tell it what to do when one of its chips is selected
-                      ),
-                      //phase 2: keywords
-                      /*
-                      TextFormField( //KEYWORDS INPUT
-                        controller: tagsText,
-                        decoration: InputDecoration(
-                          icon: Icon(Icons.message),
-                          labelText: 'Keywords'
-                        ),
-                        maxLines: 3,
-                        minLines: 1,
-                      ),
-                      */
-                      Container(
                         child: CheckboxListTile(
                           title: Text('Search for croaks with all (on) or some (off) of these tags?'),
-                          value: kwdAll,
+                          value: store.state.query.tags_include_all,
                           onChanged: (v){
-                            setState((){
-                              SharedPreferences.getInstance().then((pref){
-                                pref.setBool("query_all", v);
-                              });
-                              kwdAll = v;
-                            });
-                            store.toggleExclusive();
+                            store.tagsIncludeAll(v);
                           },
                           activeColor: Colors.green,
-                          
                         ),
                         //margin: formElemMargin,
                         width: MediaQuery.of(context).size.width * .7
@@ -317,10 +269,10 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
 }
 
 //this screen should show a UI to set feed filter, user account pref, notifications
-class HomeScreen extends StatefulWidget {
+class SettingsScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return HomeScreenState();
+    return SettingsScreenState();
   }
 
 
