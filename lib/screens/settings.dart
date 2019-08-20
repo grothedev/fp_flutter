@@ -90,7 +90,7 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Frog Pond'),
+        title: Text('Frog Pond - Settings'),
         actions: [
           IconButton(
             icon: Icon(Icons.help_outline),
@@ -100,65 +100,26 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
         ]
       ),
       body:  SingleChildScrollView(
-        
         child: Column(
           children: [
-            Container(
-              child: Text('Adjust your settings here',
-                style: Theme.of(context).textTheme.headline,
-                maxLines: 5,
-                overflow: TextOverflow.visible,
-              ),
-              //constraints: BoxConstraints(maxHeight: 20),
-              padding: EdgeInsets.all(10),
-            ),
             Form(
               key: fk,
               child: Padding(
                 padding: EdgeInsets.all(12.0),
-                child: Center(
+                
                   child: Column(
+
                     children: [
-                      Text('Here are some popular tags in your area; tap them to include them in your query'),
-                      Container(
-                        margin: formElemMargin,
-                        child: (store.state.location == null) ? Text('Waiting for location...') 
-                                        : SuggestedTags(store.state.location, updateQueryTags), //tell it what to do when one of its chips is selected
-                      ),
-                      Container(
-                        child: TextFormField( //TAGS INPUT
-                          controller: tagsText,
-                          decoration: InputDecoration(
-                            icon: Icon(Icons.category),
-                            labelText: 'Tags of your own: '
-                          ),
-                          maxLines: 3,
-                          minLines: 1,
-                        ),
-                        margin: formElemMargin
-                      ),
-                      Text('Tags must be seperated by spaces, and cannot contain spaces or special characters',
-                        style: Theme.of(context).textTheme.caption
-                      ),
-                      Container(
-                        child: CheckboxListTile(
-                          title: Text('Search for croaks with all (on) or some (off) of these tags?'),
-                          value: store.state.query.tags_include_all,
-                          onChanged: (v){
-                            store.tagsIncludeAll(v);
-                          },
-                          activeColor: Colors.green,
-                        ),
-                        //margin: formElemMargin,
-                        width: MediaQuery.of(context).size.width * .7
-                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
+                          Text('Distance: ',
+                            style: Theme.of(context).textTheme.headline
+                          ),
                           Text('Search for croaks within '),
                           Container(
                             constraints: BoxConstraints(
-                              maxWidth: .2 * MediaQuery.of(context).size.width
+                              maxWidth: .1 * MediaQuery.of(context).size.width
                             ),
                             child: TextFormField(
                               keyboardType: TextInputType.number,
@@ -172,9 +133,7 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                                 store.setRadius(radius.toInt());              
                               },
                               decoration: InputDecoration(
-                                icon: Icon(Icons.directions),
-                                labelText: 'Radius',
-                                  
+                                labelText: 'Radius',  
                               ),
                               maxLines: 1,
                               minLines: 1,
@@ -188,35 +147,52 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                         ]
                       ),
                       Container(
-                        padding: EdgeInsets.only(left: 5, right: 8),
-                        child: Row( 
-                          children: <Widget>[
-                            
-                            Expanded(
-                              child: Slider(
-                                onChanged: (v){
-                                  double r = v;
-                                  setState(() {
-                                    radius = r;
-                                    radText.text = radius.toString();
-                                    SharedPreferences.getInstance().then((pref){
-                                      pref.setInt('radius', r.toInt());
-                                    });
-                                    store.setRadius(r.toInt());
-                                    radiusSlider = v;
-                                  });
-                                },
-                                label: 'Distance',
-                                value: radiusSlider,
-                                min: 2,
-                                max: 100,
-                                divisions: 40,
-                                
-                              ),
-                            ),
-                            
-                          ],
+                        padding: EdgeInsets.all(8)
+                      ),
+                      /* should the slider be used?
+                      Expanded(
+                        child: Slider(
+                          onChanged: (v){
+                            double r = v;
+                            setState(() {
+                              radius = r;
+                              radText.text = radius.toString();
+                              SharedPreferences.getInstance().then((pref){
+                                pref.setInt('radius', r.toInt());
+                              });
+                              store.setRadius(r.toInt());
+                              radiusSlider = v;
+                            });
+                          },
+                          label: 'Distance',
+                          value: radiusSlider,
+                          min: 2,
+                          max: 100,
+                          divisions: 40,
+                          
                         ),
+                      ),
+                      */
+                      Text('Here are some popular tags in your area, if you want refine your search by related concepts'),
+                      Container(
+                        margin: formElemMargin,
+                        child: (store.state.location == null) ? Text('Waiting for location...') 
+                                        : SuggestedTags(store.state.location, updateQueryTags), //tell it what to do when one of its chips is selected
+                      ),
+                      
+                      TextFormField( //TAGS INPUT
+                        controller: tagsText,
+                        decoration: InputDecoration(
+                          icon: Icon(Icons.category),
+                          labelText: 'Looking for something more specific? Query some tags of your own'
+                        ),
+                        maxLines: 3,
+                        minLines: 1,
+                      ),
+                      
+                      
+                      Text('Tags must be separated by spaces',
+                        style: Theme.of(context).textTheme.caption
                       ),
                       Container(
                         child: (locStr == null) ? Text('Getting location...') : Text(locStr),
@@ -245,7 +221,7 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                   ),
                 )
               ),
-            ),
+            
           ]
         ) 
       )

@@ -50,16 +50,16 @@ class AppState {
 
 class Query{
   List<String> tags;
-  bool tags_include_all; //get croaks which are associated with all (true) or some (false) of selected tags
-  bool tags_exclude_all; //get croaks which are not associated with all (true) some (false) of selected tags
+  bool tagsIncludeAll; //get croaks which are associated with all (true) or some (false) of selected tags
+  bool tagsExcludeAll; //get croaks which are not associated with all (true) some (false) of selected tags
   int radius;
   int distUnit;
   //TODO add keywords
 
   Query(){
     tags = List();
-    tags_include_all = false;
-    tags_exclude_all = false;
+    tagsIncludeAll = false;
+    tagsExcludeAll = false;
     radius = 30;
     distUnit = KM;
   }

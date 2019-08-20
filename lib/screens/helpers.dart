@@ -500,7 +500,7 @@ class SuggestedTagsState extends State<SuggestedTags> with AutomaticKeepAliveCli
       return Flex(
         direction: Axis.vertical,
         children: [
-          Text('Popular Tags', style: Theme.of(context).textTheme.subhead,),
+          //Text('Here are some popular tags in your area, pick some that are of interest to you', style: Theme.of(context).textTheme.subhead,), //perhaps the value of this title should be decoupled from the widget
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Wrap(

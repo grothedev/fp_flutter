@@ -82,8 +82,8 @@ class StateContainerState extends State<StateContainer>{
     state.lastCroaksGet = prefs.getInt('last_croaks_get');
     state.lat = prefs.getDouble('lat');
     state.lon = prefs.getDouble('lon');
-    state.query.exclusive = prefs.getBool('exclusive');
-    if (state.query.exclusive == null) state.query.exclusive = false;
+    state.query.tagsIncludeAll = prefs.getBool('exclusive');
+    if (state.query.tagsIncludeAll == null) state.query.tagsIncludeAll = false;
     //state.query.tags = prefs.getStringList('tags'); //tmp for dbging
     state.query.radius = prefs.getInt('radius');
     if (state.query.radius == null) state.query.radius = 15;
@@ -136,17 +136,17 @@ class StateContainerState extends State<StateContainer>{
     setState(() {
       //if (state.query.tags_include_all != null) state.query.tags_include_all = !state.query.tags_include_all;
       //else state.query.tags_include_all = false;
-      state.query.tags_include_all = a;
+      state.query.tagsIncludeAll = a;
       state.needsUpdate = true;
-      prefs.setBool('tags_include_all', state.query.tags_include_all);
+      prefs.setBool('tags_include_all', state.query.tagsIncludeAll);
     });
   }
 
   void tagsExcludeAll(bool a){
     setState(() {
-      state.query.tags_exclude_all = a;
+      state.query.tagsExcludeAll = a;
       state.needsUpdate = true;
-      prefs.setBool('tags_exclude_all', state.query.tags_exclude_all);
+      prefs.setBool('tags_exclude_all', state.query.tagsExcludeAll);
     });
   }
 
