@@ -121,6 +121,16 @@ Future<bool> postCroak(Map c, File f) async{
   
 }
 
+//returns that croak's current score
+Future<int> vote(bool v, int c_id) async{
+  Map<String, dynamic> req = {
+    'v': v ? '1' : '0',
+    'croak_id': c_id.toString()
+  };
+  String res = await api.postVote(req); 
+  return int.parse(res);
+}
+
 //TODO rename to getLocation ?
 Future<LocationData> initLocation() async{
     print('initing loc');

@@ -104,3 +104,8 @@ Future<List> getTags(int n, double lat, double lon) async{
   print('api response: ' + res.body.toString());
   return json.decode(res.body);
 }
+
+Future<String> postVote(Map<String, dynamic> req) async{
+  var res = await http.Client().post(api_url+'votes', body: req);
+  return res.body.toString();
+}

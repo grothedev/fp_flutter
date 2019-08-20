@@ -145,6 +145,45 @@ class CroakDetailState extends State<CroakDetailScreen>{
                   bottom: BorderSide(color: Theme.of(context).dividerColor),
                 )
               ),
+              margin: EdgeInsets.only(top: 10, bottom: 2),
+            ),
+
+            Container(  //VOTE BUTTONS
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+
+                children: [
+                  
+                  RaisedButton(
+                    child: Icon(Icons.arrow_downward),
+                    onPressed: () => util.vote(false, c['id']).then((s){
+                      setState(() {
+                        c['score'] = s;
+                      });
+                    }),
+                  ),
+                  Container(
+                    padding: EdgeInsets.only(left: 10, right: 10),
+                    child: Text(c['score'].toString(), style: Theme.of(context).textTheme.body1),
+                  ),
+                  RaisedButton(
+                    child: Icon(Icons.arrow_upward),
+                    onPressed: () => util.vote(true, c['id']).then((s){
+                      setState(() {
+                        c['score'] = s;
+                      });
+                    }),
+                  ),
+                ]
+              )
+            ),
+
+            Container( //DIVIDER
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(color: Theme.of(context).dividerColor),
+                )
+              ),
               margin: EdgeInsets.only(bottom: 12.0),
             ),
 
