@@ -52,15 +52,14 @@ class Query{
   List<String> tagsI;
   List<String> tagsE;
   bool tagsIncludeAll; //get croaks which are associated with all (true) or some (false) of selected tags
-  bool tagsExcludeAll; //get croaks which are not associated with all (true) some (false) of selected tags
   int radius;
   int distUnit;
   //TODO add keywords
 
   Query(){
-    tags = List();
+    tagsI = List();
+    tagsE = List();
     tagsIncludeAll = false;
-    tagsExcludeAll = false;
     radius = 30;
     distUnit = KM;
   }

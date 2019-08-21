@@ -142,14 +142,6 @@ class StateContainerState extends State<StateContainer>{
     });
   }
 
-  void tagsExcludeAll(bool a){
-    setState(() {
-      state.query.tagsExcludeAll = a;
-      state.needsUpdate = true;
-      prefs.setBool('tags_exclude_all', state.query.tagsExcludeAll);
-    });
-  }
-
   void setCroakFeed(List crks){
     setState((){
       state.feed = crks;

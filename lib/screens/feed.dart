@@ -191,7 +191,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
       fetching = true;
     });
     print('feed refreshing');
-    Toast.show(makeRefreshToastText(), context);
+    Toast.show(makeRefreshToastText(), context, duration: 8);
 
     //store.fetchCroaks(pid);
     int lcg; //don't worry about time of last update if needUpdate, for example query changed
@@ -351,14 +351,21 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   //toast text to display info about the query upon refresh
   String makeRefreshToastText(){
     String t = 'Getting croaks';
-    if (store.state.query.tags.length >= 0){
-      t += ' which are associate with ';
-      store.state.query.tagsIncludeAll ? t += 'all ' : t += 'some ';
-      t += 'of the following tags: ' + store.state.query.tags.join(', ');
-      t += ';';  
-      
+    var q = store.state.query;
+    if (q.radius != null){
+      t += ' within ' + q.radius.toString() + ' km of you';
+    }
+    if (q.tagsI.length > 0){
+      t += ' which are associated with ';
+      q.tagsIncludeAll ? t += 'all ' : t += 'some ';
+      t += 'of the following tags: ' + q.tagsI.join(', ');  
     } 
-    t + '; which are not associated'
+    if (q.tagsE.length > 0){
+      t += ' and which are not associated with any of the following tags: ' + q.tagsI.join(', ');
+    }
+    t += '.';
+
+    return t;
   }
 
   
