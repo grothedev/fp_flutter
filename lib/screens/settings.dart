@@ -39,7 +39,8 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
   TextEditingController tagsEText = TextEditingController();
   TextEditingController radText = TextEditingController();
   bool kwdAll = false;
-  List tags;
+  List tagsI;
+  List tagsE;
   SharedPreferences prefs;
   String locStr;
   StateContainerState store;
@@ -188,6 +189,11 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                         ),
                         maxLines: 3,
                         minLines: 1,
+                        onEditingComplete: (){
+                          tagsIText.text.split(' ').forEach((t){
+                            store.addTag(t);
+                          });
+                        },
                       ),  
                       Text('Tags must be separated by spaces',
                         style: Theme.of(context).textTheme.caption

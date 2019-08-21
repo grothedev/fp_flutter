@@ -120,12 +120,14 @@ class StateContainerState extends State<StateContainer>{
   
   //actions for dealing with state data are here
   void addTag(String t){
+    if (state.query.tagsI.contains(t)) return;
     setState((){
       state.query.tagsI.add(t);
       state.needsUpdate = true;
     });
   }
   void removeTag(String t){
+    if (!state.query.tagsI.contains(t)) return;
     setState((){
       state.query.tagsI.remove(t);
       state.needsUpdate = true;
