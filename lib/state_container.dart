@@ -78,17 +78,20 @@ class StateContainerState extends State<StateContainer>{
   
   void restoreState() async{ //from saved session preferences
     prefs = await SharedPreferences.getInstance();
-
-    state.lastCroaksGet = prefs.getInt('last_croaks_get');
-    state.lat = prefs.getDouble('lat');
-    state.lon = prefs.getDouble('lon');
-    state.query.tagsIncludeAll = prefs.getBool('exclusive');
-    if (state.query.tagsIncludeAll == null) state.query.tagsIncludeAll = false;
-    //state.query.tags = prefs.getStringList('tags'); //tmp for dbging
-    state.query.radius = prefs.getInt('radius');
-    if (state.query.radius == null) state.query.radius = 15;
-    
-    state.needsUpdate = prefs.getBool('needs_update');
+    if (prefs.containsKey('ran_before')){
+      state.lastCroaksGet = prefs.getInt('last_croaks_get');
+      state.lat = prefs.getDouble('lat');
+      state.lon = prefs.getDouble('lon');
+      state.query.tagsIncludeAll = prefs.getBool('exclusive');
+      if (state.query.tagsIncludeAll == null) state.query.tagsIncludeAll = false;
+      //state.query.tags = prefs.getStringList('tags'); //tmp for dbging
+      state.query.radius = prefs.getInt('radius');
+      if (state.query.radius == null) state.query.radius = 15;
+      
+      state.needsUpdate = prefs.getBool('needs_update');  
+    } else {
+      prefs.setBool('ran_before', true);      
+    }
     
     if (state.lat == null || state.lon == null){
       util.initLocation().then((l){
@@ -125,6 +128,8 @@ class StateContainerState extends State<StateContainer>{
       state.query.tagsI.add(t);
       state.needsUpdate = true;
     });
+    //TODO refer to localTags to add { label: t, include: true, exclude: false, active: true}
+    //then tagsI and tagsE will be obsolete and it will be much easier to deal with tags overall 
   }
   void removeTag(String t){
     if (!state.query.tagsI.contains(t)) return;
@@ -132,6 +137,13 @@ class StateContainerState extends State<StateContainer>{
       state.query.tagsI.remove(t);
       state.needsUpdate = true;
     });
+  }
+
+  //adds to the repository of local tags stored on the device
+  void addLocalTag(String t){
+    if (state.query.localTags.where(  (lt){ return lt['label'].toString() == t; }) == true){
+
+    }
   }
 
   void tagsIncludeAll(bool a){

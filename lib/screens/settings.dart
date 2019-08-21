@@ -51,9 +51,10 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
   EdgeInsets formElemMargin = EdgeInsets.all(8.0);
 
   initState(){
+
     SharedPreferences.getInstance().then((p){
       this.prefs = p;
-      if (prefs.getBool('firstrun') == null || prefs.getBool('firstrun')){
+      if (!prefs.containsKey('ran_before')){
         Scaffold.of(context).showSnackBar(
           SnackBar(
             content: Text('First time?'), 
@@ -67,7 +68,6 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                
           )
         );
-        prefs.setBool('firstrun', false);
       }
       setState((){
         if (store.state.lat == null || store.state.lon == null){
@@ -78,6 +78,7 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
       });
       
     });
+
   }
 
   @override
@@ -181,19 +182,30 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                                         : SuggestedTags(store.state.location, updateQueryTags), //tell it what to do when one of its chips is selected
                       ),
                       
-                      TextFormField( //TAGS INPUT
-                        controller: tagsIText,
-                        decoration: InputDecoration(
-                          icon: Icon(Icons.category),
-                          labelText: 'Looking for something more specific? Query some tags of your own'
-                        ),
-                        maxLines: 3,
-                        minLines: 1,
-                        onEditingComplete: (){
-                          tagsIText.text.split(' ').forEach((t){
-                            store.addTag(t);
-                          });
-                        },
+                      Row(
+                        children: [
+                          TextFormField( //TAGS INPUT
+                            controller: tagsIText,
+                            decoration: InputDecoration(
+                              icon: Icon(Icons.category),
+                              labelText: 'Looking for something more specific? Query some tags of your own'
+                            ),
+                            maxLines: 3,
+                            minLines: 1,
+                            onEditingComplete: (){
+                              tagsIText.text.split(' ').forEach((t){
+                                store.addTag(t);
+                              });
+                            },
+                          
+                          ),
+                          RaisedButton(
+                            child: Icon(Icons.add),
+                            onPressed: (){
+                              store.addTag(tagsIText.text);
+                            },
+                          )
+                        ]
                       ),  
                       Text('Tags must be separated by spaces',
                         style: Theme.of(context).textTheme.caption

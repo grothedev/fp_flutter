@@ -51,6 +51,7 @@ class AppState {
 class Query{
   List<String> tagsI;
   List<String> tagsE;
+  List localTags;
   bool tagsIncludeAll; //get croaks which are associated with all (true) or some (false) of selected tags
   int radius;
   int distUnit;

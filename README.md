@@ -41,4 +41,4 @@ SharedPreferences:
   * radius (int) : geographical radius of query (km)
   * dist_unit (int) : 0 = kilometers ; 1 = miles
   * needs_update (bool) : does the main feed need to be updated?
-  * firstrun (bool) : if this is the first time the app has been run
+  * ran_before (bool) : if the app has been run on the device before

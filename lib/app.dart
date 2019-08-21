@@ -22,6 +22,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:fp/state_container.dart';
 import 'package:location/location.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -45,6 +46,7 @@ class FrogPondApp extends StatelessWidget {
   Widget build(BuildContext context) {
     bool intro = !File('databases/fp.db').existsSync();
     print('db found? ' + intro.toString());
+    
     return MaterialApp(
       title: 'FrogPond',
       theme: ThemeData(
@@ -113,6 +115,7 @@ class RootState extends State<RootView> with SingleTickerProviderStateMixin, Aut
   List queryTags = [];
   List croaksJSON = [];
   LocationData location;
+  StateContainerState store;
 
   @override
   void initState(){
@@ -139,12 +142,20 @@ class RootState extends State<RootView> with SingleTickerProviderStateMixin, Aut
   @override
   void dispose(){
     controller.dispose();
-    //TODO anything need to happen here?
+    SharedPreferences.getInstance().then((prefs){
+      prefs.setDouble('lat', store.state.lat);
+      prefs.setDouble('lon', store.state.lon);
+      prefs.setInt('last_croaks_get', store.state.lastCroaksGet);
+      prefs.setStringList('tags', store.state.query.localTags.map((lt){ return lt['label']; }));
+      prefs.setInt('radius', store.state.query.radius);
+    });
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    store = StateContainer.of(context);
+
     return new Scaffold(
       /*appBar: new AppBar(
         title: new Text("FrogPond"),
@@ -190,6 +201,6 @@ class RootState extends State<RootView> with SingleTickerProviderStateMixin, Aut
 
   @override
   bool get wantKeepAlive => true;
-  
+
 }
 
