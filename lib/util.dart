@@ -48,22 +48,21 @@ Future<List> getCroaks(Query query, int lastUpdated, LocationData location) asyn
   print('util getcroaks: ' + query.toString() + ', ' + query.radius.toString());
   
   //TODO fix sqlite
-  if (true || lastUpdated == null || DateTime.now().millisecondsSinceEpoch - lastUpdated > CROAKS_GET_TIMEOUT){
+  if (lastUpdated == null || DateTime.now().millisecondsSinceEpoch - lastUpdated > CROAKS_GET_TIMEOUT){
     List crks =  await queryCroaks(location, query.tagsI, query.tagsIncludeAll, query.radius);
  
     print('util got croaks (tags=' + query.tagsI.toString() + ') :' + crks.toString());
-
+    
     if (crks != null){
-      if (db.database == null) await db.initDB();
-      //db.saveCroaks(crks);
+      db.saveCroaks(crks);
     }    
     return crks;
   } else {
     print('last got croaks ' + lastUpdated.toString() + '. loading croaks from sqlite');
-    List crks = await db.loadCroaks();
-    print(crks.toString());
+    List dbres = await db.loadCroaks();
+    print(dbres.toString());
     
-    return crks;
+    return List<dynamic>.from(dbres);
   }
 }
 

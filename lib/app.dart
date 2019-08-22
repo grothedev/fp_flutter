@@ -148,7 +148,9 @@ class RootState extends State<RootView> with SingleTickerProviderStateMixin, Aut
       prefs.setInt('last_croaks_get', store.state.lastCroaksGet);
       prefs.setStringList('tags', store.state.query.localTags.map((lt){ return lt['label']; }));
       prefs.setInt('radius', store.state.query.radius);
+      prefs.setInt('last_croaks_get', store.state.lastCroaksGet);
     });
+    //TODO write croaks to db
     super.dispose();
   }
 

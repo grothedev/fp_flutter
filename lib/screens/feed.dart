@@ -191,12 +191,9 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
       fetching = true;
     });
     print('feed refreshing');
-    Toast.show(makeRefreshToastText(), context, duration: 8);
-
-    //store.fetchCroaks(pid);
-    int lcg; //don't worry about time of last update if needUpdate, for example query changed
-    if (!store.state.needsUpdate) lcg = store.state.lastCroaksGet; 
-    util.getCroaks(store.state.query, lcg, store.state.location).then((cks){
+    if(mounted) Toast.show(makeRefreshToastText(), context, duration: 8);
+ 
+    util.getCroaks(store.state.query, store.state.lastCroaksGet, store.state.location).then((cks){
       store.state.needsUpdate = false;
       if (cks == null){
         print('failed to fetch croaks');
