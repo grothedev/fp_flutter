@@ -87,7 +87,8 @@ class StateContainerState extends State<StateContainer>{
       //state.query.tags = prefs.getStringList('tags'); //tmp for dbging
       state.query.radius = prefs.getInt('radius');
       if (state.query.radius == null) state.query.radius = 15;
-      
+      state.query.localTags = new LocalTagsStore(prefs.getStringList('tags')); //NOTE: currently cant save if the tag is being used. can only save list of strings
+
       state.needsUpdate = prefs.getBool('needs_update');  
     } else {
       prefs.setBool('ran_before', true);      
@@ -123,27 +124,18 @@ class StateContainerState extends State<StateContainer>{
   
   //actions for dealing with state data are here
   void addTag(String t){
-    if (state.query.tagsI.contains(t)) return;
-    setState((){
-      state.query.tagsI.add(t);
-      state.needsUpdate = true;
+    setState(() {
+      state.query.localTags.add(t, true);  
     });
-    //TODO refer to localTags to add { label: t, include: true, exclude: false, active: true}
-    //then tagsI and tagsE will be obsolete and it will be much easier to deal with tags overall 
   }
+
+  //doesn't actually remove the tag, but exludes it from query
   void removeTag(String t){
-    if (!state.query.tagsI.contains(t)) return;
     setState((){
-      state.query.tagsI.remove(t);
-      state.needsUpdate = true;
+      state.query.localTags.get(t)['use'] = false;
+      //state.query.tagsI.remove(t);
+      state.needsUpdate = true; //TODO: is this flag necessary?
     });
-  }
-
-  //adds to the repository of local tags stored on the device
-  void addLocalTag(String t){
-    if (state.query.localTags.where(  (lt){ return lt['label'].toString() == t; }) == true){
-
-    }
   }
 
   void tagsIncludeAll(bool a){

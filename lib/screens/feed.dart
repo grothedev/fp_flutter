@@ -38,7 +38,8 @@ import '../api.dart' as api;
 import '../util.dart' as util;
 import '../db.dart' as db;
 import '../consts.dart';
-import 'helpers.dart';
+
+import '../helpers/croakfeed.dart';
 
 //feed screen passes the query down to the croakfeed, then croakfeed fetches the croaks
 

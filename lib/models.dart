@@ -51,7 +51,7 @@ class AppState {
 class Query{
   List<String> tagsI;
   List<String> tagsE;
-  List localTags;
+  LocalTagsStore localTags;
   bool tagsIncludeAll; //get croaks which are associated with all (true) or some (false) of selected tags
   int radius;
   int distUnit;
@@ -127,5 +127,44 @@ class Tag{
 
   String toString(){
     return label;
+  }
+}
+
+/*
+a type of repository that handles the tags that are of concern to the user.
+decided to do it this way because i wanted a few things to happen:
+  - tags are saved and restored when the app is opened again
+  - user can enter indivual tags of mode include or exclude and then they appear in the chip selector with the suggested tags
+  - 
+
+*/
+class LocalTagsStore{
+  List<dynamic> tags;
+  
+  LocalTagsStore(List<String> tags){
+    tags.forEach((t){
+      add(t, false);
+    });
+  }
+
+  void set(String label, int mode){
+    get(label)['mode'] = mode;
+  }
+
+  Map<String, dynamic> get(String label){
+    var tag = tags.firstWhere((t){ return t['label'] == label; });
+    if (tag == null){
+      tag = add(label, false);
+    }
+    return tag;
+  }
+
+  Map add(String label, bool use){
+    this.tags.add({
+      'label': label,
+      'mode': 0, //0=include, 1=exclude; using int because there might be more modes in future
+      'use': use,
+    });
+    return this.tags.last;
   }
 }

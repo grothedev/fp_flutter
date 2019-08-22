@@ -134,7 +134,7 @@ class RootState extends State<RootView> with SingleTickerProviderStateMixin, Aut
         if (p.getBool('query_all') == null) p.setBool('query_all', false);
       
     });
-
+    
     initNotifications();
 
   }

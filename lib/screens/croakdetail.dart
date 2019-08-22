@@ -32,9 +32,9 @@ import 'package:video_player/video_player.dart';
 
 import '../util.dart' as util;
 import '../api.dart' as api;
-import '../db.dart' as db;
-import 'helpers.dart';
 
+import '../helpers/composecroakdialog.dart';
+import '../helpers/croakfeed.dart';
 
 final String ro_url_pre = 'http://' + api.host + '/c/'; //prefix of url for fancy read-only webview
 

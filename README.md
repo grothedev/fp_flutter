@@ -17,6 +17,8 @@ TODO:
     -
 * attach file to reply
 * tag exclusion
+* remove unused stuff like the old tag list
+* is state.needsUpdate flag necessary?
 * copy croak content
 * button to show complete list of tags (also get more popular tags)
 * notifications
@@ -37,7 +39,7 @@ SharedPreferences:
   * lat (double) : latitude of user
   * lon (double) : longitude of user
   * exclusive (bool) : get croaks by contain all(1) or some(0) of given tags
-  * tags (List<String>) : tags to query for
+  * tags (List<String>) : tags to query for 
   * radius (int) : geographical radius of query (km)
   * dist_unit (int) : 0 = kilometers ; 1 = miles
   * needs_update (bool) : does the main feed need to be updated?

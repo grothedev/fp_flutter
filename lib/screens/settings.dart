@@ -23,20 +23,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fp/main.dart';
-import 'package:fp/screens/helpers.dart';
 import 'package:fp/state_container.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../consts.dart';
 import '../api.dart' as api;
+import '../helpers/localtags.dart';
 
 class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveClientMixin<SettingsScreen>{
   
   TextEditingController dbgTC;
   final fk = GlobalKey<FormState>();
-  TextEditingController tagsIText = TextEditingController();
-  TextEditingController tagsEText = TextEditingController();
+  TextEditingController tagsText = TextEditingController();
+  //TextEditingController tagsEText = TextEditingController();
   TextEditingController radText = TextEditingController();
   bool kwdAll = false;
   List tagsI;
@@ -179,46 +179,44 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                       Container(
                         margin: formElemMargin,
                         child: (store.state.location == null) ? Text('Waiting for location...') 
-                                        : SuggestedTags(store.state.location, updateQueryTags), //tell it what to do when one of its chips is selected
+                                        : LocalTags(store.state.location, updateQueryTags), //tell it what to do when one of its chips is selected
                       ),
                       
-                      Row(
-                        children: [
-                          TextFormField( //TAGS INPUT
-                            controller: tagsIText,
-                            decoration: InputDecoration(
-                              icon: Icon(Icons.category),
-                              labelText: 'Looking for something more specific? Query some tags of your own'
-                            ),
-                            maxLines: 3,
-                            minLines: 1,
-                            onEditingComplete: (){
-                              tagsIText.text.split(' ').forEach((t){
-                                store.addTag(t);
-                              });
-                            },
-                          
-                          ),
-                          RaisedButton(
-                            child: Icon(Icons.add),
-                            onPressed: (){
-                              store.addTag(tagsIText.text);
-                            },
-                          )
-                        ]
-                      ),  
-                      Text('Tags must be separated by spaces',
-                        style: Theme.of(context).textTheme.caption
-                      ),
-                      TextFormField( //EXCLUDED TAGS INPUT
-                        controller: tagsEText,
+                      TextFormField( //TAGS INPUT
+                        controller: tagsText,
                         decoration: InputDecoration(
                           icon: Icon(Icons.category),
-                          labelText: 'Are there any tags you don\'t want to read about?'
+                          labelText: 'Looking for something more specific? Query some tags of your own'
                         ),
                         maxLines: 3,
                         minLines: 1,
+                        onEditingComplete: (){
+                          tagsText.text.split(' ').forEach((t){
+                            store.addTag(t);
+                          });
+                        },
+                      
                       ),
+                      Row(
+                        children: [
+                          RaisedButton(
+                            child: Icon(Icons.add, semanticLabel: 'Include'),
+                            onPressed: (){
+                              store.addTag(tagsText.text);
+                            },
+                          ),
+                          RaisedButton(
+                            child: Icon(Icons.add, semanticLabel: 'Exclude'),
+                            onPressed: (){
+                              store.addTag(tagsText.text);
+                            },
+                          ),
+                        ]
+                      ),    
+                      Text('Tags must be separated by spaces',
+                        style: Theme.of(context).textTheme.caption
+                      ),
+                      
                       Container(
                         child: (locStr == null) ? Text('Getting location...') : Text(locStr),
                         margin: EdgeInsets.only(bottom: 2),
@@ -255,7 +253,7 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
   @override
   bool get wantKeepAlive => true;
   
-  void updateQueryTags(String tag, bool sel){
+  void updateQueryTags(String tag, bool sel){ //
     if (sel){
       store.addTag(tag);
     } else {
