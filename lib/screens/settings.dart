@@ -30,6 +30,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../consts.dart';
 import '../api.dart' as api;
 import '../helpers/localtags.dart';
+import '../util.dart' as util;
 
 class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveClientMixin<SettingsScreen>{
   
@@ -179,7 +180,7 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                       Container(
                         margin: formElemMargin,
                         child: (store.state.location == null) ? Text('Waiting for location...') 
-                                        : LocalTags(store.state.location, updateQueryTags), //tell it what to do when one of its chips is selected
+                                        : LocalTags(store.state.query.localTags, null), //tell it what to do when one of its chips is selected (deprecated)
                       ),
                       
                       TextFormField( //TAGS INPUT

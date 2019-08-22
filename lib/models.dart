@@ -24,6 +24,7 @@ import 'package:sqflite/sqflite.dart';
 import 'dart:async';
 
 import 'consts.dart';
+import 'util.dart' as util;
 
 class AppState {
 
@@ -140,8 +141,9 @@ decided to do it this way because i wanted a few things to happen:
 */
 class LocalTagsStore{
   List<dynamic> tags;
-  
+
   LocalTagsStore(List<String> tags){
+    if (tags == null) return;
     tags.forEach((t){
       add(t, false);
     });
@@ -159,12 +161,21 @@ class LocalTagsStore{
     return tag;
   }
 
-  Map add(String label, bool use){
-    this.tags.add({
-      'label': label,
-      'mode': 0, //0=include, 1=exclude; using int because there might be more modes in future
-      'use': use,
-    });
-    return this.tags.last;
+  dynamic add(dynamic label, bool use){
+    if (label is String){
+      this.tags.add({
+        'label': label,
+        'mode': 0, //0=include, 1=exclude; using int because there might be more modes in future
+        'use': use,
+      });
+      return this.tags.last;
+    } else {
+      List added;
+      label.forEach((l){
+        added.add(add(l, use));
+      });
+      print('local tags store: ' + tags.toString());  
+      return added;
+    }
   }
 }

@@ -134,7 +134,7 @@ class RootState extends State<RootView> with SingleTickerProviderStateMixin, Aut
         if (p.getBool('query_all') == null) p.setBool('query_all', false);
       
     });
-    
+
     initNotifications();
 
   }
@@ -146,7 +146,7 @@ class RootState extends State<RootView> with SingleTickerProviderStateMixin, Aut
       prefs.setDouble('lat', store.state.lat);
       prefs.setDouble('lon', store.state.lon);
       prefs.setInt('last_croaks_get', store.state.lastCroaksGet);
-      prefs.setStringList('tags', store.state.query.localTags.map((lt){ return lt['label']; }));
+      prefs.setStringList('tags', store.state.query.localTags.tags.map((lt){ return lt['label']; }));
       prefs.setInt('radius', store.state.query.radius);
       prefs.setInt('last_croaks_get', store.state.lastCroaksGet);
     });

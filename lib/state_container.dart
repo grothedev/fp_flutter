@@ -91,7 +91,8 @@ class StateContainerState extends State<StateContainer>{
 
       state.needsUpdate = prefs.getBool('needs_update');  
     } else {
-      prefs.setBool('ran_before', true);      
+      prefs.setBool('ran_before', true);     
+      state.query.localTags = new LocalTagsStore(null); 
     }
     
     if (state.lat == null || state.lon == null){
@@ -103,6 +104,11 @@ class StateContainerState extends State<StateContainer>{
           prefs.setDouble('lat', state.lat);
           prefs.setDouble('lon', state.lon);
         }
+        util.getTags(10, state.location).then((r){
+          setState((){
+            state.query.localTags.add(r, false);  
+          });
+        });
       });
     } else {
       print('restored lat lon from shared prefs');

@@ -129,7 +129,7 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                       alignment: Alignment.center,
                       padding: formPadding,
                       margin: formElemMargin,
-                      child: LocalTags(store.state.location, selectTagChip),
+                      child: LocalTags(store.state.query.localTags, null),
                       decoration: BoxDecoration(
                         //border: Border.all(color: Colors.black, width: 1, style: BorderStyle.solid)
                         border: Border(

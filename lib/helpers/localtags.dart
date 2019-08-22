@@ -59,71 +59,45 @@ class LocalTagsState extends State<LocalTags> with AutomaticKeepAliveClientMixin
   @override
   void initState() {
     super.initState();
-    chips = <Widget>[];
-    getTags();    
+    chips = <Widget>[];    
   }
 
   @override
   Widget build(BuildContext context) {
-    if (this.loading){
-      return Text('loading');
-    } else {
-      if (chips.length == 0){
-        for (var i = 0; i < tagStore.tags.length; i++){
-          Map t = tagStore.tags[i];
-          chips.add(TagChip(label: t['label'], prefs: prefs, onSelected: widget.onChipSelected));  
-          tagChips.add(
-            FilterChip(
-              label: Text(t['label']),
-              selected: t['use'],
-              padding: EdgeInsets.all(4),
-              labelPadding: EdgeInsets.all(2),
-              onSelected: ((v){
-                setState((){
-                  t['use'] = v;
-                });
-              }),
-            )
-          );
-        }
-        /* TODO
-        chips.add(
-          TagChip(
-            label: 'More',
-            prefs: prefs,
-            onSelected: ()=>(){n+=2; getTags();},
-          )
-        );
-        */
-      }
-      
-      return Flex(
-        direction: Axis.vertical,
-        children: [
-          //Text('Here are some popular tags in your area, pick some that are of interest to you', style: Theme.of(context).textTheme.subhead,), //perhaps the value of this title should be decoupled from the widget
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Wrap(
-              //children: this.chips,
-              children: this.tagChips,
-              spacing: 8,
-            ),
-          )
-        ]
+    if (tagStore.tags == null) return Container();
+
+    for (var i = 0; i < tagStore.tags.length; i++){
+      Map t = tagStore.tags[i];
+      chips.add(TagChip(label: t['label'], prefs: prefs, onSelected: widget.onChipSelected));  
+      tagChips.add(
+        FilterChip(
+          label: Text(t['label']),
+          selected: t['use'],
+          padding: EdgeInsets.all(4),
+          labelPadding: EdgeInsets.all(2),
+          onSelected: ((v){
+            setState((){
+              t['use'] = v;
+            });
+          }),
+        )
       );
     }
-  }
-
-  void getTags(){
-    util.getTags(n, location).then((r){
-      if (mounted){
-        setState((){ 
-          tags = r;
-          loading = false;
-          //prefs.setStringList('tags', []);
-        });
-      }
-    });
+    
+    return Flex(
+      direction: Axis.vertical,
+      children: [
+        //Text('Here are some popular tags in your area, pick some that are of interest to you', style: Theme.of(context).textTheme.subhead,), //perhaps the value of this title should be decoupled from the widget
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Wrap(
+            //children: this.chips,
+            children: this.tagChips,
+            spacing: 8,
+          ),
+        )
+      ]
+    );
   }
 
   @override
