@@ -141,6 +141,7 @@ decided to do it this way because i wanted a few things to happen:
 */
 class LocalTagsStore{
   List<dynamic> tags = [];
+  //might keep two lists of tags: include and exclude, then present two filter chip scrollables
 
   LocalTagsStore(List<String> tags){
     if (tags == null) return;
@@ -163,6 +164,7 @@ class LocalTagsStore{
 
   dynamic add(dynamic label, bool use){
     if (label is String){
+      if ( tags.where((t){ return t['label'].toLowerCase() == label.toLowerCase(); }).isNotEmpty ) return null;
       print('lts receiving string: ' + label);
       this.tags.add({
         'label': label,
@@ -179,5 +181,9 @@ class LocalTagsStore{
       print('local tags store: ' + this.tags.toString());  
       return added;
     } else return null;
+  }
+
+  void empty(){
+    tags.clear();
   }
 }

@@ -24,8 +24,10 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fp/main.dart';
 import 'package:fp/state_container.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:toast/toast.dart';
 
 import '../consts.dart';
 import '../api.dart' as api;
@@ -194,25 +196,24 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                         ),
                         maxLines: 3,
                         minLines: 1,
-                        onEditingComplete: (){
-                          tagsText.text.split(' ').forEach((t){
-                            store.addTag(t);
-                          });
-                        },
-                      
                       ),
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           RaisedButton(
-                            child: Icon(Icons.add, semanticLabel: 'Include'),
+                            child: Icon(MdiIcons.plus, semanticLabel: 'Include'),
                             onPressed: (){
-                              store.addTag(tagsText.text);
+                              store.addTag(tagsText.text, 0);
+                              Toast.show('Croaks related to "' + tagsText.text + '" will appear in your pond', context, duration: 2);
+                              tagsText.clear();
                             },
                           ),
                           RaisedButton(
-                            child: Icon(Icons.add, semanticLabel: 'Exclude'),
+                            child: Icon(MdiIcons.minus, semanticLabel: 'Exclude'),
                             onPressed: (){
-                              store.addTag(tagsText.text);
+                              store.addTag(tagsText.text, 1);
+                              Toast.show('Croaks related to "' + tagsText.text + '" will not appear in your pond', context, duration: 2);
+                              tagsText.clear();
                             },
                           ),
                         ]
@@ -226,7 +227,11 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                         margin: EdgeInsets.only(bottom: 2),
                         padding: EdgeInsets.only(left: 8),
                       ),
-                      Text('TODO: notification interval and other settings')
+                      Text('TODO: notification interval and other settings'),
+                      RaisedButton(
+                        child: Text('delete localtags'),
+                        onPressed: ()=>{ store.removeLocalTags() }
+                      )
                       //had help here, but moved it to the app bar
                       /*
                       Container(
@@ -256,14 +261,6 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
 
   @override
   bool get wantKeepAlive => true;
-  
-  void updateQueryTags(String tag, bool sel){ //
-    if (sel){
-      store.addTag(tag);
-    } else {
-      store.removeTag(tag);
-    }
-  }
 
   void notifyTest(){
     

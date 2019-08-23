@@ -128,9 +128,10 @@ class StateContainerState extends State<StateContainer>{
   }
   
   //actions for dealing with state data are here
-  void addTag(String t){
+  void addTag(String t, int mode){
     setState(() {
-      state.query.localTags.add(t, true);  
+      state.query.localTags.add(t, true);
+      state.query.localTags.set(t, mode); 
     });
   }
 
@@ -140,6 +141,12 @@ class StateContainerState extends State<StateContainer>{
       state.query.localTags.get(t)['use'] = false;
       //state.query.tagsI.remove(t);
       state.needsUpdate = true; //TODO: is this flag necessary?
+    });
+  }
+
+  void removeLocalTags(){
+    setState(() {
+      state.query.localTags.empty();
     });
   }
 

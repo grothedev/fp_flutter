@@ -42,6 +42,7 @@ dependencies:
   flutter_linkify:
   flutter_local_notifications:
   flutter_launcher_icons: "^0.7.2"
+  material_design_icons_flutter: 
 
 dev_dependencies:
   flutter_test:
