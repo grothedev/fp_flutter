@@ -19,7 +19,6 @@ TODO:
 * tag exclusion
 * remove unused stuff like the old tag list
 * is state.needsUpdate flag necessary?
-* copy croak content
 * button to show complete list of tags (also get more popular tags)
 * notifications
 * post-initial-release features

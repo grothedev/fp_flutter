@@ -140,7 +140,7 @@ decided to do it this way because i wanted a few things to happen:
 
 */
 class LocalTagsStore{
-  List<dynamic> tags;
+  List<dynamic> tags = [];
 
   LocalTagsStore(List<String> tags){
     if (tags == null) return;
@@ -163,19 +163,21 @@ class LocalTagsStore{
 
   dynamic add(dynamic label, bool use){
     if (label is String){
+      print('lts receiving string: ' + label);
       this.tags.add({
         'label': label,
         'mode': 0, //0=include, 1=exclude; using int because there might be more modes in future
         'use': use,
       });
       return this.tags.last;
-    } else {
-      List added;
+    } else if (label is List<String>){
+      print('lts receiving list: ' + label.toString());
+      List added = [];
       label.forEach((l){
         added.add(add(l, use));
       });
-      print('local tags store: ' + tags.toString());  
+      print('local tags store: ' + this.tags.toString());  
       return added;
-    }
+    } else return null;
   }
 }

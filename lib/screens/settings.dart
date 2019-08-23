@@ -91,6 +91,9 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
         radText.text = radius.toString();
       });
     } 
+    if (store.state.query.localTags.tags == null){
+      store.getSuggestedTags();
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -179,7 +182,7 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                       Text('Here are some popular tags in your area, if you want refine your search by related concepts'),
                       Container(
                         margin: formElemMargin,
-                        child: (store.state.location == null) ? Text('Waiting for location...') 
+                        child: (store.state.location == null || store.state.query.localTags.tags == null) ? Text('Loading Tags...') 
                                         : LocalTags(store.state.query.localTags, null), //tell it what to do when one of its chips is selected (deprecated)
                       ),
                       

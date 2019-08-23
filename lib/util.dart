@@ -39,6 +39,7 @@ int lastUpdated;
 //suggested tags for an area
 Future<List> getTags(int n, LocationData location) async{
   if (location==null) return api.getTags(n, null, null);
+  print('UTIL GETTING TAGS');
   return api.getTags(n, location.latitude, location.longitude);
 }
 

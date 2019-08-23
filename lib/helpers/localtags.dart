@@ -59,12 +59,13 @@ class LocalTagsState extends State<LocalTags> with AutomaticKeepAliveClientMixin
   @override
   void initState() {
     super.initState();
-    chips = <Widget>[];    
+    chips = <Widget>[];
+    tagChips = <FilterChip>[];    
   }
 
   @override
   Widget build(BuildContext context) {
-    if (tagStore.tags == null) return Container();
+    if (tagStore.tags == null) return Text('no tags');
 
     for (var i = 0; i < tagStore.tags.length; i++){
       Map t = tagStore.tags[i];

@@ -59,6 +59,7 @@ class StateContainerState extends State<StateContainer>{
   AppState state;
   SharedPreferences prefs; //i think that all preference updating should be delegated to this class, because whenever a pref is updated state is also updated
   
+  //apparently this method isn't executed
   @override
   void initState(){
     if (widget.state != null){
@@ -104,17 +105,15 @@ class StateContainerState extends State<StateContainer>{
           prefs.setDouble('lat', state.lat);
           prefs.setDouble('lon', state.lon);
         }
-        util.getTags(10, state.location).then((r){
-          setState((){
-            state.query.localTags.add(r, false);  
-          });
-        });
+        //getSuggestedTags(); don't actually need to wait for location to be gotten because phase 1 is keeping global popular tags
       });
     } else {
       print('restored lat lon from shared prefs');
       state.location = LocationData.fromMap({'latitude': state.lat, 'longitude': state.lon});
       print(state.location.latitude.toString());
+      //getSuggestedTags();
     }
+    getSuggestedTags();
 
     if (state.needsUpdate == null) state.needsUpdate = true;
   
@@ -152,6 +151,17 @@ class StateContainerState extends State<StateContainer>{
       state.needsUpdate = true;
       prefs.setBool('tags_include_all', state.query.tagsIncludeAll);
     });
+  }
+
+  void getSuggestedTags(){
+    util.getTags(10, state.location).then((r){
+      //setState((){
+        List<String> tagLbls = r.map((t){ return t['label'].toString(); }).toList();
+        print('store gettin sugtags: ' + tagLbls.toString());
+        if (state.query.localTags == null) state.query.localTags = new LocalTagsStore(tagLbls);
+        else state.query.localTags.add(tagLbls, false);  
+      //});
+    }); 
   }
 
   void setCroakFeed(List crks){
