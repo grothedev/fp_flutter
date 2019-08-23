@@ -67,6 +67,9 @@ class LocalTagsState extends State<LocalTags> with AutomaticKeepAliveClientMixin
   Widget build(BuildContext context) {
     if (tagStore.tags == null) return Text('no tags');
 
+    chips = tagStore.tags.map((t){ return TagChip(tag: t, prefs: prefs); }).toList();
+
+    /*
     for (var i = 0; i < tagStore.tags.length; i++){
       Map t = tagStore.tags[i];
       chips.add(TagChip(tag: t, prefs: prefs));  
@@ -84,6 +87,7 @@ class LocalTagsState extends State<LocalTags> with AutomaticKeepAliveClientMixin
         )
       );
     }
+    */
     
     return Flex(
       direction: Axis.vertical,

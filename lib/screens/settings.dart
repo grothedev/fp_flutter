@@ -93,9 +93,10 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
         radText.text = radius.toString();
       });
     } 
+    /*
     if (store.state.query.localTags.tags == null){
       store.getSuggestedTags();
-    }
+    }*/
 
     return Scaffold(
       appBar: AppBar(
@@ -230,7 +231,11 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                       Text('TODO: notification interval and other settings'),
                       RaisedButton(
                         child: Text('delete localtags'),
-                        onPressed: ()=>{ store.removeLocalTags() }
+                        onPressed: (){ 
+                          Toast.show('removing your tags', context);
+                          store.removeLocalTags();
+                        },
+                        
                       )
                       //had help here, but moved it to the app bar
                       /*

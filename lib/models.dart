@@ -163,6 +163,7 @@ class LocalTagsStore{
   Map<String, dynamic> get(String label){
     var tag = tags.firstWhere((t){ return t['label'] == label; });
     if (tag == null){
+      print('tag doesnt exist');
       tag = add(label, false);
     }
     return tag;
@@ -201,5 +202,6 @@ class LocalTagsStore{
 
   void empty(){
     tags.clear();
+    tags = [];
   }
 }
