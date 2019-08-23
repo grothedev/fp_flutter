@@ -149,6 +149,13 @@ class StateContainerState extends State<StateContainer>{
       state.query.localTags.empty();
     });
   }
+  
+  void toggleUseTag(String label){
+    setState(() {
+      state.query.localTags.use(label);
+      state.needsUpdate = true;
+    });
+  }
 
   void tagsIncludeAll(bool a){
     setState(() {

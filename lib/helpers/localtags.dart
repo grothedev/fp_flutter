@@ -69,7 +69,7 @@ class LocalTagsState extends State<LocalTags> with AutomaticKeepAliveClientMixin
 
     for (var i = 0; i < tagStore.tags.length; i++){
       Map t = tagStore.tags[i];
-      chips.add(TagChip(label: t['label'], prefs: prefs, onSelected: widget.onChipSelected));  
+      chips.add(TagChip(tag: t, prefs: prefs));  
       tagChips.add(
         FilterChip(
           label: Text(t['label']),
@@ -92,8 +92,8 @@ class LocalTagsState extends State<LocalTags> with AutomaticKeepAliveClientMixin
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Wrap(
-            //children: this.chips,
-            children: this.tagChips,
+            children: this.chips,
+            //children: this.tagChips,
             spacing: 8,
           ),
         )
@@ -108,11 +108,11 @@ class LocalTagsState extends State<LocalTags> with AutomaticKeepAliveClientMixin
 
 class TagChip extends StatefulWidget{
 
-  final String label;
+  final Map tag;
   final SharedPreferences prefs;
   final Function onSelected;
 
-  TagChip({Key key, this.label, this.prefs, this.onSelected}): super(key: key);
+  TagChip({Key key, this.tag, this.prefs, this.onSelected}): super(key: key);
 
   @override
   State<StatefulWidget> createState(){
@@ -124,14 +124,15 @@ class TagChip extends StatefulWidget{
 class TagChipState extends State<TagChip>{
 
   bool sel = false;
-  StateContainerState store; //i think this is pretty close to the redux concept of a "store". thought var name "stateContainer was too long"
+  StateContainerState store; //i think this is pretty close to the redux concept of a "store". thought var name "stateContainer" was too long
 
   @override
   Widget build(BuildContext context) {
       store = StateContainer.of(context);
-      
+      Map t = widget.tag;
+
       return FilterChip(
-        label: Text(widget.label),
+        label: Text(t['label']),
         selected: sel,
         padding: EdgeInsets.all(4),
         labelPadding: EdgeInsets.all(2),
@@ -139,23 +140,7 @@ class TagChipState extends State<TagChip>{
           setState((){
             sel = v;
           });
-          widget.onSelected(widget.label, sel);
-          
-          /*if (sel){
-            store.addTag(widget.label); //TODO make this only add to a set of tags which SuggestedTags widget has, with no further meaning, and parent widget can listen for sugtag selected tags change
-          } else {
-            store.removeTag(widget.label);
-          }
-          */
-
-          //store.needsUpdate();
-
-          //List tl = widget.prefs.getStringList('tags');
-          //if (v) tl.add(widget.label);
-          //else tl.remove(widget.label);
-          //widget.prefs.setStringList('tags', tl); //i'll leave this like this for now, since it works, but it should be delegated to util
-         //print('tag chip updated: ' + widget.prefs.getStringList('tags').toString());
-          //widget.prefs.setBool('needsUpdate', true);
+          store.toggleUseTag(t['label']);
         }),
       );
   }

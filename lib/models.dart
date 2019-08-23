@@ -154,12 +154,28 @@ class LocalTagsStore{
     get(label)['mode'] = mode;
   }
 
+  //toggles whether or not to use this tag in query
+  void use(String label){
+    Map t = get(label);
+    t['use'] = !t['use'];
+  }
+
   Map<String, dynamic> get(String label){
     var tag = tags.firstWhere((t){ return t['label'] == label; });
     if (tag == null){
       tag = add(label, false);
     }
     return tag;
+  }
+
+  List<String> getLabels(){
+    List<String> res =  tags.map((t){ return t['label'].toString(); }).toList();
+    print(res.toString());
+    return res;
+  }
+
+  List<String> getActiveTagsLabels(){ //might as well combine filtering and mapping since that's the only use case so far
+    return tags.where((t){ return t['use']; }).map((t){ return t['label'].toString(); }).toList();
   }
 
   dynamic add(dynamic label, bool use){

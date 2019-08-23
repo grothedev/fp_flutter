@@ -50,7 +50,9 @@ Future<List> getCroaks(Query query, int lastUpdated, LocationData location) asyn
   
   //TODO fix sqlite
   if (true ||  lastUpdated == null || DateTime.now().millisecondsSinceEpoch - lastUpdated > CROAKS_GET_TIMEOUT){
-    List crks =  await queryCroaks(location, query.tagsI, query.tagsIncludeAll, query.radius);
+    
+    List<String> tags = query.localTags.getActiveTagsLabels();
+    List crks =  await queryCroaks(location, tags, query.tagsIncludeAll, query.radius);
  
     print('util got croaks (tags=' + query.tagsI.toString() + ') :' + crks.toString());
     
