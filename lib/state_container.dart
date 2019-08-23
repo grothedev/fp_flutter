@@ -132,6 +132,7 @@ class StateContainerState extends State<StateContainer>{
     setState(() {
       state.query.localTags.add(t, true);
       state.query.localTags.set(t, mode); 
+      state.needsUpdate = true;
     });
   }
 
@@ -169,12 +170,12 @@ class StateContainerState extends State<StateContainer>{
 
   void getSuggestedTags(){
     util.getTags(10, state.location).then((r){
-      //setState((){
+      setState((){
         List<String> tagLbls = r.map((t){ return t['label'].toString(); }).toList();
         print('store gettin sugtags: ' + tagLbls.toString());
         if (state.query.localTags == null) state.query.localTags = new LocalTagsStore(tagLbls);
         else state.query.localTags.add(tagLbls, false);  
-      //});
+      });
     }); 
   }
 

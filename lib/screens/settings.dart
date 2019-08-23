@@ -182,7 +182,7 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                         ),
                       ),
                       */
-                      Text('Here are some popular tags in your area, if you want refine your search by related concepts'),
+                      Text('Here are some popular tags in your area, if you want to refine your search by related concepts'),
                       Container(
                         margin: formElemMargin,
                         child: (store.state.location == null || store.state.query.localTags.tags == null) ? Text('Loading Tags...') 
@@ -193,7 +193,7 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                         controller: tagsText,
                         decoration: InputDecoration(
                           icon: Icon(Icons.category),
-                          labelText: 'Looking for something more specific? Query some tags of your own'
+                          labelText: 'Looking for something more specific? Add tags here'
                         ),
                         maxLines: 3,
                         minLines: 1,
@@ -209,6 +209,7 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                               tagsText.clear();
                             },
                           ),
+                          /* TODO exclude posts related to tags
                           RaisedButton(
                             child: Icon(MdiIcons.minus, semanticLabel: 'Exclude'),
                             onPressed: (){
@@ -217,6 +218,7 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                               tagsText.clear();
                             },
                           ),
+                          */
                         ]
                       ),    
                       Text('Tags must be separated by spaces',
@@ -230,10 +232,10 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                       ),
                       Text('TODO: notification interval and other settings'),
                       RaisedButton(
-                        child: Text('delete localtags'),
+                        child: Text('Remove Your Tags'),
                         onPressed: (){ 
-                          Toast.show('removing your tags', context);
                           store.removeLocalTags();
+                          store.getSuggestedTags();
                         },
                         
                       )

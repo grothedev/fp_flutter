@@ -134,7 +134,8 @@ class TagChipState extends State<TagChip>{
   Widget build(BuildContext context) {
       store = StateContainer.of(context);
       Map t = widget.tag;
-
+      sel = t['use'];
+      
       return FilterChip(
         label: Text(t['label']),
         selected: sel,
