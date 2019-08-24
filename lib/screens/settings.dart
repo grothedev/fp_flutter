@@ -73,6 +73,7 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
           )
         );
       }
+      /*
       setState((){
         if (store.state.lat == null || store.state.lon == null){
           //store.getLocation();
@@ -80,6 +81,7 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
         } else locStr = 'Your Location: ' + store.state.lat.toString() + ', ' + store.state.lon.toString();
         
       });
+      */
       
     });
 
@@ -94,8 +96,14 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
         radText.text = radius.toString();
       });
     } 
+    if (store.state.lat == null || store.state.lon == null){
+      //store.getLocation();
+      store.getLocation();
+      locStr = 'Getting Location...';
     
-    if (store.state.query.localTags.tags == null){
+    } else locStr = 'Your Location: ' + store.state.lat.toString() + ', ' + store.state.lon.toString();
+    
+    if (store.state.query.localTags.tags == null || store.state.query.localTags.tags.isEmpty){
       store.getSuggestedTags();
     }
 

@@ -97,16 +97,8 @@ class StateContainerState extends State<StateContainer>{
     }
     
     if (state.lat == null || state.lon == null){
-      util.initLocation().then((l){
-        if (l != null){
-          state.location = l;
-          state.lat = l.latitude;
-          state.lon = l.longitude;
-          prefs.setDouble('lat', state.lat);
-          prefs.setDouble('lon', state.lon);
-        }
+      getLocation();
         //getSuggestedTags(); don't actually need to wait for location to be gotten because phase 1 is keeping global popular tags
-      });
     } else {
       print('restored lat lon from shared prefs');
       state.location = LocationData.fromMap({'latitude': state.lat, 'longitude': state.lon});
@@ -214,12 +206,16 @@ class StateContainerState extends State<StateContainer>{
       setState(() {
         state.location = l;
         state.needsUpdate = true;
+        state.lat = l.latitude;
+        state.lon = l.longitude;
+        
       });
       SharedPreferences.getInstance().then((p){
         p.setDouble('lat', l.latitude);
         p.setDouble('lon', l.longitude);
       });
     });
+    
   }
 
   void needsUpdate(){ //this is just for croaks and location. i should rename it
