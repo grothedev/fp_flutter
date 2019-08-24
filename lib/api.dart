@@ -105,6 +105,11 @@ Future<List> getTags(int n, double lat, double lon) async{
   return json.decode(res.body);
 }
 
+Future<String> getMOTD() async{
+  var res = await http.get(api_url+'motd').catchError((e){ return 'MOTD: Error'; });
+  return res.body;
+}
+
 Future<String> postVote(Map<String, dynamic> req) async{
   var res = await http.Client().post(api_url+'votes', body: req);
   return res.body.toString();

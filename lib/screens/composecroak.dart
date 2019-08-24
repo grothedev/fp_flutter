@@ -122,7 +122,6 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                         ),
                         maxLines: 3,
                         minLines: 2,
-                        
                       ),
                     ),
                     Container(
@@ -137,6 +136,13 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                           top: BorderSide(color: Theme.of(context).dividerColor)
                         ),
                       ),
+                    ),
+                    RaisedButton(
+                      child: Icon(Icons.add, semanticLabel: 'Add Tag'),
+                      onPressed: (){
+                        store.addTag(tagsText.text, 0); //for now the compose tags will be the same as query tags, might change in the future
+                        tagsText.clear();
+                      },
                     ),
                     Container(
                       padding: formPadding,
@@ -175,9 +181,7 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                               file = null;
                             }),
                             color: Color(0xCC550005)
-                            
                           )
-                          
                         ],
                         
                       ),

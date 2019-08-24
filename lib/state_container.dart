@@ -89,7 +89,8 @@ class StateContainerState extends State<StateContainer>{
       state.query.radius = prefs.getInt('radius');
       if (state.query.radius == null) state.query.radius = 15;
       state.query.localTags = new LocalTagsStore(prefs.getStringList('tags')); //NOTE: currently cant save if the tag is being used. can only save list of strings
-
+      state.notifyCheckInterval = prefs.getInt('notify_check_interval');
+      
       state.needsUpdate = prefs.getBool('needs_update');  
     } else {
       prefs.setBool('ran_before', true);     
@@ -218,9 +219,15 @@ class StateContainerState extends State<StateContainer>{
     
   }
 
-  void needsUpdate(){ //this is just for croaks and location. i should rename it
+  void needsUpdate(){ //this is just for croaks and location. i should rename it. 2019/8/24: i've started using it for tags as well. i should figure out exactly how this flag is being used because i don't remember, but it seems to make some ui updates work
     setState(() {
       state.needsUpdate = true;
+    });
+  }
+
+  void setNotificationInterval(int ni){
+    setState(() {
+      state.notifyCheckInterval = ni;
     });
   }
 

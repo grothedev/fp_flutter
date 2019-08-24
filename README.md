@@ -43,3 +43,4 @@ SharedPreferences:
   * dist_unit (int) : 0 = kilometers ; 1 = miles
   * needs_update (bool) : does the main feed need to be updated?
   * ran_before (bool) : if the app has been run on the device before
+  * notify_check_interval (int) : minutes between checking for conditions which send device notification 

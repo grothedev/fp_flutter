@@ -54,6 +54,9 @@ class FrogPondApp extends StatelessWidget {
         accentColor: Colors.green,
         backgroundColor: Color(0xFFEDEDED),
         textTheme: TextTheme(
+          title: TextStyle(
+            fontSize: 18
+          ),
           body1: TextStyle(
             fontFamily: 'Roboto',
             fontSize: 16,

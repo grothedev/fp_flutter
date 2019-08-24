@@ -334,16 +334,6 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
         });
         break;
     }
-
-    int n=0; //this is to put special messages from the dev at the top of the feed  
-    for (int i = 0; i < croaksJSON.length; i++){
-      if (croaksJSON[i]['type'] == 1){
-        var tmp = croaksJSON[i];
-        croaksJSON[i] = croaksJSON[n];
-        croaksJSON[n] = tmp;
-        n++;
-      }
-    }
   }
 
 

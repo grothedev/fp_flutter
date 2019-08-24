@@ -36,7 +36,7 @@ import '../api.dart' as api;
 import '../helpers/composecroakdialog.dart';
 import '../helpers/croakfeed.dart';
 
-final String ro_url_pre = 'http://' + api.host + '/c/'; //prefix of url for fancy read-only webview
+final String ro_url_pre = 'http://' + api.host + ':' + api.port.toString() + '/c/'; //prefix of url for fancy read-only webview
 
 
 class CroakDetailScreen extends StatefulWidget{

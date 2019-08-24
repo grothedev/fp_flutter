@@ -21,6 +21,7 @@ along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fp/main.dart';
 import 'package:fp/models.dart';
@@ -42,15 +43,18 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
   TextEditingController tagsText = TextEditingController();
   //TextEditingController tagsEText = TextEditingController();
   TextEditingController radText = TextEditingController();
+  TextEditingController notifyIntervalTC = TextEditingController();
   bool kwdAll = false;
   List tagsI;
   List tagsE;
   SharedPreferences prefs;
   String locStr;
   StateContainerState store;
+  int notifyInterval; //minute interval for background checking of responses 
   double radius;
   double radiusSlider = 30; //used just for the slider UI component
-  
+  String motd; //message from the dev, used for important info i want users to see
+
   EdgeInsets formPadding = EdgeInsets.all(6.0);
   EdgeInsets formElemMargin = EdgeInsets.all(8.0);
 
@@ -107,6 +111,10 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
       store.getSuggestedTags();
     }
 
+    if (motd == null){
+      getMOTD();
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Frog Pond - Settings'),
@@ -129,10 +137,14 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                   child: Column(
 
                     children: [
+                      Text(
+                        'Here are some options to refine your search query',
+                        style: Theme.of(context).textTheme.title
+                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text('Search for croaks within '),
+                          Text('Search Radius '),
                           Container(
                             constraints: BoxConstraints(
                               maxWidth: .2 * MediaQuery.of(context).size.width
@@ -188,7 +200,7 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                         ),
                       ),
                       */
-                      Text('Here are some popular tags in your area, if you want to refine your search by related concepts'),
+                      Text('Popular Tags: '),
                       Container(
                         margin: formElemMargin,
                         child: (store.state.location == null || store.state.query.localTags.tags == null) ? Text('Loading Tags...') 
@@ -199,7 +211,7 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                         controller: tagsText,
                         decoration: InputDecoration(
                           icon: Icon(Icons.category),
-                          labelText: 'Looking for something more specific? Add tags here'
+                          labelText: 'Add some tags of your own'
                         ),
                         maxLines: 3,
                         minLines: 1,
@@ -208,7 +220,7 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           RaisedButton(
-                            child: Icon(MdiIcons.plus, semanticLabel: 'Include'),
+                            child: Icon(MdiIcons.plus, semanticLabel: 'Add Tag'),
                             onPressed: (){
                               store.addTag(tagsText.text, 0);
                               Toast.show('Croaks related to "' + tagsText.text + '" will appear in your pond', context, duration: 2);
@@ -226,40 +238,84 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                           ),
                           */
                         ]
-                      ),    
-                      Text('Tags must be separated by spaces',
-                        style: Theme.of(context).textTheme.caption
                       ),
-                      
+                      CheckboxListTile(
+                        title: Text('See croaks with all (on) or some (off) of these tags?'),
+                        dense: true,
+                        value: store.state.query.tagsIncludeAll,
+                        onChanged: (v){
+                          store.tagsIncludeAll(v);
+                        },
+                        activeColor: Colors.green,
+                        
+                      ),
+                      /* location feedback was used for debugging
                       Container(
                         child: (locStr == null) ? Text('Getting location...') : Text(locStr),
                         margin: EdgeInsets.only(bottom: 2),
                         padding: EdgeInsets.only(left: 8),
                       ),
-                      Text('TODO: notification interval and other settings'),
+                      */
                       RaisedButton(
                         child: Text('Remove Your Tags'),
                         onPressed: (){ 
                           store.removeLocalTags();
                           store.getSuggestedTags();
                         },
-                        
-                      )
-                      //had help here, but moved it to the app bar
-                      /*
-                      Container(
-                        child: GestureDetector( 
-                          child: Text('New? Tap here to learn.'),
-                          onTap: () => launch('http://' + api.host + '/about'),
-                        ),
-                        margin: EdgeInsets.only(top: 40),
-                        alignment: Alignment.bottomCenter,
-                        padding: EdgeInsets.all(6),
+                      ),
+                      Container( //DIVIDER
                         decoration: BoxDecoration(
-                          border: Border.all(width: .5, color: Colors.grey),
+                          border: Border(
+                            bottom: BorderSide(color: Theme.of(context).dividerColor),
+                          )
                         ),
-                        )
-                        */
+                        margin: EdgeInsets.only(top: 10, bottom: 2),
+                      ),
+                      Container( //DEV MESSAGE
+                        child: Linkify(text: motd),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey)
+                        ),
+                        margin: EdgeInsets.all(6),
+                        padding: EdgeInsets.all(6)
+                      ),
+                      Container( //DIVIDER
+                        decoration: BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(color: Theme.of(context).dividerColor),
+                          )
+                        ),
+                        margin: EdgeInsets.only(top: 10, bottom: 2),
+                      ),
+                      Row(
+                        children: [
+                          Text('Notification interval: '),
+                          Container(
+                            constraints: BoxConstraints(
+                              maxWidth: .2 * MediaQuery.of(context).size.width
+                            ),
+                            child: TextFormField(
+                              keyboardType: TextInputType.number,
+                              controller: notifyIntervalTC,
+                              onEditingComplete: (){
+                                notifyInterval = int.parse(notifyIntervalTC.text);
+                                SharedPreferences.getInstance().then((pref){
+                                  pref.setInt('notify_check_interval', notifyInterval);
+                                });
+                                store.setNotificationInterval(notifyInterval);   
+                                Focus.of(context).requestFocus(new FocusNode());           
+                              },
+                              decoration: InputDecoration(
+                                labelText: 'minutes',  
+                              ),
+                              maxLines: 1,
+                              minLines: 1,
+                              expands: false,
+                            ),
+                            margin: formElemMargin
+                          ),
+                        ]
+                      )
                     ],
                     
                   ),
@@ -277,6 +333,14 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
 
   void notifyTest(){
     
+  }
+
+  void getMOTD(){
+    api.getMOTD().then((r){
+      setState(() {
+        motd = r;
+      });
+    });
   }
 }
 

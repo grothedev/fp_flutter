@@ -41,7 +41,8 @@ class AppState {
   bool updateReplies = true;
   int lastCroaksGet;
   FlutterLocalNotificationsPlugin notificationsPlugin;
-
+  int notifyCheckInterval; //minutes between checking for conditions which trigger notification
+  
   AppState(){
     fetchingCroaks = false;
     croaking = false;
@@ -64,7 +65,7 @@ class Query{
     tagsI = List();
     tagsE = List();
     tagsIncludeAll = false;
-    radius = 30;
+    radius = 0;
     distUnit = KM;
   }
 }
