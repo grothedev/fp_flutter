@@ -113,7 +113,7 @@ class StateContainerState extends State<StateContainer>{
       print(state.location.latitude.toString());
       //getSuggestedTags();
     }
-    getSuggestedTags();
+    //getSuggestedTags();
 
     if (state.needsUpdate == null) state.needsUpdate = true;
   
@@ -176,6 +176,7 @@ class StateContainerState extends State<StateContainer>{
         if (state.query.localTags == null) state.query.localTags = new LocalTagsStore(tagLbls);
         else state.query.localTags.add(tagLbls, false);  
       });
+      state.needsUpdate = true;
     }); 
   }
 

@@ -22,6 +22,7 @@ import 'dart:io';
 import 'package:location/location.dart';
 import 'package:sqflite/sqflite.dart';
 import 'dart:async';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'consts.dart';
 import 'util.dart' as util;
@@ -39,6 +40,7 @@ class AppState {
   bool needsUpdate = true;
   bool updateReplies = true;
   int lastCroaksGet;
+  FlutterLocalNotificationsPlugin notificationsPlugin;
 
   AppState(){
     fetchingCroaks = false;

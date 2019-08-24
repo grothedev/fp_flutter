@@ -23,6 +23,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fp/main.dart';
+import 'package:fp/models.dart';
 import 'package:fp/state_container.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -93,10 +94,10 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
         radText.text = radius.toString();
       });
     } 
-    /*
+    
     if (store.state.query.localTags.tags == null){
       store.getSuggestedTags();
-    }*/
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -123,13 +124,10 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text('Distance: ',
-                            style: Theme.of(context).textTheme.headline
-                          ),
                           Text('Search for croaks within '),
                           Container(
                             constraints: BoxConstraints(
-                              maxWidth: .1 * MediaQuery.of(context).size.width
+                              maxWidth: .2 * MediaQuery.of(context).size.width
                             ),
                             child: TextFormField(
                               keyboardType: TextInputType.number,

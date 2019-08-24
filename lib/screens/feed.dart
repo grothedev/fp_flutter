@@ -192,7 +192,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
       fetching = true;
     });
     print('feed refreshing');
-    if(mounted) Toast.show(makeRefreshToastText(), context, duration: 8);
+    //if(mounted) Toast.show(makeRefreshToastText(), context, duration: 8);
  
     util.getCroaks(store.state.query, store.state.lastCroaksGet, store.state.location).then((cks){
       store.state.needsUpdate = false;
@@ -250,6 +250,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
       
       store.state.lastCroaksGet = DateTime.now().millisecondsSinceEpoch;
       store.prefs.setInt('last_croaks_get', store.state.lastCroaksGet);
+
       if (mounted){
         setState(() {
           fetching = false;
@@ -353,14 +354,16 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
     if (q.radius != null){
       t += ' within ' + q.radius.toString() + ' km of you';
     }
-    if (q.tagsI.length > 0){
+    if (q.localTags != null && q.localTags.getActiveTagsLabels().length > 0){
       t += ' which are associated with ';
       q.tagsIncludeAll ? t += 'all ' : t += 'some ';
-      t += 'of the following tags: ' + q.tagsI.join(', ');  
+      t += 'of the following tags: ' + q.localTags.getActiveTagsLabels().join(', ');  
     } 
+    /*
     if (q.tagsE.length > 0){
       t += ' and which are not associated with any of the following tags: ' + q.tagsI.join(', ');
     }
+    */
     t += '.';
 
     return t;

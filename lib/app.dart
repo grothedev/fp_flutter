@@ -136,6 +136,7 @@ class RootState extends State<RootView> with SingleTickerProviderStateMixin, Aut
     });
 
     initNotifications();
+    
 
   }
 
@@ -157,6 +158,7 @@ class RootState extends State<RootView> with SingleTickerProviderStateMixin, Aut
   @override
   Widget build(BuildContext context) {
     store = StateContainer.of(context);
+    //if (store.state.query.store.restoreState();
 
     return new Scaffold(
       /*appBar: new AppBar(
@@ -183,21 +185,23 @@ class RootState extends State<RootView> with SingleTickerProviderStateMixin, Aut
   }
 
   void initNotifications() async{
-    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
+    store.state.notificationsPlugin = new FlutterLocalNotificationsPlugin();
     // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
     var initializationSettingsAndroid = new AndroidInitializationSettings('@mipmap/ic_launcher');
     var initializationSettingsIOS = new IOSInitializationSettings( ); //onDidReceiveLocalNotification: onDidReceiveLocalNotification);
     var initializationSettings = new InitializationSettings( initializationSettingsAndroid, initializationSettingsIOS);
-    flutterLocalNotificationsPlugin.initialize(initializationSettings, ); //onSelectNotification: onSelectNotification);
+    store.state.notificationsPlugin.initialize(initializationSettings, ); //onSelectNotification: onSelectNotification);
   
-    var scheduledNotificationDateTime = new DateTime.now().add(new Duration(seconds: 5));
+    //var scheduledNotificationDateTime = new DateTime.now().add(new Duration(seconds: 5));
     var androidPlatformChannelSpecifics = new AndroidNotificationDetails('your other channel id',
         'your other channel name', 'your other channel description', priority: Priority.High);
     var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
     NotificationDetails platformChannelSpecifics = new NotificationDetails(androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-    //await flutterLocalNotificationsPlugin.schedule(0, 'someone has replied to you', '# frogs have croaked back since [time]', scheduledNotificationDateTime, platformChannelSpecifics);
-    //flutterLocalNotificationsPlugin.show(1, 'test title', 'test body', platformChannelSpecifics);
-    flutterLocalNotificationsPlugin.periodicallyShow(1, 'test title', 'test body', RepeatInterval.EveryMinute, platformChannelSpecifics);
+    //await store.state.notificationsPlugin.schedule(0, 'someone has replied to you', '# frogs have croaked back since [time]', scheduledNotificationDateTime, platformChannelSpecifics);
+    //store.state.notificationsPlugin.show(1, 'test title', 'test body', platformChannelSpecifics);
+
+    //store.state.notificationsPlugin.periodicallyShow(1, 'test title', 'test body', RepeatInterval.EveryMinute, platformChannelSpecifics);
+    
     //https://pub.dev/packages/flutter_local_notifications
   }
 

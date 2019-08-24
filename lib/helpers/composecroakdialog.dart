@@ -37,11 +37,21 @@ class ComposeCroakDialog extends Dialog{
   static final fk = GlobalKey<FormState>();// form key
   final Map parent; //croak replying to
   bool anon = true;
+  StateContainerState store;
+  bool loading = false;
 
   ComposeCroakDialog(this.parent);
   
   @override
   Widget build(BuildContext context){
+    store = StateContainer.of(context);
+    if (loading) {
+      return SimpleDialog(
+        contentPadding: EdgeInsets.all(6),
+        titlePadding: EdgeInsets.all(4),
+        title: Text('Croakin...')
+      );
+    }
     return SimpleDialog( 
               contentPadding: EdgeInsets.all(6),
               titlePadding: EdgeInsets.all(4),
@@ -92,12 +102,15 @@ class ComposeCroakDialog extends Dialog{
 
                         ),
                         */
+                      
                         RaisedButton(
                           onPressed: (){
                             if (fk.currentState.validate()){
                               //Scaffold.of(context).showSnackBar(SnackBar(content: Text('Replying...')));
                               //Croak r = Croak();
                               print('replying ' + parent.toString());
+                              loading = true;
+                              store.needsUpdate();
                               //TODO disable button here or do loading feedback
                               util.submitReply(parent['id'], contentController.text, parent['tags'], true).then((s){
                                 if (s){
@@ -110,7 +123,7 @@ class ComposeCroakDialog extends Dialog{
                             } else print('invalid');
                           },
                           child: Text("Reply"),
-
+                          
                         )
                     ]
                   ),
