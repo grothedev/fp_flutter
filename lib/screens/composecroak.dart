@@ -26,6 +26,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 //import 'sugtags.dart';
+import '../models.dart';
 import '../state_container.dart';
 import '../util.dart' as util;
 import '../utilwidg.dart' as utilw;
@@ -50,7 +51,8 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
   File file;
   SharedPreferences prefs; 
   StateContainerState store;
-
+  LocalTagsStore composeTags;
+  
   EdgeInsets formPadding = EdgeInsets.all(6.0);
   EdgeInsets formElemMargin = EdgeInsets.all(8.0);
 
@@ -63,7 +65,10 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
   @override
   Widget build(BuildContext context){
     store = StateContainer.of(context);
-    
+    if (composeTags == null){
+      composeTags = new LocalTagsStore(store.state.query.localTags.getLabels()); //copying from query tags
+    }
+
     if (store.state.croaking){
       //originally i had a more dynamic implementation, where screens could still be switched between while uploading, but i was having some issues dealing with the widget tree stuff.
       //so i will leave it like this for now. eventually i should implement the original idea, because that would useful for large files
@@ -118,17 +123,29 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                         decoration: InputDecoration(
                           icon: Icon(Icons.category),
                           labelText: 'Tags',
-                          helperText: 'Seperated by Spaces'
+                          //helperText: 'Seperated by Spaces'
                         ),
                         maxLines: 3,
                         minLines: 2,
+                      ),
+                    ),
+                    Center(
+                      child: RaisedButton(
+                        child: Icon(Icons.add, semanticLabel: 'Add Tag'),
+                        onPressed: (){
+                          setState(() {
+                            composeTags.add(tagsText.text, true); //for now the compose tags will be the same as query tags, might change in the future
+                            
+                          });
+                          tagsText.clear();
+                        },
                       ),
                     ),
                     Container(
                       alignment: Alignment.center,
                       padding: formPadding,
                       margin: formElemMargin,
-                      child: LocalTags(store.state.query.localTags, null),
+                      child: LocalTags(composeTags, selectTagChip),
                       decoration: BoxDecoration(
                         //border: Border.all(color: Colors.black, width: 1, style: BorderStyle.solid)
                         border: Border(
@@ -137,13 +154,7 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                         ),
                       ),
                     ),
-                    RaisedButton(
-                      child: Icon(Icons.add, semanticLabel: 'Add Tag'),
-                      onPressed: (){
-                        store.addTag(tagsText.text, 0); //for now the compose tags will be the same as query tags, might change in the future
-                        tagsText.clear();
-                      },
-                    ),
+                    
                     Container(
                       padding: formPadding,
                       margin: formElemMargin,
@@ -224,7 +235,7 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                                 tags.removeWhere((t) => t==''); //for some reason there are empty strings ending up in the list
                                 
                                 print('croakin with tags: ' + tags.toString());
-                                util.submitCroak(croakText.text, tags, true, store.state.lat, store.state.lon, file).then((r){
+                                util.submitCroak(croakText.text, composeTags.getActiveTagsLabels(), true, store.state.lat, store.state.lon, file).then((r){
                                   if (r){
                                     Scaffold.of(context).removeCurrentSnackBar();
                                     Scaffold.of(context).showSnackBar(SnackBar(content: Text('Success')));
@@ -275,11 +286,8 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
   }
 */
   void selectTagChip(String tag, bool sel){
-    sel ? tags.add(tag) : tags.remove(tag);
+    composeTags.use(tag, sel);
   }
-
-  
-
 }
 
 //for making a croak

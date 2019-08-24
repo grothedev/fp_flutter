@@ -204,7 +204,7 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                       Container(
                         margin: formElemMargin,
                         child: (store.state.location == null || store.state.query.localTags.tags == null) ? Text('Loading Tags...') 
-                                        : LocalTags(store.state.query.localTags, null), //tell it what to do when one of its chips is selected (deprecated)
+                                        : LocalTags(store.state.query.localTags, store.useTag), //tell it what to do when one of its chips is selected (deprecated)
                       ),
                       
                       TextFormField( //TAGS INPUT

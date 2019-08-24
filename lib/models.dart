@@ -42,7 +42,7 @@ class AppState {
   int lastCroaksGet;
   FlutterLocalNotificationsPlugin notificationsPlugin;
   int notifyCheckInterval; //minutes between checking for conditions which trigger notification
-  
+
   AppState(){
     fetchingCroaks = false;
     croaking = false;
@@ -158,9 +158,14 @@ class LocalTagsStore{
   }
 
   //toggles whether or not to use this tag in query
-  void use(String label){
+  void toggleUse(String label){
     Map t = get(label);
     t['use'] = !t['use'];
+  }
+
+  void use(String label, bool u){
+    Map t = get(label);
+    t['use'] = u;
   }
 
   Map<String, dynamic> get(String label){

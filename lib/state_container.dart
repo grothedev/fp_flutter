@@ -144,9 +144,16 @@ class StateContainerState extends State<StateContainer>{
     });
   }
   
+  void useTag(String label, bool u){
+    setState(() {
+      state.query.localTags.use(label, u); 
+      state.needsUpdate = true;
+    });
+  }
+
   void toggleUseTag(String label){
     setState(() {
-      state.query.localTags.use(label);
+      state.query.localTags.toggleUse(label);
       state.needsUpdate = true;
     });
   }

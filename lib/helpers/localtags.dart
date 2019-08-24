@@ -33,7 +33,7 @@ class LocalTags extends StatefulWidget{
   //final LocationData location;
   //final List tags;
   LocalTagsStore tags;
-  final Function onChipSelected; //TODO: passed in function no longer necessary since this widget is coupled with a LocalTagsStore, so it can update it directly
+  final Function onChipSelected; //this function will be called when a chip is selected and given the tag represented by that chip and boolean selected
 
   LocalTags(this.tags, this.onChipSelected);
 
@@ -51,7 +51,6 @@ class LocalTagsState extends State<LocalTags> with AutomaticKeepAliveClientMixin
   //List tags; //suggested tags retrieved from server
   LocalTagsStore tagStore;
   //LocationData location;
-  List<FilterChip> tagChips; //seeing if i can bypass the custom widget class i made previously, which might be too much unnecessary complexity
 
 
   LocalTagsState(this.tagStore);
@@ -59,35 +58,14 @@ class LocalTagsState extends State<LocalTags> with AutomaticKeepAliveClientMixin
   @override
   void initState() {
     super.initState();
-    chips = <Widget>[];
-    tagChips = <FilterChip>[];    
+    chips = <Widget>[];    
   }
 
   @override
   Widget build(BuildContext context) {
     if (tagStore.tags == null) return Text('no tags');
 
-    chips = tagStore.tags.map((t){ return TagChip(tag: t, prefs: prefs); }).toList();
-
-    /*
-    for (var i = 0; i < tagStore.tags.length; i++){
-      Map t = tagStore.tags[i];
-      chips.add(TagChip(tag: t, prefs: prefs));  
-      tagChips.add(
-        FilterChip(
-          label: Text(t['label']),
-          selected: t['use'],
-          padding: EdgeInsets.all(4),
-          labelPadding: EdgeInsets.all(2),
-          onSelected: ((v){
-            setState((){
-              t['use'] = v;
-            });
-          }),
-        )
-      );
-    }
-    */
+    chips = tagStore.tags.map((t){ return TagChip(tag: t, prefs: prefs, onSelected: widget.onChipSelected,); }).toList();
     
     return Flex(
       direction: Axis.vertical,
@@ -144,8 +122,9 @@ class TagChipState extends State<TagChip>{
         onSelected: ((v){
           setState((){
             sel = v;
+            widget.onSelected(t['label'], v);
           });
-          store.toggleUseTag(t['label']);
+          
         }),
       );
   }
