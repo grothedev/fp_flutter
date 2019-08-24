@@ -183,8 +183,10 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                             child: file == null ? Text('no file') 
                                       : ConstrainedBox(
                                           constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * .6),
-                                          child: Text( file.toString(), style: Theme.of(context).textTheme.subtitle),
+                                          child: Text( file.toString(), style: Theme.of(context).textTheme.subtitle, overflow: TextOverflow.ellipsis),
+                                          
                                       ),
+                                      constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * .6),
                             ),
                           IconButton(
                             icon: Icon(Icons.cancel),
