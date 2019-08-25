@@ -60,14 +60,19 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
     SharedPreferences.getInstance().then((p){
       prefs = p;
     });
+    composeTags = new LocalTagsStore(null);
   }
 
   @override
   Widget build(BuildContext context){
     store = StateContainer.of(context);
-    if (composeTags == null){
-      composeTags = new LocalTagsStore(store.state.query.localTags.getLabels()); //copying from query tags
+    if (composeTags == null || composeTags.tags.isEmpty){
+      print('compose screen making composetagstore copy of query tags');
+      setState(() {
+        composeTags = new LocalTagsStore(store.state.query.localTags.getLabels()); //copying from query tags  
+      });
     }
+    print(composeTags.getLabels().toString());
 
     if (store.state.croaking){
       //originally i had a more dynamic implementation, where screens could still be switched between while uploading, but i was having some issues dealing with the widget tree stuff.
@@ -117,16 +122,13 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                       margin: formElemMargin,
                       child: TextFormField( //TAGS INPUT
                         controller: tagsText,
-                        validator: (value){
-                          if (value.isEmpty && tags.length == 0) return 'Enter some tags, seperated by spaces, or select one below. Keep tags as concise as possible, use underscores if necessary.';
-                        },
                         decoration: InputDecoration(
                           icon: Icon(Icons.category),
                           labelText: 'Tags',
                           //helperText: 'Seperated by Spaces'
                         ),
-                        maxLines: 3,
-                        minLines: 2,
+                        maxLines: 1,
+                        minLines: 1,
                       ),
                     ),
                     Center(
@@ -134,8 +136,7 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                         child: Icon(Icons.add, semanticLabel: 'Add Tag'),
                         onPressed: (){
                           setState(() {
-                            composeTags.add(tagsText.text, true); //for now the compose tags will be the same as query tags, might change in the future
-                            
+                            composeTags.add(tagsText.text, true); 
                           });
                           tagsText.clear();
                         },
