@@ -279,6 +279,7 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                         ),
                         margin: EdgeInsets.only(top: 10, bottom: 2),
                       ),
+                      motd.length > 0 ?
                       Container( //DEV MESSAGE
                         child: Linkify(text: motd),
                         decoration: BoxDecoration(
@@ -286,7 +287,7 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                         ),
                         margin: EdgeInsets.all(6),
                         padding: EdgeInsets.all(6)
-                      ),
+                      ) : Container(),
                       Container( //DIVIDER
                         decoration: BoxDecoration(
                           border: Border(

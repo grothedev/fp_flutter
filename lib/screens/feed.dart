@@ -131,7 +131,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
     return Scaffold(
         appBar: AppBar(
           //title: ScreenTitle('Tha Pond'),
-          title: Text('Tha Pond'),
+          title: Text('The Pond'),
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.refresh),
@@ -280,7 +280,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
       case SortMethod.date_asc:
         setState(() {
           croaksJSON.sort((a, b){
-            return a['created_at'].compareTo(b['created_at']);
+            return b['created_at'].compareTo(a['created_at']);
           });  
         });
         break;
@@ -308,7 +308,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
       case SortMethod.date_des:
         setState(() {
           croaksJSON.sort((a, b){
-            return b['created_at'].compareTo(a['created_at']);
+            return a['created_at'].compareTo(b['created_at']);
           });  
         });
         break;
