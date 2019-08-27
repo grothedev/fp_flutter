@@ -68,7 +68,7 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
             content: Text('First time?'), 
             action: SnackBarAction(
                 label: 'Tap here to learn',
-                onPressed: ()=>launch('http://' + api.host + ':8090/about'),
+                onPressed: ()=>launch('http://gooob.bitbucket.io'),
 
               ),
               duration: Duration(seconds: 8),
