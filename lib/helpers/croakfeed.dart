@@ -22,7 +22,7 @@ along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fp/state_container.dart';
+import '../state_container.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../screens/croakdetail.dart';

@@ -22,7 +22,7 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fp/state_container.dart';
+import '../state_container.dart';
 import 'package:intl/intl.dart';
 import 'package:location/location.dart';
 import 'dart:async';

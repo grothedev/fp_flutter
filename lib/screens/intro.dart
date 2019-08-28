@@ -19,7 +19,7 @@ along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 import 'package:flutter/material.dart';
-import 'package:fp/app.dart';
+import '../app.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 //this is basically a spash screen which will show on first launch

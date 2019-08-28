@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.fp">
+    package="org.grothedev.frogpond">
 
     <!-- io.flutter.app.FlutterApplication is an android.app.Application that
          calls FlutterMain.startInitialization(this); in its onCreate method.
@@ -37,12 +37,12 @@
             </intent-filter>
         </activity>
     </application>
-
+<!--
     <receiver android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver">
         <intent-filter>
             <action android:name="android.intent.action.BOOT_COMPLETED"></action>
         </intent-filter>
     </receiver>
     <receiver android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver" />
-
+-->
 </manifest>

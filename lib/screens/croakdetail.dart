@@ -24,12 +24,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
-import 'package:fp/state_container.dart';
 import 'package:intl/intl.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
 
+import '../state_container.dart';
 import '../util.dart' as util;
 import '../api.dart' as api;
 
