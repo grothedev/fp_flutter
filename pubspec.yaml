@@ -11,7 +11,7 @@ description: An anonymous, tag-based, location-based, discussion board with thre
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.0+1
+version: 1.1+2
 
 environment:
   sdk: ">=2.2.0 <3.0.0"
@@ -43,7 +43,8 @@ dependencies:
   flutter_local_notifications:
   flutter_launcher_icons: "^0.7.2"
   material_design_icons_flutter: 
-
+  background_fetch: '^0.1.0'
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter

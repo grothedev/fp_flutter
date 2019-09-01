@@ -53,7 +53,7 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
   int notifyInterval; //minute interval for background checking of responses 
   double radius;
   double radiusSlider = 30; //used just for the slider UI component
-  String motd; //message from the dev, used for important info i want users to see
+  String motd = ''; //message from the dev, used for important info i want users to see
 
   EdgeInsets formPadding = EdgeInsets.all(6.0);
   EdgeInsets formElemMargin = EdgeInsets.all(8.0);

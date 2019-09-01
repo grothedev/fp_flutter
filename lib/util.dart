@@ -21,6 +21,7 @@ along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 import 'dart:io';
 import 'dart:math';
 
+import 'package:background_fetch/background_fetch.dart';
 import 'package:location/location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
@@ -170,6 +171,11 @@ Future<LocationData> initLocation() async{
       
   }
 
+//checks if there are responses to croaks this user has posted, if so send system notification
+void checkNotifications(){ //TODO design how this is done: store a collection of ids for which the user is concerned. by default, this is their own posts. sharedpref 'croaksListening'
+  print('notifications check');
+  BackgroundFetch.finish();
+}
 
 double distance(double latA, double lonA, double latB, double lonB){
   latA = latA * pi/180;

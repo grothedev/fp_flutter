@@ -18,16 +18,20 @@ You should have received a copy of the GNU General Public License
 along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import 'package:background_fetch/background_fetch.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app.dart';
 import 'package:flutter/material.dart';
 
 import 'state_container.dart';
+import 'util.dart' as util;
 
-void main() =>
+void main() {
       runApp(
        StateContainer(
          child: FrogPondApp(),
         )
       );
+      BackgroundFetch.registerHeadlessTask(util.checkNotifications);
+}
