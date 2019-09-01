@@ -1,4 +1,4 @@
-package com.example.fp;
+package org.grothedev.frogpond;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;

@@ -29,7 +29,7 @@ dependencies:
   path:
   location:
   shared_preferences: 
-  image_picker:
+  #image_picker:
   file_picker:
   toast:
   scoped_model:
