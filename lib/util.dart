@@ -173,6 +173,7 @@ Future<LocationData> initLocation() async{
 
 //checks if there are responses to croaks this user has posted, if so send system notification
 void checkNotifications(){ //TODO design how this is done: store a collection of ids for which the user is concerned. by default, this is their own posts. sharedpref 'croaksListening'
+  //need to keep track of which croaks have been seen too
   print('notifications check');
   BackgroundFetch.finish();
 }

@@ -13,6 +13,7 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     
     <application
+        tools:replace="android:label"
         
         android:name="io.flutter.app.FlutterApplication"
         android:label="Frog Pond"
