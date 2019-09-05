@@ -44,3 +44,7 @@ SharedPreferences:
   * needs_update (bool) : does the main feed need to be updated?
   * ran_before (bool) : if the app has been run on the device before
   * notify_check_interval (int) : minutes between checking for conditions which send device notification 
+
+
+SQLite DB:
+    * croaks table is same as server except for one additional column, "listening" flag which tells if user wants to receive notifications for when that croak gets a new comment

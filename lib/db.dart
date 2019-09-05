@@ -32,7 +32,7 @@ void initDB() async{
     join(await getDatabasesPath(), 'fp.db'),
     onCreate: (db, v){
       //NOTE: the PK ids on these tables are not the same as on server
-      db.execute('CREATE TABLE croaks(id INTEGER PRIMARY KEY, p_id INTEGER, created_at TEXT, content TEXT, score INTEGER, tags TEXT, type INTEGER, x REAL, y REAL)');
+      db.execute('CREATE TABLE croaks(id INTEGER PRIMARY KEY, p_id INTEGER, created_at TEXT, content TEXT, score INTEGER, tags TEXT, type INTEGER, x REAL, y REAL, listening INTEGER)');
       //db.execute('CREATE TABLE tags(id INTEGER PRIMARY KEY, label TEXT)');
       //db.execute('CREATE TABLE croaks_tags(croak_id INTEGER, tag_id INTEGER)');
     },
