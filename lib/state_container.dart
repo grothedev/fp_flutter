@@ -18,6 +18,8 @@ You should have received a copy of the GNU General Public License
 along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import 'package:background_fetch/background_fetch.dart';
+import 'package:background_fetch/background_fetch.dart' as prefix0;
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -62,6 +64,9 @@ class StateContainerState extends State<StateContainer>{
   //apparently this method isn't executed
   @override
   void initState(){
+
+    setupBGFetch();
+
     if (widget.state != null){
       print('state container widget already has appstate');
       state = widget.state;
@@ -110,6 +115,21 @@ class StateContainerState extends State<StateContainer>{
 
     if (state.needsUpdate == null) state.needsUpdate = true;
   
+  }
+
+  void setupBGFetch(){
+
+    util.fileTest();
+
+    //so far this works for app onPause (home button), but not for onStop (back button)
+    BackgroundFetch.configure(BackgroundFetchConfig(
+      enableHeadless: true,
+      minimumFetchInterval: 15,
+      stopOnTerminate: false,
+    ), util.checkNotifications);
+    //), (){ print('callback check'); });
+
+    // BackgroundFetch.registerHeadlessTask(util.checkNotifications);
   }
 
   @override
@@ -279,6 +299,22 @@ class StateContainerState extends State<StateContainer>{
     setState(() {
       state.croaking = false;
     });
+  }
+
+
+
+  @protected
+  @mustCallSuper
+  @override
+  void deactivate(){
+    print('state container dispose');
+    BackgroundFetch.configure(BackgroundFetchConfig(
+      enableHeadless: true,
+      minimumFetchInterval: 15,
+      stopOnTerminate: false,
+    ), (){ print('registering headless task for notification check'); });
+    BackgroundFetch.registerHeadlessTask(util.checkNotifications);
+    super.deactivate();
   }
 
 }

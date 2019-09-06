@@ -44,10 +44,13 @@ dependencies:
   flutter_launcher_icons: "^0.7.2"
   material_design_icons_flutter: 
   background_fetch: '^0.1.0'
+  path_provider:
+  
   
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  test:
   
 
 flutter_icons:

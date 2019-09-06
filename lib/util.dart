@@ -24,6 +24,7 @@ import 'dart:math';
 import 'package:background_fetch/background_fetch.dart';
 import 'package:background_fetch/background_fetch.dart' as prefix0;
 import 'package:location/location.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 import 'package:flutter/services.dart';
@@ -174,10 +175,12 @@ Future<LocationData> initLocation() async{
 
 
 //checks if there are responses to croaks this user has posted, if so send system notification
-void checkNotifications(){ //TODO design how this is done: 
+void checkNotifications() async{ //TODO design how this is done: 
   //store a collection of ids for which the user is concerned. by default, this is their own posts. sharedpref 'croaksListening'
   //need to keep track of which croaks have been seen too
-  print('BG_FETCH: util notifications check');
+  //print('BG_FETCH: util notifications check');
+  final file = await localFile;
+  file.writeAsString('yo' + DateTime.now().toString());
   BackgroundFetch.finish();
 }
 
@@ -187,6 +190,23 @@ double distance(double latA, double lonA, double latB, double lonB){
   lonA = lonA * pi/180;
   lonB = lonB * pi/180;
   return acos( sin(latA)*sin(latB) + cos(latA)*cos(latB)*cos(lonA-lonB) ) * 6371;
+}
+
+void fileTest() async{
+  File f = await localFile;
+  print(f.path.toString());
+  print(f.toString());
+  f.writeAsString('file test');
+}
+
+Future<String> get localPath async {
+  final directory = await getApplicationDocumentsDirectory();
+  return directory.path;
+}
+
+Future<File> get localFile async {
+  final path = await localPath;
+  return File('$path/test.txt');
 }
 
 //TODO make functions for varying croak type inputs

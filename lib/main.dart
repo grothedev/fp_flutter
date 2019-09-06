@@ -34,15 +34,5 @@ void main() {
          child: FrogPondApp(),
         )
       );
-      
-      BackgroundFetch.configure(BackgroundFetchConfig(
-        enableHeadless: true,
-        minimumFetchInterval: 15,
-        stopOnTerminate: false,
-        forceReload: true,
-      ), util.checkNotifications);
-      
-     // BackgroundFetch.registerHeadlessTask(util.checkNotifications);
-      BackgroundFetch.start();
       print('end of main()');
 }
