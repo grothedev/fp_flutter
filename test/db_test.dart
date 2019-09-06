@@ -22,6 +22,31 @@ Future<List> loadCroaks()
 
 */
 
+import 'dart:io';
+
+import 'package:sqflite/sqflite.dart';
+import 'package:test/test.dart';
+import '../lib/db.dart' as db;
+
 void main(){
-  
+  //initDB()
+  test('fp.db should exists and contain the proper table', () async {
+    db.initDB();
+    File dbfile = File(getDatabasesPath().toString() + '/fp.db');
+    expect(dbfile.exists(), true);
+    List rows = await db.database.query('croaks');
+    Map c = rows.elementAt(0);
+    print(c.keys);
+    expect(c.containsKey('content'), true);
+  });
+
+  //saveCroaks(croaks)
+  test('db should have the new croaks added', (){
+    Map c1 = {}; //new croak
+    Map c2 = {}; //dupe with updated listening
+    Map c3 = {}; //dupe
+
+    
+
+  });
 }

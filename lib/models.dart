@@ -39,7 +39,7 @@ class AppState {
   double lat, lon;
   bool needsUpdate = true;
   bool updateReplies = true;
-  int lastCroaksGet;
+  int lastCroaksGet; //milliseconds since epoch since last time croaks were fetched
   FlutterLocalNotificationsPlugin notificationsPlugin;
   int notifyCheckInterval; //minutes between checking for conditions which trigger notification
 

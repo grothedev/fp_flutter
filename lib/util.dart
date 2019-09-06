@@ -51,8 +51,7 @@ Future<List> getCroaks(Query query, int lastUpdated, LocationData location) asyn
 
   print('util getcroaks: ' + query.toString() + ', ' + query.radius.toString());
   
-  //TODO fix sqlite
-  if (true ||  lastUpdated == null || DateTime.now().millisecondsSinceEpoch - lastUpdated > CROAKS_GET_TIMEOUT){
+  if (lastUpdated == null || DateTime.now().millisecondsSinceEpoch - lastUpdated > CROAKS_GET_TIMEOUT){
     
 
     List<String> tags;
@@ -100,13 +99,13 @@ Future<List> queryCroaks(loc, tagList, qa, radius) async{
     return resJSON;
 }
 
-Future<bool> submitReply(int p_id, String content, List tags, anon) async{ //TODO should location be included?
+Future<bool> submitReply(int p_id, String content, List tags, anon, LocationData loc) async{
   if (tags == null) print('no tags');   
   List<String> tagsStrArr = [];
   for (var t in tags){
     tagsStrArr.add(t['label']);
   }
-  Croak c = new Croak(content: content, timestamp: new DateTime.now().toString() , score: 0, pid: p_id, tags: tagsStrArr, type: 0, lat: 0, lon: 0);
+  Croak c = new Croak(content: content, timestamp: new DateTime.now().toString() , score: 0, pid: p_id, tags: tagsStrArr, type: 0, lat: loc.latitude, lon: loc.longitude);
   return await postCroak(c.toMap(), null); //for now will not handle files for replies, but should in the future TODO
 } 
 

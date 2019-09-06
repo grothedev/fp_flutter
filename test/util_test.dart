@@ -27,4 +27,14 @@ void main(){
 
     expect(croaks.length > 0, true);
   });
+
+  test('getCroaks() with fetched recently', () async {
+    Query q = new Query();
+    LocationData loc;
+
+
+    List croaks = await util.getCroaks(q, DateTime.now().millisecondsSinceEpoch, loc);
+
+    expect(croaks.length > 0, true);
+  });
 }

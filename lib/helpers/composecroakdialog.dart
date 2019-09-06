@@ -112,7 +112,7 @@ class ComposeCroakDialog extends Dialog{
                               loading = true;
                               store.needsUpdate();
                               //TODO disable button here or do loading feedback
-                              util.submitReply(parent['id'], contentController.text, parent['tags'], true).then((s){
+                              util.submitReply(parent['id'], contentController.text, parent['tags'], true, store.state.location).then((s){
                                 if (s){
                                   Navigator.pop(context);
                                   StateContainer.of(context).updateReplies();
