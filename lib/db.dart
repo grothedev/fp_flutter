@@ -28,11 +28,15 @@ Database database;
 void initDB() async{
   print( await getDatabasesPath());
   openDatabase(
-   
+    
     join(await getDatabasesPath(), 'fp.db'),
     onCreate: (db, v){
+
       //NOTE: the PK ids on these tables are not the same as on server
-      db.execute('CREATE TABLE croaks(id INTEGER PRIMARY KEY, p_id INTEGER, created_at TEXT, content TEXT, score INTEGER, tags TEXT, type INTEGER, x REAL, y REAL, listening INTEGER)');
+      db.execute('CREATE TABLE croaks(id INTEGER PRIMARY KEY, p_id INTEGER, created_at TEXT, content TEXT, score INTEGER, '
+                  +'tags TEXT, ip TEXT, type INTEGER, x REAL, y REAL, replies INTEGER, listen INTEGER)');
+
+      
       //db.execute('CREATE TABLE tags(id INTEGER PRIMARY KEY, label TEXT)');
       //db.execute('CREATE TABLE croaks_tags(croak_id INTEGER, tag_id INTEGER)');
     },
@@ -69,7 +73,10 @@ void saveCroaks(croaks) async{
         'tags': tags, 
         'x': c['x'],
         'y': c['y'],
-        'type': c['type']
+        //'type': c['type'],
+        'replies': c['replies'],
+        'ip': '174.217.22.6',
+        'listen': false
         }, conflictAlgorithm: ConflictAlgorithm.replace);
       
     }

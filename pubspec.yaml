@@ -51,6 +51,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   test:
+  mockito:
   
 
 flutter_icons:

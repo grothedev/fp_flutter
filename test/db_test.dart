@@ -25,15 +25,16 @@ Future<List> loadCroaks()
 import 'dart:io';
 
 import 'package:sqflite/sqflite.dart';
-import 'package:test/test.dart';
+import 'package:flutter_test/flutter_test.dart';
 import '../lib/db.dart' as db;
+import 'test_objects.dart' as objs;
 
 void main(){
   //initDB()
   test('fp.db should exists and contain the proper table', () async {
     db.initDB();
     File dbfile = File(getDatabasesPath().toString() + '/fp.db');
-    expect(dbfile.exists(), true);
+    expect(await dbfile.exists(), true);
     List rows = await db.database.query('croaks');
     Map c = rows.elementAt(0);
     print(c.keys);
@@ -41,12 +42,26 @@ void main(){
   });
 
   //saveCroaks(croaks)
-  test('db should have the new croaks added', (){
-    Map c1 = {}; //new croak
-    Map c2 = {}; //dupe with updated listening
-    Map c3 = {}; //dupe
+  test('db should have the new croaks added', () async {
+    db.initDB();
 
+    List croaks = objs.dbCroaks;
+
+    db.saveCroaks(croaks);
+
+    expect( (await db.database.query('croaks')).length == 3, true);
+
+    croaks[1]['listening'] = true;
+    croaks[2]['content'] = 'this is now a new croak';
+    croaks[2]['id'] = 5;
     
+    db.saveCroaks(croaks);
+    expect( (await db.database.query('croaks')).length == 4, true);
+  });
 
+  //loadCroaks()
+  test('should return a list of all croaks on the local db', (){
+    
   });
 }
+

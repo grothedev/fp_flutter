@@ -81,7 +81,7 @@ class CroakFeedState extends State<CroakFeed>{
         enablePullUp: false,
        // header: Text('uhh'),
         controller: refreshController,
-        onRefresh: refresh,
+        onRefresh: refresh(true),
         child: ListView.builder(
             itemCount: croaksJSON == null ? 0 : croaksJSON.length,
             itemBuilder: (context, i) {

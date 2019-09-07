@@ -178,6 +178,16 @@ void checkNotifications() async{ //TODO design how this is done:
   //store a collection of ids for which the user is concerned. by default, this is their own posts. sharedpref 'croaksListening'
   //need to keep track of which croaks have been seen too
   //print('BG_FETCH: util notifications check');
+
+  List savedCroaks = await db.loadCroaks();
+  List listeningCroaks = []; //croaks for which the user wants to be notified of comments
+  savedCroaks.forEach((c){
+    if (!c['listening']) listeningCroaks.add(c);
+  });
+  listeningCroaks.forEach((c){
+    
+  });
+
   final file = await localFile;
   file.writeAsString('yo' + DateTime.now().toString());
   BackgroundFetch.finish();

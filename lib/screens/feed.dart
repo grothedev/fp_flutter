@@ -75,7 +75,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
     super.build(context);
     store = StateContainer.of(context);
     
-    if (store.state.needsUpdate) refresh();
+    if (store.state.needsUpdate) refresh(false);
 
     if (fetching){
       body = Column(
@@ -113,7 +113,12 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
               Text('The pond is still...'),
               RaisedButton(
                 child: Text('Refresh'),
-                onPressed: () => refresh(),
+                onPressed: (){
+                  setState(() {
+                    fetching = true;
+                  });
+                  refresh(true);
+                },
               ),
             ]
           )
@@ -136,7 +141,10 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
             IconButton(
               icon: Icon(Icons.refresh),
               onPressed: () {
-                refresh();
+                setState(() {
+                  fetching = true;
+                });
+                refresh(true);
               },
             ),
             PopupMenuButton(
@@ -186,15 +194,15 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   }
 
   //fetch the croaks according to query
-  void refresh(){
+  void refresh(bool force){
     store = StateContainer.of(context);
     setState(() {
       fetching = true;
     });
     print('feed refreshing');
     //if(mounted) Toast.show(makeRefreshToastText(), context, duration: 8);
- 
-    util.getCroaks(store.state.query, store.state.lastCroaksGet, store.state.location).then((cks){
+    
+    util.getCroaks(store.state.query, force ? 0 : store.state.lastCroaksGet, store.state.location).then((cks){
       store.state.needsUpdate = false;
       if (cks == null){
         print('failed to fetch croaks');
@@ -260,7 +268,9 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
         sortFeedList(sortMethod);
         print('feed got croaks.'); 
       }
-      
+      setState(() {
+        fetching = false;
+      });
     }).timeout(new Duration(seconds: 15), 
         onTimeout: (){
           print('timed out while fetching croaks');
