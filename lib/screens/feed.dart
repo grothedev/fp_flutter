@@ -18,6 +18,7 @@ You should have received a copy of the GNU General Public License
 along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import 'dart:developer';
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
@@ -44,18 +45,20 @@ import '../helpers/croakfeed.dart';
 //feed screen passes the query down to the croakfeed, then croakfeed fetches the croaks
 
 class FeedScreen extends StatefulWidget {
+  AppState state;
 
-  const FeedScreen() : super();
+  FeedScreen(this.state) : super();
 
   @override
   FeedState createState() {
-    return new FeedState();
+    return new FeedState(state);
   }
 }
 
 class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<FeedScreen>{
   
   StateContainerState store;
+  AppState state;
   CroakFeed croakFeed;
   bool fetching;
   List croaksJSON;
@@ -64,10 +67,21 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   RefreshController refreshController = RefreshController(initialRefresh: false);
   SortMethod sortMethod = SortMethod.date_asc;
   
+  FeedState(this.state){
+    fetching = true;
+    refresh(false);
+  }
+
   @override
   void initState(){
-    fetching = true;
     super.initState();
+    fetchCroaks(false);
+  }
+
+  @override
+  void didChangeDependencies(){
+    store = StateContainer.of(context);
+    //if (store.state.needsUpdate) refresh(false);
   }
 
   @override
@@ -75,7 +89,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
     super.build(context);
     store = StateContainer.of(context);
     
-    if (store.state.needsUpdate) refresh(false);
+    //if (store.state.needsUpdate) refresh(false);
 
     if (fetching){
       body = Column(
@@ -195,31 +209,36 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
 
   //fetch the croaks according to query
   void refresh(bool force){
-    store = StateContainer.of(context);
-    setState(() {
-      fetching = true;
-    });
+    /*if (mounted){
+      setState(() {
+        fetching = true;
+      });
+    }*/
     print('feed refreshing');
     //if(mounted) Toast.show(makeRefreshToastText(), context, duration: 8);
     
-    util.getCroaks(store.state.query, force ? 0 : store.state.lastCroaksGet, store.state.location).then((cks){
-      store.state.needsUpdate = false;
+    util.getCroaks(state.query, force ? 0 : state.lastCroaksGet, state.location).then((cks){
+
+      //store.needsNoUpdate();
       if (cks == null){
         print('failed to fetch croaks');
         Scaffold.of(context).showSnackBar(SnackBar(content: Text('There was a problem while attempting to fetch croaks') ));
-        setState(() {
+        
+        //setState(() {
           fetching = false;
           stalled = true;
-        });
+        //});*/
+        
         refreshController.refreshCompleted();
         return;
       }
       if (cks.length == 0){
         Scaffold.of(context).showSnackBar(SnackBar(content: Text('There are no croaks within this area')));
-        setState(() {
+        //setState(() {
           fetching = false;
           stalled = true;
-        });
+        //});
+
         return;
       }
       List cs = List.from(cks);
@@ -254,34 +273,77 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
             
         }
       }
-      store.state.needsUpdate = false;
+      //store.needsNoUpdate();
       
-      store.state.lastCroaksGet = DateTime.now().millisecondsSinceEpoch;
-      store.prefs.setInt('last_croaks_get', store.state.lastCroaksGet);
+      //store.state.lastCroaksGet = DateTime.now().millisecondsSinceEpoch;
+      //store.prefs.setInt('last_croaks_get', store.state.lastCroaksGet);
 
       if (mounted){
-        setState(() {
+        //setState(() {
           fetching = false;
           stalled = false;
           croaksJSON = cs;
-        });
+        //});
         sortFeedList(sortMethod);
         print('feed got croaks.'); 
       }
-      setState(() {
-        fetching = false;
-      });
     }).timeout(new Duration(seconds: 15), 
         onTimeout: (){
           print('timed out while fetching croaks');
           Scaffold.of(context).showSnackBar(SnackBar(content: Text('Unable to Reach Server to Fetch Croaks') ));
-          setState(() {
+          //setState(() {
             fetching = false;
             stalled = true;
-          });
+          //});
         }
       );
     
+  }
+
+  void fetchCroaks(bool force){
+    setState(() {
+      fetching = true;
+    });
+    util.getCroaks(state.query, force ? 0 : state.lastCroaksGet, state.location).then((res){
+
+      if (res == null){
+        print('failed to fetch croaks');
+        Scaffold.of(context).showSnackBar(SnackBar(content: Text('There was a problem while attempting to fetch croaks') ));
+        setState(() {
+          fetching = false;
+          stalled = true;
+        });
+        refreshController.refreshCompleted();
+        return;
+      }
+      if (res.length == 0){
+        Scaffold.of(context).showSnackBar(SnackBar(content: Text('There are no croaks within this area')));
+        setState(() {
+          fetching = false;
+          stalled = true;
+        });
+        refreshController.refreshCompleted();
+        return;
+      }
+      
+      List cs = List.from(res); //to handle read-only issue when loading from DB
+      for (int i = 0; i < cs.length; i++){
+        DateTime dt = DateFormat('yyyy-MM-d HH:mm').parse(cs[i]['created_at']).toLocal();
+        cs[i]['timestampStr'] = dt.year.toString() + '/' + dt.month.toString() + '/' + dt.day.toString() + ' - ' + dt.hour.toString() + ':' + dt.minute.toString();
+      }
+      setState((){
+        this.croaksJSON = cs;
+      });
+    }).timeout(new Duration(seconds: 15), 
+      onTimeout: (){
+        print('timed out while fetching croaks');
+        Scaffold.of(context).showSnackBar(SnackBar(content: Text('Unable to Reach Server to Fetch Croaks') ));
+        //setState(() {
+          fetching = false;
+          stalled = true;
+        //});
+      }
+    );
   }
 
   void sortFeedList(SortMethod mthd){

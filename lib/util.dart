@@ -46,7 +46,6 @@ Future<List> getTags(int n, LocationData location) async{
   return api.getTags(n, location.latitude, location.longitude);
 }
 
-//should this function actually return the croaks or just say if it has written croaks to db?
 Future<List> getCroaks(Query query, int lastUpdated, LocationData location) async{
 
   print('util getcroaks: ' + query.toString() + ', ' + query.radius.toString());
@@ -184,8 +183,11 @@ void checkNotifications() async{ //TODO design how this is done:
   savedCroaks.forEach((c){
     if (!c['listening']) listeningCroaks.add(c);
   });
-  listeningCroaks.forEach((c){
-    
+  listeningCroaks.forEach((lc){
+    List comments = [];
+    savedCroaks.forEach((sc){
+     //if ()
+    });
   });
 
   final file = await localFile;

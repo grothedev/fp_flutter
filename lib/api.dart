@@ -43,7 +43,7 @@ Future<List> getCroaks(double x, double y, int p_id, List<String> tl, bool at, i
   if (tl != null && tl.length > 0){
     reqURL += 'tags=' + tl.join(',') + '&'; 
   }
-  if (p_id > 0){
+  if (p_id != null){ 
     reqURL += 'p_id=' + p_id.toString() + '&';
   }
   if (at){

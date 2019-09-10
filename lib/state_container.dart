@@ -21,6 +21,7 @@ along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 import 'package:background_fetch/background_fetch.dart';
 import 'package:background_fetch/background_fetch.dart' as prefix0;
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:location/location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -77,7 +78,7 @@ class StateContainerState extends State<StateContainer>{
       restoreState();
       
     }
-
+    initNotifications();
     super.initState();
   }
 
@@ -118,9 +119,6 @@ class StateContainerState extends State<StateContainer>{
   }
 
   void setupBGFetch(){
-
-    util.fileTest();
-
     //so far this works for app onPause (home button), but not for onStop (back button)
     BackgroundFetch.configure(BackgroundFetchConfig(
       enableHeadless: true,
@@ -145,7 +143,7 @@ class StateContainerState extends State<StateContainer>{
     setState(() {
       state.query.localTags.add(t, true);
       state.query.localTags.set(t, mode); 
-      state.needsUpdate = true;
+      state.feedOutdated = true;
     });
   }
 
@@ -154,36 +152,35 @@ class StateContainerState extends State<StateContainer>{
     setState((){
       state.query.localTags.get(t)['use'] = false;
       //state.query.tagsI.remove(t);
-      state.needsUpdate = true; //TODO: is this flag necessary?
+      state.feedOutdated = true;
     });
   }
 
   void removeLocalTags(){
     setState(() {
       state.query.localTags.empty();
+      state.feedOutdated = true;
     });
   }
   
   void useTag(String label, bool u){
     setState(() {
       state.query.localTags.use(label, u); 
-      state.needsUpdate = true;
+      state.feedOutdated = true;
     });
   }
 
   void toggleUseTag(String label){
     setState(() {
       state.query.localTags.toggleUse(label);
-      state.needsUpdate = true;
+      state.feedOutdated = true;
     });
   }
 
   void tagsIncludeAll(bool a){
     setState(() {
-      //if (state.query.tags_include_all != null) state.query.tags_include_all = !state.query.tags_include_all;
-      //else state.query.tags_include_all = false;
       state.query.tagsIncludeAll = a;
-      state.needsUpdate = true;
+      state.feedOutdated = true;
       prefs.setBool('tags_include_all', state.query.tagsIncludeAll);
     });
   }
@@ -212,7 +209,7 @@ class StateContainerState extends State<StateContainer>{
     if (state.query.radius != r){
       setState((){
         state.query.radius = r;
-        state.needsUpdate = true;
+        state.feedOutdated = true;
       });
     }
   }
@@ -221,7 +218,7 @@ class StateContainerState extends State<StateContainer>{
   void setDistUnit(int u){
     setState(() {
       state.query.distUnit = u;
-      state.needsUpdate = true;
+      state.feedOutdated = true;
     });
   }
 
@@ -249,6 +246,11 @@ class StateContainerState extends State<StateContainer>{
   void needsUpdate(){ //this is just for croaks and location. i should rename it. 2019/8/24: i've started using it for tags as well. i should figure out exactly how this flag is being used because i don't remember, but it seems to make some ui updates work
     setState(() {
       state.needsUpdate = true;
+    });
+  }
+  void needsNoUpdate(){
+    setState((){
+      state.needsUpdate = false;
     });
   }
 
@@ -315,6 +317,27 @@ class StateContainerState extends State<StateContainer>{
     ), (){ print('registering headless task for notification check'); });
     BackgroundFetch.registerHeadlessTask(util.checkNotifications);
     super.deactivate();
+  }
+
+  void initNotifications() async{
+    state.notificationsPlugin = new FlutterLocalNotificationsPlugin();
+    // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
+    var initializationSettingsAndroid = new AndroidInitializationSettings('@mipmap/ic_launcher');
+    var initializationSettingsIOS = new IOSInitializationSettings( ); //onDidReceiveLocalNotification: onDidReceiveLocalNotification);
+    var initializationSettings = new InitializationSettings( initializationSettingsAndroid, initializationSettingsIOS);
+    state.notificationsPlugin.initialize(initializationSettings, ); //onSelectNotification: onSelectNotification);
+  
+    //var scheduledNotificationDateTime = new DateTime.now().add(new Duration(seconds: 5));
+    var androidPlatformChannelSpecifics = new AndroidNotificationDetails('your other channel id',
+        'your other channel name', 'your other channel description', priority: Priority.High);
+    var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
+    NotificationDetails platformChannelSpecifics = new NotificationDetails(androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+    //await store.state.notificationsPlugin.schedule(0, 'someone has replied to you', '# frogs have croaked back since [time]', scheduledNotificationDateTime, platformChannelSpecifics);
+    //store.state.notificationsPlugin.show(1, 'test title', 'test body', platformChannelSpecifics);
+
+    //store.state.notificationsPlugin.periodicallyShow(1, 'test title', 'test body', RepeatInterval.EveryMinute, platformChannelSpecifics);
+    
+    //https://pub.dev/packages/flutter_local_notifications
   }
 
 }
