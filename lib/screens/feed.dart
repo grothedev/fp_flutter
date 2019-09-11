@@ -60,36 +60,30 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   StateContainerState store;
   AppState state;
   CroakFeed croakFeed;
-  bool fetching;
   List croaksJSON;
-  bool stalled = false; //show a refresh button and don't fetch
+  bool fetching = false;
+  bool stalled = false; //don't fetch
+  bool error = false; //was there an error in the most recent fetch attempt?
   Widget body;
-  RefreshController refreshController = RefreshController(initialRefresh: false);
+  RefreshController refreshController = RefreshController(initialRefresh: true);
   SortMethod sortMethod = SortMethod.date_asc;
-  
+
   FeedState(this.state){
-    fetching = true;
-    refresh(false);
+    
   }
 
   @override
   void initState(){
     super.initState();
-    fetchCroaks(false);
-  }
-
-  @override
-  void didChangeDependencies(){
-    store = StateContainer.of(context);
-    //if (store.state.needsUpdate) refresh(false);
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    store = StateContainer.of(context);
     
-    //if (store.state.needsUpdate) refresh(false);
+    store = StateContainer.of(context);
+    if (store.state.feedOutdated) stalled = false;
+    if (!stalled) fetchCroaks(false);
 
     if (fetching){
       body = Column(
@@ -105,9 +99,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
                         semanticsLabel: 'Retreiving Croaks...',
                         semanticsValue: 'Retreiving Croaks...',
                     ),
-                  
                 )
-              
             ),
           ]
       );
@@ -117,7 +109,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
      );
     }
 
-    if (stalled){
+    if (error){
       body = Container(
         padding: EdgeInsets.only(bottom: 40),
         child: Center(
@@ -128,10 +120,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
               RaisedButton(
                 child: Text('Refresh'),
                 onPressed: (){
-                  setState(() {
-                    fetching = true;
-                  });
-                  refresh(true);
+                  refresh();
                 },
               ),
             ]
@@ -146,7 +135,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
           heightFactor: 10,
       );*/
     }
-
+    
     return Scaffold(
         appBar: AppBar(
           //title: ScreenTitle('Tha Pond'),
@@ -155,10 +144,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
             IconButton(
               icon: Icon(Icons.refresh),
               onPressed: () {
-                setState(() {
-                  fetching = true;
-                });
-                refresh(true);
+                refresh();
               },
             ),
             PopupMenuButton(
@@ -207,101 +193,16 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
     );
   }
 
-  //fetch the croaks according to query
-  void refresh(bool force){
-    /*if (mounted){
-      setState(() {
-        fetching = true;
-      });
-    }*/
-    print('feed refreshing');
-    //if(mounted) Toast.show(makeRefreshToastText(), context, duration: 8);
-    
-    util.getCroaks(state.query, force ? 0 : state.lastCroaksGet, state.location).then((cks){
-
-      //store.needsNoUpdate();
-      if (cks == null){
-        print('failed to fetch croaks');
-        Scaffold.of(context).showSnackBar(SnackBar(content: Text('There was a problem while attempting to fetch croaks') ));
-        
-        //setState(() {
-          fetching = false;
-          stalled = true;
-        //});*/
-        
-        refreshController.refreshCompleted();
-        return;
-      }
-      if (cks.length == 0){
-        Scaffold.of(context).showSnackBar(SnackBar(content: Text('There are no croaks within this area')));
-        //setState(() {
-          fetching = false;
-          stalled = true;
-        //});
-
-        return;
-      }
-      List cs = List.from(cks);
-      //removing croaks which are comments (actually this should probably be dealt with on server)
-      cs = cs.where( (c) => c['p_id'] == null || c['p_id'] == 0  ).toList(); 
-      for (int i = 0; i < cs.length; i++){
-        DateTime dt = DateFormat('yyyy-MM-d HH:mm').parse(cs[i]['created_at']).toLocal();
-        cs[i]['timestampStr'] = dt.year.toString() + '/' + dt.month.toString() + '/' + dt.day.toString() + ' - ' + dt.hour.toString() + ':' + dt.minute.toString();
-        
-
-        if (cs[i]['p_id'] == null){
-          //cs.add(List.from(cks[i]));
-          
-          if (cs[i]['tags'] is String){
-            String tagsStr = cs[i]['tags'];
-            cs[i]['tags'] = List();
-            List tags = tagsStr.split(',');
-            for (int j = 0; j < tags.length; j++){
-              cs[i]['tags'].add({'label': tags[j]});
-            } //to make compatible with CroakFeed parsing
-          }
-
-          /*
-          if (cs.last['tags'] is String){
-            String tagsStr = cs.last['tags'];
-            cs.last['tags'] = [];
-            List tags = tagsStr.split(',');
-            for (int j = 0; j < tags.length; j++){
-              cs.last['tags'].add({'label': tags[j]});
-            } //to make compatible with CroakFeed parsing
-          } */
-            
-        }
-      }
-      //store.needsNoUpdate();
-      
-      //store.state.lastCroaksGet = DateTime.now().millisecondsSinceEpoch;
-      //store.prefs.setInt('last_croaks_get', store.state.lastCroaksGet);
-
-      if (mounted){
-        //setState(() {
-          fetching = false;
-          stalled = false;
-          croaksJSON = cs;
-        //});
-        sortFeedList(sortMethod);
-        print('feed got croaks.'); 
-      }
-    }).timeout(new Duration(seconds: 15), 
-        onTimeout: (){
-          print('timed out while fetching croaks');
-          Scaffold.of(context).showSnackBar(SnackBar(content: Text('Unable to Reach Server to Fetch Croaks') ));
-          //setState(() {
-            fetching = false;
-            stalled = true;
-          //});
-        }
-      );
-    
+  
+  void refresh(){
+    stalled = false;
+    fetchCroaks(true);
   }
 
   void fetchCroaks(bool force){
-    setState(() {
+    
+    if (stalled || fetching) return;
+    setState((){
       fetching = true;
     });
     util.getCroaks(state.query, force ? 0 : state.lastCroaksGet, state.location).then((res){
@@ -309,10 +210,11 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
       if (res == null){
         print('failed to fetch croaks');
         Scaffold.of(context).showSnackBar(SnackBar(content: Text('There was a problem while attempting to fetch croaks') ));
-        setState(() {
+        //setState(() {
           fetching = false;
           stalled = true;
-        });
+          error = true;
+        //});
         refreshController.refreshCompleted();
         return;
       }
@@ -321,7 +223,10 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
         setState(() {
           fetching = false;
           stalled = true;
+          error = true;
+          croaksJSON = null;
         });
+        store.state.feedOutdated = false;
         refreshController.refreshCompleted();
         return;
       }
@@ -330,21 +235,29 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
       for (int i = 0; i < cs.length; i++){
         DateTime dt = DateFormat('yyyy-MM-d HH:mm').parse(cs[i]['created_at']).toLocal();
         cs[i]['timestampStr'] = dt.year.toString() + '/' + dt.month.toString() + '/' + dt.day.toString() + ' - ' + dt.hour.toString() + ':' + dt.minute.toString();
-      }
+      } 
       setState((){
-        this.croaksJSON = cs;
+        fetching = false;
+        stalled = true;
+        error = false;
+        croaksJSON = cs;
+        print('feed fetched: ' + croaksJSON.toString());
       });
+      refreshController.refreshCompleted();
     }).timeout(new Duration(seconds: 15), 
       onTimeout: (){
         print('timed out while fetching croaks');
         Scaffold.of(context).showSnackBar(SnackBar(content: Text('Unable to Reach Server to Fetch Croaks') ));
-        //setState(() {
+        setState(() {
           fetching = false;
           stalled = true;
-        //});
+          error = true;
+        });
       }
     );
+    store.state.feedOutdated = false;
   }
+  
 
   void sortFeedList(SortMethod mthd){
     // sort methods: date, proximity, popularity 

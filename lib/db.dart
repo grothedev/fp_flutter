@@ -63,7 +63,7 @@ void saveCroaks(croaks) async{
       //something feels wrong about this. i should make a fromMap() function 
       //c.add(Croak(id: croaks[i]['id'], content: croaks[i]['content'], timestamp: croaks[i]['timestamp'], tags: croaks[i]['tags'], score: croaks[i]['score']));
       
-      print('saving: ' + croaks[i].toString());
+      //print('saving: ' + croaks[i].toString());
       db.insert('croaks', {
         'id': c['id'],
         'p_id': c['p_id'],
