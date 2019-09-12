@@ -201,7 +201,8 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
     setState((){
       fetching = true;
     });
-    util.getCroaks(store.state.query, force ? 0 : store.state.lastCroaksGet, store.state.location).then((res){
+    print('feed getting croaks: ' + store.state.feedOutdated.toString());
+    util.getCroaks(store.state.query, (force || store.state.feedOutdated) ? 0 : store.state.lastCroaksGet, store.state.location).then((res){
 
       if (res == null){
         print('failed to fetch croaks');
@@ -237,8 +238,8 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
         stalled = true;
         error = false;
         croaksJSON = cs;
-        print('feed fetched: ' + croaksJSON.toString());
       });
+      store.gotFeed();
       refreshController.refreshCompleted();
     }).timeout(new Duration(seconds: 15), 
       onTimeout: (){

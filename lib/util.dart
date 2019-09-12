@@ -48,10 +48,9 @@ Future<List> getTags(int n, LocationData location) async{
 
 Future<List> getCroaks(Query query, int lastUpdated, LocationData location) async{
 
-  print('util getcroaks: ' + query.toString() + ', ' + query.radius.toString());
+  print('util getcroaks: ' + lastUpdated.toString() + ', ' + query.radius.toString());
   
   if (lastUpdated == null || DateTime.now().millisecondsSinceEpoch - lastUpdated > CROAKS_GET_TIMEOUT){
-    
 
     List<String> tags;
     if (query.localTags != null) tags = query.localTags.getActiveTagsLabels();
@@ -61,7 +60,7 @@ Future<List> getCroaks(Query query, int lastUpdated, LocationData location) asyn
     
     if (crks != null){
       db.saveCroaks(crks);
-    }    
+    }
     return crks;
   } else {
     print('last got croaks ' + lastUpdated.toString() + '. loading croaks from sqlite');

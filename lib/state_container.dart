@@ -97,9 +97,12 @@ class StateContainerState extends State<StateContainer>{
       state.query.localTags = new LocalTagsStore(prefs.getStringList('tags')); //NOTE: currently cant save if the tag is being used. can only save list of strings
       state.notifyCheckInterval = prefs.getInt('notify_check_interval');
       
-      state.needsUpdate = prefs.getBool('needs_update');  
+      state.needsUpdate = prefs.getBool('needs_update');
+      state.feedOutdated = prefs.getBool('feed_outdated') || false;
     } else {
-      prefs.setBool('ran_before', true);     
+      prefs.setBool('ran_before', true); 
+      prefs.setBool('feed_outdated', true);
+      state.feedOutdated = true;    
       state.query.localTags = new LocalTagsStore(null); 
     }
     
@@ -271,26 +274,12 @@ class StateContainerState extends State<StateContainer>{
     });
   }
 
-  void fetchCroaks(int pid){
-    setState((){
-      state.needsUpdate = false;
-      state.fetchingCroaks = true;
-      util.getCroaks(state.query, state.lastCroaksGet, state.location).then((cks){
-        
-        for (int i = 0; i < cks.length; i++){
-          if (cks[i]['p_id'] != pid){ 
-            cks.removeAt(i);
-            i--;
-          }
-        }
-        state.feed = cks;
-        state.lastCroaksGet = DateTime.now().millisecondsSinceEpoch;
-        state.fetchingCroaks = false;
-      });
-    });
-    prefs.setInt('last_croaks_get', state.lastCroaksGet);
-  }
 
+  void gotFeed(){
+    state.lastCroaksGet = DateTime.now().millisecondsSinceEpoch;
+    prefs.setInt('last_croaks_get', state.lastCroaksGet);
+    prefs.setBool('feed_outdated', false);
+  }
   void croaking(){
     setState(() {
       state.croaking = true;

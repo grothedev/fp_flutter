@@ -38,7 +38,7 @@ class AppState {
   LocationData location;
   double lat, lon;
   bool needsUpdate = true; //this is used for some UI updates
-  bool feedOutdated = true; //has the query been modified since the last time the croaks were fetched from server?
+  bool feedOutdated; //has the query been modified since the last time the croaks were fetched from server?
   bool updateReplies = true;
   int lastCroaksGet; //milliseconds since epoch since last time croaks were fetched
   FlutterLocalNotificationsPlugin notificationsPlugin;
