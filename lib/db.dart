@@ -89,7 +89,7 @@ Future<List> loadCroaks() async{
     join(await getDatabasesPath(), 'fp.db'),
   );
   List<dynamic> dbres = await db.query('croaks', columns: ['*'], where: '1=1');
-  List crks = List.generate(dbres.length, (i)=> Map.from(dbres[i]));
+  List crks = List.generate(dbres.length, (i)=> Map.from(dbres[i])); //copying to new list to prevent read-only error
   return crks;
 }
 

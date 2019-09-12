@@ -25,6 +25,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:intl/intl.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
@@ -59,6 +60,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
   final contentController = TextEditingController();
   final fk = GlobalKey<FormState>();// form key
   List replies;
+  String subToggleText;
 
   //this stuff is now in the compose croak dialog
   //final replyController = TextEditingController();
@@ -67,6 +69,11 @@ class CroakDetailState extends State<CroakDetailScreen>{
 
   CroakDetailState(Map c){
     this.c = c;
+    if (c.containsKey('listne') && c['listen']){
+      subToggleText = 'Subscribe';
+    } else {
+      subToggleText = 'Unsubscribe';
+    }
   }
 
   @override
@@ -103,8 +110,16 @@ class CroakDetailState extends State<CroakDetailScreen>{
               onPressed: (){
                 getReplies();
               },
+            ),
+            IconButton(
+              icon: Icon(Icons.subscriptions),
+              onPressed:(){
+                toggleSubscribe();
+              },
+              
             )
-          ]
+          ],
+          
         ),
         body: Column(
           children: [
@@ -276,5 +291,24 @@ class CroakDetailState extends State<CroakDetailScreen>{
       
       ),
     );
+  }
+
+  void toggleSubscribe(){
+    if (c.containsKey('listen')) {
+      setState(() {
+        c['listen'] = !c['listen'];  
+      });
+    }
+    else {
+      setState(() {
+        c['listen'] = true;
+      });
+    }
+
+    if (c['listen']){
+      Toast.show('You will receive notifications when this croak is replied to', context);
+    } else {
+      Toast.show('You will not receive notifications when this croak is replied to', context);
+    }
   }
 }

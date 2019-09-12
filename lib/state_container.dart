@@ -278,7 +278,7 @@ class StateContainerState extends State<StateContainer>{
   void gotFeed(){
     state.lastCroaksGet = DateTime.now().millisecondsSinceEpoch;
     prefs.setInt('last_croaks_get', state.lastCroaksGet);
-    prefs.setBool('feed_outdated', false);
+    //prefs.setBool('feed_outdated', false);
   }
   void croaking(){
     setState(() {
@@ -298,6 +298,8 @@ class StateContainerState extends State<StateContainer>{
   @mustCallSuper
   @override
   void deactivate(){
+    prefs.setBool('feed_outdated', false);
+    //TODO move other set prefs here
     print('state container dispose');
     BackgroundFetch.configure(BackgroundFetchConfig(
       enableHeadless: true,

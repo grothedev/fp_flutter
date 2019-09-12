@@ -1,11 +1,10 @@
 FrogPond mobile application, made with flutter. https://flutter.dev/
 
 TODO:
-* fix db stuff (this is not necessary for the initial release, but will be once there are > 20 users)
-    - when there are a lot of croaks, you certainly don't want so many people making requests all the time and repeatedly downloading so much data.
+* fix persistent query tags
 * save sort preferences
+* save prefs in statecontainer deactivate method
 * implement data analysis (show locations of croaks w/ tags etc. )
-* reply submit loading
 * tutorial mode?
 * UI stuff
   - show video or audio player based on file type.
@@ -18,19 +17,14 @@ TODO:
 * attach file to reply
 * tag exclusion
 * remove unused stuff like the old tag list
-* is state.needsUpdate flag necessary?
 * button to show complete list of tags (also get more popular tags)
 * notifications
 * post-initial-release features
-  - voting
-  - identify commenters or just OP
+  - identify commenters or just OP?
   - different croak types (poll, resource bank, plant, tool library, event)
-  - going to need to devise a better way of storing and managing croaks to improve performance when there might be thousands
-   of croaks
   - get by keywords on API
   - possibly take picture from app https://flutter.dev/docs/cookbook/plugins/picture-using-camera
       https://pub.dev/packages/camera
-* make a test class with test data structures etc.
 * implement usage stats for API
 
 SharedPreferences:
