@@ -15,7 +15,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
+along with Frog Pond.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 import 'dart:io';
@@ -142,6 +142,12 @@ class RootState extends State<RootView> with SingleTickerProviderStateMixin, Aut
   }
 
   @override
+  void deactivate(){
+    //store.saveState();
+    super.deactivate();
+  }
+
+  @override
   void dispose(){
     controller.dispose();
     SharedPreferences.getInstance().then((prefs){
@@ -152,7 +158,6 @@ class RootState extends State<RootView> with SingleTickerProviderStateMixin, Aut
       prefs.setInt('radius', store.state.query.radius);
       prefs.setInt('last_croaks_get', store.state.lastCroaksGet);
     });
-    //TODO write croaks to db
     super.dispose();
   }
 

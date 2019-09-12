@@ -1,9 +1,7 @@
 FrogPond mobile application, made with flutter. https://flutter.dev/
 
 TODO:
-* fix persistent query tags
 * save sort preferences
-* save prefs in statecontainer deactivate method
 * implement data analysis (show locations of croaks w/ tags etc. )
 * tutorial mode?
 * UI stuff

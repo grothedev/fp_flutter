@@ -15,7 +15,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
+along with Frog Pond.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 import 'dart:convert';
@@ -47,15 +47,11 @@ Future<List> getTags(int n, LocationData location) async{
 
 Future<List> getCroaks(Query query, int lastUpdated, LocationData location) async{
 
-  print('util getcroaks: ' + lastUpdated.toString() + ', ' + query.radius.toString());
-  
   if (lastUpdated == null || DateTime.now().millisecondsSinceEpoch - lastUpdated > CROAKS_GET_TIMEOUT){
 
     List<String> tags;
     if (query.localTags != null) tags = query.localTags.getActiveTagsLabels();
     List crks =  await queryCroaks(location, tags, query.tagsIncludeAll, query.radius);
- 
-    print('util got croaks (tags=' + query.tagsI.toString() + ') :' + crks.toString());
     
     crks.forEach((c){
       c['listen'] = false;
@@ -66,23 +62,11 @@ Future<List> getCroaks(Query query, int lastUpdated, LocationData location) asyn
     }
     return crks;
   } else {
-    print('last got croaks ' + lastUpdated.toString() + '. loading croaks from sqlite');
-    //List dbres = await db.loadCroaks();
+    print('last got croaks ' + lastUpdated.toString() + '. loading croaks from shared prefs');
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String croaksStr = prefs.getString('feed_croaks');
     List cs = jsonDecode(croaksStr);
     return cs;
-/*
-    dbres.forEach((c){ //converting string concatenation of tags back to json format
-      c['tags'] = List<Map>.from(c['tags'].toString().split(',').map((t){
-        return {'label': t.toString()};
-      }));
-    });
-
-
-    print(dbres.toString());
-    return List<dynamic>.from(dbres);
-    */
   }
 }
 
@@ -234,5 +218,3 @@ Future<File> get localFile async {
   final path = await localPath;
   return File('$path/test.txt');
 }
-
-//TODO make functions for varying croak type inputs

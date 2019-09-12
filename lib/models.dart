@@ -15,9 +15,10 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
+along with Frog Pond.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import 'dart:convert';
 import 'dart:io';
 import 'package:location/location.dart';
 import 'package:sqflite/sqflite.dart';
@@ -151,11 +152,18 @@ class LocalTagsStore{
   List<dynamic> tags = [];
   //might keep two lists of tags: include and exclude, then present two filter chip scrollables
 
-  LocalTagsStore(List<String> tags){
+  LocalTagsStore(List<dynamic> tags){
     if (tags == null) return;
-    tags.forEach((t){
-      add(t, false);
-    });
+    if (tags[0] is String){
+      tags.forEach((t){
+        add(t, false);
+      });
+    } else if (tags[0] is Map){
+      if (tags[0].containsKey('label') && tags[0].containsKey('mode') && tags[0].containsKey('use')){
+        this.tags = List.from(tags);
+      }
+    }
+    
   }
 
   void set(String label, int mode){
@@ -219,11 +227,16 @@ class LocalTagsStore{
   }
 
   //returns a new LTS from the string representation stored in shared prefs
-  static LocalTagsStore fromPrefs(String str){
-    //TODO parse string
-    //List tags = jsonDecode(str);
-    return new LocalTagsStore([]);
+  static LocalTagsStore fromJSON(String str){
+    List tags = jsonDecode(str);
+    return new LocalTagsStore(tags);
   }
+
+  //returns string of json representation of this LocalTagsStore
+  String toJSON(){
+    return jsonEncode(tags);
+  }
+
 
   String toString(){
     return tags.toString();

@@ -15,7 +15,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
+along with Frog Pond.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 import 'dart:convert';
@@ -100,8 +100,8 @@ class StateContainerState extends State<StateContainer>{
       //state.query.tags = prefs.getStringList('tags'); //tmp for dbging
       state.query.radius = prefs.getInt('radius');
       if (state.query.radius == null) state.query.radius = 15;
-      state.query.localTags = new LocalTagsStore(prefs.getStringList('tags')); //NOTE: currently cant save if the tag is being used. can only save list of strings
-      //state.query.localTags = LocalTagsStore.fromPrefs(prefs.getString('local_tags'));
+      //state.query.localTags = new LocalTagsStore(prefs.getStringList('tags')); //NOTE: currently cant save if the tag is being used. can only save list of strings
+      state.query.localTags = LocalTagsStore.fromJSON(prefs.getString('local_tags'));
 
       state.feed = jsonDecode(prefs.getString('feed_croaks'));
       state.notifyCheckInterval = prefs.getInt('notify_check_interval');
@@ -113,6 +113,7 @@ class StateContainerState extends State<StateContainer>{
       prefs.setBool('feed_outdated', true);
       state.feedOutdated = true;    
       state.query.localTags = new LocalTagsStore(null); 
+      prefs.setString('local_tags', '');
     }
     
     if (state.lat == null || state.lon == null){
@@ -157,7 +158,7 @@ class StateContainerState extends State<StateContainer>{
       state.query.localTags.set(t, mode); 
       state.feedOutdated = true;
     });
-    prefs.setString('local_tags', jsonEncode(state.query.localTags));
+    prefs.setString('local_tags', state.query.localTags.toJSON());
   }
 
   //doesn't actually remove the tag, but exludes it from query
@@ -167,7 +168,7 @@ class StateContainerState extends State<StateContainer>{
       //state.query.tagsI.remove(t);
       state.feedOutdated = true;
     });
-    prefs.setString('local_tags', jsonEncode(state.query.localTags));
+    prefs.setString('local_tags', state.query.localTags.toJSON());
   }
 
   void removeLocalTags(){
@@ -175,7 +176,7 @@ class StateContainerState extends State<StateContainer>{
       state.query.localTags.empty();
       state.feedOutdated = true;
     });
-    prefs.setString('local_tags', jsonEncode(state.query.localTags));
+    prefs.setString('local_tags', state.query.localTags.toJSON());
   }
   
   void useTag(String label, bool u){
@@ -183,7 +184,7 @@ class StateContainerState extends State<StateContainer>{
       state.query.localTags.use(label, u); 
       state.feedOutdated = true;
     });
-    prefs.setString('local_tags', jsonEncode(state.query.localTags));
+    prefs.setString('local_tags', state.query.localTags.toJSON());
   }
 
   void toggleUseTag(String label){
@@ -191,15 +192,15 @@ class StateContainerState extends State<StateContainer>{
       state.query.localTags.toggleUse(label);
       state.feedOutdated = true;
     });
-    prefs.setString('local_tags', jsonEncode(state.query.localTags));
+    prefs.setString('local_tags', state.query.localTags.toJSON());
   }
 
   void tagsIncludeAll(bool a){
     setState(() {
       state.query.tagsIncludeAll = a;
       state.feedOutdated = true;
-      prefs.setString('local_tags', jsonEncode(state.query.localTags));
     });
+    prefs.setString('local_tags', state.query.localTags.toJSON());
   }
 
   void getSuggestedTags(){
@@ -211,7 +212,7 @@ class StateContainerState extends State<StateContainer>{
         else state.query.localTags.add(tagLbls, false);  
       });
       state.needsUpdate = true;
-      prefs.setString('local_tags', jsonEncode(state.query.localTags));
+      prefs.setString('local_tags', state.query.localTags.toJSON());
     }); 
     
   }
@@ -315,6 +316,7 @@ class StateContainerState extends State<StateContainer>{
   @override
   void dispose(){
     print('FROGPOND STATE_CONTAINER DISPOSING: ');
+    prefs.setBool('dispose', true);
     prefs.setBool('feed_outdated', false);
     prefs.setString('feed_croaks', state.feed.toString());
     prefs.setString('local_tags', state.query.localTags.toString());
