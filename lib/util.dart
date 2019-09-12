@@ -65,6 +65,11 @@ Future<List> getCroaks(Query query, int lastUpdated, LocationData location) asyn
   } else {
     print('last got croaks ' + lastUpdated.toString() + '. loading croaks from sqlite');
     List dbres = await db.loadCroaks();
+    dbres.forEach((c){ //converting string concatenation of tags back to json format
+      c['tags'] = List<Map>.from(c['tags'].toString().split(',').map((t){
+        return {'label': t};
+      }));
+    });
     print(dbres.toString());
     return List<dynamic>.from(dbres);
   }

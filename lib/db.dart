@@ -89,7 +89,7 @@ Future<List> loadCroaks() async{
     join(await getDatabasesPath(), 'fp.db'),
   );
   List<dynamic> dbres = await db.query('croaks', columns: ['*'], where: '1=1');
-  List<dynamic> crks = List<dynamic>.from(dbres);
+  List crks = List.generate(dbres.length, (i)=> Map.from(dbres[i]));
   return crks;
 }
 

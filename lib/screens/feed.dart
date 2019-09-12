@@ -228,7 +228,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
         return;
       }
       
-      List cs = List.from(res); //to handle read-only issue when loading from DB
+      List cs = res;
       for (int i = 0; i < cs.length; i++){
         DateTime dt = DateFormat('yyyy-MM-d HH:mm').parse(cs[i]['created_at']).toLocal();
         cs[i]['timestampStr'] = dt.year.toString() + '/' + dt.month.toString() + '/' + dt.day.toString() + ' - ' + dt.hour.toString() + ':' + dt.minute.toString();
