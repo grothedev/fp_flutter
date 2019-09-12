@@ -75,8 +75,8 @@ void saveCroaks(croaks) async{
         'y': c['y'],
         //'type': c['type'],
         'replies': c['replies'],
-        'ip': '174.217.22.6',
-        'listen': false
+        'ip': c['ip'],
+        'listen': c['listen'] ? 1 : 0
         }, conflictAlgorithm: ConflictAlgorithm.replace);
       
     }
@@ -90,7 +90,7 @@ Future<List> loadCroaks() async{
   );
   List<dynamic> dbres = await db.query('croaks', columns: ['*'], where: '1=1');
   List crks = List.generate(dbres.length, (i)=> Map.from(dbres[i])); //copying to new list to prevent read-only error
-  return crks;
+  return crks.map((c) => Croak.fromDB(c)).toList();
 }
 
 void saveTags(tags) async{

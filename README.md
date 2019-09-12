@@ -35,10 +35,11 @@ SharedPreferences:
   * tags (List<String>) : tags to query for 
   * radius (int) : geographical radius of query (km)
   * dist_unit (int) : 0 = kilometers ; 1 = miles
-  * needs_update (bool) : does the main feed need to be updated?
+  * needs_update (bool) : do some UI elements need to be updated?
+  * feed_outdated (bool) : do main feed croaks need to be fetched again?
   * ran_before (bool) : if the app has been run on the device before
   * notify_check_interval (int) : minutes between checking for conditions which send device notification 
-
-
+  * feed_croaks (string) : a json string representing all of the croaks of the most recent feed the user was presented with
+  * local_tags (string) : a json string representing the LocalTagsStore
 SQLite DB:
     * croaks table is same as server except for one additional column, "listening" flag which tells if user wants to receive notifications for when that croak gets a new comment

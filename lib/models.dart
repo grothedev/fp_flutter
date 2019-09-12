@@ -110,6 +110,10 @@ class Croak{
     };
   }
   
+  static Map fromDB(Map c){
+
+  }
+
   String toJSON(){
     
   }
@@ -212,5 +216,16 @@ class LocalTagsStore{
   void empty(){
     tags.clear();
     tags = [];
+  }
+
+  //returns a new LTS from the string representation stored in shared prefs
+  static LocalTagsStore fromPrefs(String str){
+    //TODO parse string
+    //List tags = jsonDecode(str);
+    return new LocalTagsStore([]);
+  }
+
+  String toString(){
+    return tags.toString();
   }
 }

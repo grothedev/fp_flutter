@@ -18,6 +18,8 @@ You should have received a copy of the GNU General Public License
 along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import 'dart:convert';
+
 import 'package:background_fetch/background_fetch.dart';
 import 'package:background_fetch/background_fetch.dart' as prefix0;
 import 'package:flutter/material.dart';
@@ -85,8 +87,12 @@ class StateContainerState extends State<StateContainer>{
   
   void restoreState() async{ //from saved session preferences
     prefs = await SharedPreferences.getInstance();
+    print('FROGPOND RESTORING SHARED PREFS');
+
     if (prefs.containsKey('ran_before')){
       state.lastCroaksGet = prefs.getInt('last_croaks_get');
+      state.feedOutdated = prefs.getBool('feed_outdated');
+
       state.lat = prefs.getDouble('lat');
       state.lon = prefs.getDouble('lon');
       state.query.tagsIncludeAll = prefs.getBool('exclusive');
@@ -95,6 +101,9 @@ class StateContainerState extends State<StateContainer>{
       state.query.radius = prefs.getInt('radius');
       if (state.query.radius == null) state.query.radius = 15;
       state.query.localTags = new LocalTagsStore(prefs.getStringList('tags')); //NOTE: currently cant save if the tag is being used. can only save list of strings
+      //state.query.localTags = LocalTagsStore.fromPrefs(prefs.getString('local_tags'));
+
+      state.feed = jsonDecode(prefs.getString('feed_croaks'));
       state.notifyCheckInterval = prefs.getInt('notify_check_interval');
       
       state.needsUpdate = prefs.getBool('needs_update');
@@ -148,6 +157,7 @@ class StateContainerState extends State<StateContainer>{
       state.query.localTags.set(t, mode); 
       state.feedOutdated = true;
     });
+    prefs.setString('local_tags', jsonEncode(state.query.localTags));
   }
 
   //doesn't actually remove the tag, but exludes it from query
@@ -157,6 +167,7 @@ class StateContainerState extends State<StateContainer>{
       //state.query.tagsI.remove(t);
       state.feedOutdated = true;
     });
+    prefs.setString('local_tags', jsonEncode(state.query.localTags));
   }
 
   void removeLocalTags(){
@@ -164,6 +175,7 @@ class StateContainerState extends State<StateContainer>{
       state.query.localTags.empty();
       state.feedOutdated = true;
     });
+    prefs.setString('local_tags', jsonEncode(state.query.localTags));
   }
   
   void useTag(String label, bool u){
@@ -171,6 +183,7 @@ class StateContainerState extends State<StateContainer>{
       state.query.localTags.use(label, u); 
       state.feedOutdated = true;
     });
+    prefs.setString('local_tags', jsonEncode(state.query.localTags));
   }
 
   void toggleUseTag(String label){
@@ -178,13 +191,14 @@ class StateContainerState extends State<StateContainer>{
       state.query.localTags.toggleUse(label);
       state.feedOutdated = true;
     });
+    prefs.setString('local_tags', jsonEncode(state.query.localTags));
   }
 
   void tagsIncludeAll(bool a){
     setState(() {
       state.query.tagsIncludeAll = a;
       state.feedOutdated = true;
-      prefs.setBool('tags_include_all', state.query.tagsIncludeAll);
+      prefs.setString('local_tags', jsonEncode(state.query.localTags));
     });
   }
 
@@ -197,7 +211,9 @@ class StateContainerState extends State<StateContainer>{
         else state.query.localTags.add(tagLbls, false);  
       });
       state.needsUpdate = true;
+      prefs.setString('local_tags', jsonEncode(state.query.localTags));
     }); 
+    
   }
 
   void setCroakFeed(List crks){
@@ -278,7 +294,8 @@ class StateContainerState extends State<StateContainer>{
   void gotFeed(){
     state.lastCroaksGet = DateTime.now().millisecondsSinceEpoch;
     prefs.setInt('last_croaks_get', state.lastCroaksGet);
-    //prefs.setBool('feed_outdated', false);
+    prefs.setBool('feed_outdated', false);
+    prefs.setString('feed_croaks', jsonEncode(state.feed));
   }
   void croaking(){
     setState(() {
@@ -293,14 +310,23 @@ class StateContainerState extends State<StateContainer>{
   }
 
 
+  @protected
+  @mustCallSuper
+  @override
+  void dispose(){
+    print('FROGPOND STATE_CONTAINER DISPOSING: ');
+    prefs.setBool('feed_outdated', false);
+    prefs.setString('feed_croaks', state.feed.toString());
+    prefs.setString('local_tags', state.query.localTags.toString());
+    print(state.feed.toString());
+    print(state.query.localTags.toString());
+    super.dispose();
+  }
 
   @protected
   @mustCallSuper
   @override
   void deactivate(){
-    prefs.setBool('feed_outdated', false);
-    //TODO move other set prefs here
-    print('state container dispose');
     BackgroundFetch.configure(BackgroundFetchConfig(
       enableHeadless: true,
       minimumFetchInterval: 15,

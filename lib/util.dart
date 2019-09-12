@@ -18,15 +18,14 @@ You should have received a copy of the GNU General Public License
 along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
 import 'package:background_fetch/background_fetch.dart';
-import 'package:background_fetch/background_fetch.dart' as prefix0;
 import 'package:location/location.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:toast/toast.dart';
 import 'package:flutter/services.dart';
 
 import 'models.dart';
@@ -58,20 +57,32 @@ Future<List> getCroaks(Query query, int lastUpdated, LocationData location) asyn
  
     print('util got croaks (tags=' + query.tagsI.toString() + ') :' + crks.toString());
     
+    crks.forEach((c){
+      c['listen'] = false;
+    });
+
     if (crks != null){
       db.saveCroaks(crks);
     }
     return crks;
   } else {
     print('last got croaks ' + lastUpdated.toString() + '. loading croaks from sqlite');
-    List dbres = await db.loadCroaks();
+    //List dbres = await db.loadCroaks();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String croaksStr = prefs.getString('feed_croaks');
+    List cs = jsonDecode(croaksStr);
+    return cs;
+/*
     dbres.forEach((c){ //converting string concatenation of tags back to json format
       c['tags'] = List<Map>.from(c['tags'].toString().split(',').map((t){
         return {'label': t.toString()};
       }));
     });
+
+
     print(dbres.toString());
     return List<dynamic>.from(dbres);
+    */
   }
 }
 
