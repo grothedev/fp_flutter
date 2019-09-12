@@ -228,7 +228,7 @@ class LocalTagsStore{
 
   //returns a new LTS from the string representation stored in shared prefs
   static LocalTagsStore fromJSON(String str){
-    List tags = jsonDecode(str);
+    List tags = List.from(jsonDecode(str));
     return new LocalTagsStore(tags);
   }
 

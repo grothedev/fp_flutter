@@ -20,21 +20,15 @@ along with Frog Pond.  If not, see <https://www.gnu.org/licenses/>.
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import '../main.dart';
-import '../models.dart';
 import '../state_container.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:toast/toast.dart';
 
-import '../consts.dart';
 import '../api.dart' as api;
 import '../helpers/localtags.dart';
-import '../util.dart' as util;
 
 class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveClientMixin<SettingsScreen>{
   
@@ -71,22 +65,10 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                 onPressed: ()=>launch('http://gooob.bitbucket.io'),
 
               ),
-              duration: Duration(seconds: 8),
-              //animation: (),
-               
+              duration: Duration(seconds: 8),  
           )
         );
       }
-      /*
-      setState((){
-        if (store.state.lat == null || store.state.lon == null){
-          //store.getLocation();
-          locStr = 'Getting Location...';
-        } else locStr = 'Your Location: ' + store.state.lat.toString() + ', ' + store.state.lon.toString();
-        
-      });
-      */
-      
     });
 
   }
@@ -101,7 +83,6 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
       });
     } 
     if (store.state.lat == null || store.state.lon == null){
-      //store.getLocation();
       store.getLocation();
       locStr = 'Getting Location...';
     
@@ -257,13 +238,6 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                         activeColor: Colors.green,
                         
                       ),
-                      /* location feedback was used for debugging
-                      Container(
-                        child: (locStr == null) ? Text('Getting location...') : Text(locStr),
-                        margin: EdgeInsets.only(bottom: 2),
-                        padding: EdgeInsets.only(left: 8),
-                      ),
-                      */
                       RaisedButton(
                         child: Text('Remove Your Tags'),
                         onPressed: (){ 
@@ -330,7 +304,6 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                   ),
                 )
               ),
-            
           ]
         ) 
       )
@@ -339,10 +312,6 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
 
   @override
   bool get wantKeepAlive => true;
-
-  void notifyTest(){
-    
-  }
 
   void getMOTD(){
     api.getMOTD().then((r){
@@ -359,6 +328,4 @@ class SettingsScreen extends StatefulWidget {
   State<StatefulWidget> createState() {
     return SettingsScreenState();
   }
-
-
 }

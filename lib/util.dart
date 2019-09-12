@@ -53,13 +53,8 @@ Future<List> getCroaks(Query query, int lastUpdated, LocationData location) asyn
     if (query.localTags != null) tags = query.localTags.getActiveTagsLabels();
     List crks =  await queryCroaks(location, tags, query.tagsIncludeAll, query.radius);
     
-    crks.forEach((c){
-      c['listen'] = false;
-    });
-
-    if (crks != null){
-      db.saveCroaks(crks);
-    }
+    crks.forEach((c) => c['listen'] = false );
+    
     return crks;
   } else {
     print('last got croaks ' + lastUpdated.toString() + '. loading croaks from shared prefs');
@@ -72,6 +67,7 @@ Future<List> getCroaks(Query query, int lastUpdated, LocationData location) asyn
 
 Future<List> getReplies(int pid) async{
   List resJSON = await api.getCroaks(null, null, pid, null, false, null);
+  resJSON.forEach( (c) => c['listen'] = false );
   resJSON.sort((a, b){
     return DateTime.parse(b['created_at']).millisecondsSinceEpoch - DateTime.parse(a['created_at']).millisecondsSinceEpoch;
   });
@@ -177,20 +173,20 @@ void checkNotifications() async{ //TODO design how this is done:
   //need to keep track of which croaks have been seen too
   //print('BG_FETCH: util notifications check');
 
-  List savedCroaks = await db.loadCroaks();
-  List listeningCroaks = []; //croaks for which the user wants to be notified of comments
-  savedCroaks.forEach((c){
-    if (!c['listening']) listeningCroaks.add(c);
-  });
-  listeningCroaks.forEach((lc){
-    List comments = [];
-    savedCroaks.forEach((sc){
-     //if ()
+  fileTest();
+
+  SharedPreferences.getInstance().then((p){
+    p.setString('bgfetch_test', DateTime.now().toIso8601String().toString());
+    List croaks = jsonDecode(p.getString('feed_croaks')).where( (c) => c['listen'] );
+    croaks.forEach((c){
+      getReplies(c['id']).then((res){
+        //need to check if there are any new comments that don't exist in stored comments
+        //or maybe 'listen' flag could be an int telling the last time the croakdetail screen was looked at, then seeing if any of the comments were posted after that
+      });
     });
+    
   });
 
-  final file = await localFile;
-  file.writeAsString('yo' + DateTime.now().toString());
   BackgroundFetch.finish();
 }
 
@@ -206,7 +202,7 @@ void fileTest() async{
   File f = await localFile;
   print(f.path.toString());
   print(f.toString());
-  f.writeAsString('file test');
+  f.writeAsString('file test: ' + DateTime.now().toLocal().toString());
 }
 
 Future<String> get localPath async {

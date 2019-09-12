@@ -123,9 +123,7 @@ class StateContainerState extends State<StateContainer>{
       print('restored lat lon from shared prefs');
       state.location = LocationData.fromMap({'latitude': state.lat, 'longitude': state.lon});
       print(state.location.latitude.toString());
-      //getSuggestedTags();
     }
-    //getSuggestedTags();
 
     if (state.needsUpdate == null) state.needsUpdate = true;
   
@@ -289,6 +287,7 @@ class StateContainerState extends State<StateContainer>{
     setState(() {
       state.updateReplies = false;
     });
+    //prefs.setString(); TODO figure out best way to persist replies. will probably have to implement some system that deletes old ones after a while
   }
 
 
@@ -310,13 +309,26 @@ class StateContainerState extends State<StateContainer>{
     });
   }
 
+  //writes all relevant state to sharedPrefs. called upon app close
+  void saveState(){
+    print('FROGPOND SAVING STATE: ');
+    
+    prefs.setDouble('lat', state.lat);
+    prefs.setDouble('lon', state.lon);
+    prefs.setInt('last_croaks_get', state.lastCroaksGet);
+    prefs.setInt('radius', state.query.radius);
+    prefs.setInt('last_croaks_get', state.lastCroaksGet);
+
+    prefs.setBool('feed_outdated', false);
+    prefs.setString('feed_croaks', jsonEncode(state.feed));
+    prefs.setString('local_tags', state.query.localTags.toJSON());
+  }
 
   @protected
   @mustCallSuper
   @override
   void dispose(){
     print('FROGPOND STATE_CONTAINER DISPOSING: ');
-    prefs.setBool('dispose', true);
     prefs.setBool('feed_outdated', false);
     prefs.setString('feed_croaks', state.feed.toString());
     prefs.setString('local_tags', state.query.localTags.toString());

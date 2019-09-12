@@ -69,7 +69,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
 
   CroakDetailState(Map c){
     this.c = c;
-    if (c.containsKey('listne') && c['listen']){
+    if (c.containsKey('listen') && c['listen']){
       subToggleText = 'Subscribe';
     } else {
       subToggleText = 'Unsubscribe';

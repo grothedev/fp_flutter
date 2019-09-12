@@ -124,12 +124,9 @@ class RootState extends State<RootView> with SingleTickerProviderStateMixin, Aut
   void initState(){
     super.initState();
     controller = new TabController(length: 3, vsync: this);
-    db.initDB(); //in case the db was deleted
     print("INIT ROOT STATE");
 
     SharedPreferences.getInstance().then((p){
-      //TODO set things here, get filter specs, etc.
-      
         if (p.getInt('last_launch') == null){
           p.setInt('last_launch', DateTime.now().millisecondsSinceEpoch);
           p.setBool('firstrun', true);
@@ -143,13 +140,14 @@ class RootState extends State<RootView> with SingleTickerProviderStateMixin, Aut
 
   @override
   void deactivate(){
-    //store.saveState();
+    store.saveState();
     super.deactivate();
   }
 
   @override
   void dispose(){
     controller.dispose();
+    /*
     SharedPreferences.getInstance().then((prefs){
       prefs.setDouble('lat', store.state.lat);
       prefs.setDouble('lon', store.state.lon);
@@ -158,6 +156,7 @@ class RootState extends State<RootView> with SingleTickerProviderStateMixin, Aut
       prefs.setInt('radius', store.state.query.radius);
       prefs.setInt('last_croaks_get', store.state.lastCroaksGet);
     });
+    */
     super.dispose();
   }
 
