@@ -166,7 +166,7 @@ class RootState extends State<RootView> with SingleTickerProviderStateMixin, Aut
         title: new Text("FrogPond"),
       ),*/
       body: new TabBarView(
-        children: <Widget>[ new FeedScreen(store.state), new SettingsScreen(), new ComposeScreen()],
+        children: <Widget>[ new FeedScreen(), new SettingsScreen(), new ComposeScreen()],
         controller: controller,
       ),
       bottomNavigationBar: new Material(

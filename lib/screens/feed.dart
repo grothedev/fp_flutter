@@ -45,20 +45,18 @@ import '../helpers/croakfeed.dart';
 //feed screen passes the query down to the croakfeed, then croakfeed fetches the croaks
 
 class FeedScreen extends StatefulWidget {
-  AppState state;
 
-  FeedScreen(this.state) : super();
+  FeedScreen() : super();
 
   @override
   FeedState createState() {
-    return new FeedState(state);
+    return new FeedState();
   }
 }
 
 class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<FeedScreen>{
   
   StateContainerState store;
-  AppState state;
   CroakFeed croakFeed;
   List croaksJSON;
   bool fetching = false;
@@ -68,9 +66,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   RefreshController refreshController = RefreshController(initialRefresh: true);
   SortMethod sortMethod = SortMethod.date_asc;
 
-  FeedState(this.state){
-    
-  }
+  FeedState();
 
   @override
   void initState(){
@@ -205,16 +201,16 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
     setState((){
       fetching = true;
     });
-    util.getCroaks(state.query, force ? 0 : state.lastCroaksGet, state.location).then((res){
+    util.getCroaks(store.state.query, force ? 0 : store.state.lastCroaksGet, store.state.location).then((res){
 
       if (res == null){
         print('failed to fetch croaks');
         Scaffold.of(context).showSnackBar(SnackBar(content: Text('There was a problem while attempting to fetch croaks') ));
-        //setState(() {
+        setState(() {
           fetching = false;
           stalled = true;
           error = true;
-        //});
+        });
         refreshController.refreshCompleted();
         return;
       }
