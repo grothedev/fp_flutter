@@ -100,24 +100,20 @@ Future<bool> submitReply(int p_id, String content, List tags, anon, LocationData
     tagsStrArr.add(t['label']);
   }
   Croak c = new Croak(content: content, timestamp: new DateTime.now().toString() , score: 0, pid: p_id, tags: tagsStrArr, type: 0, lat: loc.latitude, lon: loc.longitude);
-  return await postCroak(c.toMap(), null); //for now will not handle files for replies, but should in the future TODO
+  return await postCroak(c.toMap(), null) != null; //for now will not handle files for replies, but should in the future TODO
 } 
 
-Future<bool> submitCroak(String croak, List<String> tags, bool anon, double lat, double lon, File f) async{
-  //print('util submit croak: ' + tags);
+//return subbmited croak, or null on failure. saves croak to shared prefs
+Future<Map> submitCroak(String croak, List<String> tags, bool anon, double lat, double lon, File f) async{
   Croak c = new Croak(content: croak, timestamp: new DateTime.now().toString() , score: 0, tags: tags, type: 0, pid: null, lat: lat, lon: lon, files: [f]);
   return await postCroak(c.toMap(), f);
 }
 
-Future<bool> postCroak(Map c, File f) async{
-  var s = await api.postCroak(c, f);
-  
-  if (s == '0'){
-      return true;
-  }
-  print(s);
-  return false;
-  
+//return submitted croak, or null upon failure
+Future<Map> postCroak(Map c, File f) async{
+  String s = await api.postCroak(c, f);
+  if (s == '-1') return null;
+  return jsonDecode(s);
 }
 
 //returns that croak's current score
@@ -176,7 +172,6 @@ void checkNotifications() async{ //TODO design how this is done:
   fileTest();
 
   SharedPreferences.getInstance().then((p){
-    p.setString('bgfetch_test', DateTime.now().toIso8601String().toString());
     List croaks = jsonDecode(p.getString('feed_croaks')).where( (c) => c['listen'] );
     croaks.forEach((c){
       getReplies(c['id']).then((res){

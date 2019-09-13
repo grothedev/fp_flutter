@@ -239,7 +239,7 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                                 
                                 print('croakin with tags: ' + tags.toString());
                                 util.submitCroak(croakText.text, composeTags.getActiveTagsLabels(), true, store.state.lat, store.state.lon, file).then((r){
-                                  if (r){
+                                  if (r != null){
                                     Scaffold.of(context).removeCurrentSnackBar();
                                     Scaffold.of(context).showSnackBar(SnackBar(content: Text('Success')));
                                     setState((){
@@ -253,7 +253,7 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                                     Scaffold.of(context).removeCurrentSnackBar();
                                     Scaffold.of(context).showSnackBar(SnackBar(content: Text('Failed to Croak')));
                                   }
-                                  store.croaked();
+                                  store.croaked(r);
                                 }).catchError((e){
                                   print('compose croak error: ' + e.toString());
                                   store.croaked();

@@ -303,10 +303,12 @@ class StateContainerState extends State<StateContainer>{
     });
   }
 
-  void croaked(){
+  void croaked(Map c){
     setState(() {
       state.croaking = false;
     });
+    state.localCroaks.add(c, false, true);
+    prefs.setString('local_croaks', state.localCroaks.toJSON());
   }
 
   //writes all relevant state to sharedPrefs. called upon app close
@@ -328,12 +330,6 @@ class StateContainerState extends State<StateContainer>{
   @mustCallSuper
   @override
   void dispose(){
-    print('FROGPOND STATE_CONTAINER DISPOSING: ');
-    prefs.setBool('feed_outdated', false);
-    prefs.setString('feed_croaks', state.feed.toString());
-    prefs.setString('local_tags', state.query.localTags.toString());
-    print(state.feed.toString());
-    print(state.query.localTags.toString());
     super.dispose();
   }
 
@@ -341,12 +337,6 @@ class StateContainerState extends State<StateContainer>{
   @mustCallSuper
   @override
   void deactivate(){
-    BackgroundFetch.configure(BackgroundFetchConfig(
-      enableHeadless: true,
-      minimumFetchInterval: 15,
-      stopOnTerminate: false,
-    ), (){ print('registering headless task for notification check'); });
-    BackgroundFetch.registerHeadlessTask(util.checkNotifications);
     super.deactivate();
   }
 

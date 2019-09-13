@@ -31,6 +31,7 @@ import 'util.dart' as util;
 class AppState {
 
   List feed; //current croaks in the main feed
+  LocalCroaksStore localCroaks;
   bool gettingLocation;
   bool fetchingCroaks;
   int whenCroaksFetched;
@@ -240,5 +241,52 @@ class LocalTagsStore{
 
   String toString(){
     return tags.toString();
+  }
+}
+
+/*
+  a type of repository to handle croaks that have been retreived as main feed, comments, or submitted by the user
+  similar to LocalTagsStore
+  main reason for implementation is to keep track of which croaks are part of the feed and which are subscribed to
+
+  NOTE: currently, the extra client-concerning flags are added to croak map right alongside existing structure. this should be ok
+*/
+class LocalCroaksStore{
+  List<Map> croaks;
+
+  LocalCroaksStore(List<Map> croaks){
+    if (croaks == null) return;
+    croaks.forEach((c){
+      if (!c.containsKey('listen')) c['listen'] = false;
+      if (!c.containsKey('feed')) c['feed'] = false;
+    });
+  }
+
+  //add a single croak or a list of croaks
+  Map add(dynamic add, bool feed, bool listen){
+    if (add is Map){
+      add['feed'] = feed;
+      add['listen'] = listen;
+      croaks.add(add);
+    } else if (add is List){
+      add.forEach((c){
+        c['feed'] = feed;
+        c['listen'] = listen;
+        croaks.add(c);
+      });
+    }
+  }
+
+  List<int> getListeningIDs(){
+    return croaks.where( (c) => c['listen'] ).map( (c) => c['id'] ).toList();
+  }
+
+  static LocalCroaksStore fromJSON(String str){
+    List croaks = List.from(jsonDecode(str));
+    return new LocalCroaksStore(croaks);
+  }
+
+  String toJSON(){
+    return jsonEncode(croaks);
   }
 }
