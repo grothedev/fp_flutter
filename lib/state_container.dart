@@ -102,6 +102,7 @@ class StateContainerState extends State<StateContainer>{
       if (state.query.radius == null) state.query.radius = 15;
       //state.query.localTags = new LocalTagsStore(prefs.getStringList('tags')); //NOTE: currently cant save if the tag is being used. can only save list of strings
       state.query.localTags = LocalTagsStore.fromJSON(prefs.getString('local_tags'));
+      state.localCroaks = LocalCroaksStore.fromJSON(prefs.getString('local_croaks'));
 
       state.feed = jsonDecode(prefs.getString('feed_croaks'));
       state.notifyCheckInterval = prefs.getInt('notify_check_interval');
@@ -114,6 +115,8 @@ class StateContainerState extends State<StateContainer>{
       state.feedOutdated = true;    
       state.query.localTags = new LocalTagsStore(null); 
       prefs.setString('local_tags', '');
+      state.localCroaks = new LocalCroaksStore(null);
+      prefs.setString('local_croaks', '[]');
     }
     
     if (state.lat == null || state.lon == null){
@@ -291,12 +294,16 @@ class StateContainerState extends State<StateContainer>{
   }
 
 
-  void gotFeed(){
+  void gotFeed(List c){
     state.lastCroaksGet = DateTime.now().millisecondsSinceEpoch;
     prefs.setInt('last_croaks_get', state.lastCroaksGet);
     prefs.setBool('feed_outdated', false);
     prefs.setString('feed_croaks', jsonEncode(state.feed));
+
+    state.localCroaks.add(c, true, false);
+    prefs.setString('local_croaks', state.localCroaks.toJSON());
   }
+  
   void croaking(){
     setState(() {
       state.croaking = true;
@@ -307,6 +314,7 @@ class StateContainerState extends State<StateContainer>{
     setState(() {
       state.croaking = false;
     });
+    if (c == null) return;
     state.localCroaks.add(c, false, true);
     prefs.setString('local_croaks', state.localCroaks.toJSON());
   }

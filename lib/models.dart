@@ -252,7 +252,7 @@ class LocalTagsStore{
   NOTE: currently, the extra client-concerning flags are added to croak map right alongside existing structure. this should be ok
 */
 class LocalCroaksStore{
-  List<Map> croaks;
+  List<Map> croaks = [];
 
   LocalCroaksStore(List<Map> croaks){
     if (croaks == null) return;
@@ -263,7 +263,7 @@ class LocalCroaksStore{
   }
 
   //add a single croak or a list of croaks
-  Map add(dynamic add, bool feed, bool listen){
+  dynamic add(dynamic add, bool feed, bool listen){
     if (add is Map){
       add['feed'] = feed;
       add['listen'] = listen;
@@ -275,6 +275,11 @@ class LocalCroaksStore{
         croaks.add(c);
       });
     }
+    return add;
+  }
+
+  List<Map> getFeed(){
+    return croaks.where( (c) => c['feed'] ).toList();
   }
 
   List<int> getListeningIDs(){

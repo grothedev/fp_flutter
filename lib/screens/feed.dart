@@ -101,7 +101,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
       );
     } else {
      body = Container(
-       child: CroakFeed(store.state.feed, refresh)
+       child: CroakFeed(store.state.localCroaks.getFeed(), refresh)
      );
     }
 
@@ -240,7 +240,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
         croaksJSON = cs; //TODO croaksJSON is probably unnecessary if keep croaks in appstate
         store.state.feed = cs; 
       });
-      store.gotFeed();
+      store.gotFeed(cs);
       refreshController.refreshCompleted();
     }).timeout(new Duration(seconds: 15), 
       onTimeout: (){
