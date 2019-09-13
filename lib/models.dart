@@ -21,16 +21,13 @@ along with Frog Pond.  If not, see <https://www.gnu.org/licenses/>.
 import 'dart:convert';
 import 'dart:io';
 import 'package:location/location.dart';
-import 'package:sqflite/sqflite.dart';
-import 'dart:async';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'consts.dart';
-import 'util.dart' as util;
 
 class AppState {
 
-  List feed; //current croaks in the main feed
+  //List<Map> feed;
   LocalCroaksStore localCroaks;
   bool gettingLocation;
   bool fetchingCroaks;
@@ -56,8 +53,6 @@ class AppState {
 }
 
 class Query{
-  List<String> tagsI;
-  List<String> tagsE;
   LocalTagsStore localTags;
   bool tagsIncludeAll; //get croaks which are associated with all (true) or some (false) of selected tags
   int radius;
@@ -65,14 +60,14 @@ class Query{
   //TODO add keywords
 
   Query(){
-    tagsI = List();
-    tagsE = List();
     tagsIncludeAll = false;
     radius = 0;
     distUnit = KM;
   }
 }
 
+
+//TODO should this class be removed?. it is only used to construct a newly composed croak, which could be moved to LocalCroaksStore
 class Croak{
   int id;
   int pid; //parent
@@ -85,9 +80,7 @@ class Croak{
   final int score;
   final int type;
 
-  
   Croak({this.id, this.pid, this.content, this.timestamp, this.score, this.lat, this.lon, this.type, this.tags, this.files}){
-    
     List<String> ts = []; //temp list to fix duplicates
     tags.forEach((t){ 
       if (!ts.contains(t)) ts.add(t);
@@ -110,14 +103,6 @@ class Croak{
       'type': type.toString(),
       'files': files.toString()
     };
-  }
-  
-  static Map fromDB(Map c){
-
-  }
-
-  String toJSON(){
-    
   }
 }
 
@@ -286,8 +271,56 @@ class LocalCroaksStore{
     return croaks.where( (c) => c['listen'] ).map( (c) => c['id'] ).toList();
   }
 
+  void sort(SortMethod mthd){
+    // sort methods: date, proximity, popularity 
+    switch(mthd){
+      case SortMethod.date_asc:
+        croaks.sort((a, b){
+          return b['created_at'].compareTo(a['created_at']);
+        });  
+        break;
+      case SortMethod.dist_asc:
+        croaks.sort((a, b){
+          return a['distance'].toInt() - b['distance'].toInt();
+        });
+        break;
+      case SortMethod.pop_asc:
+        croaks.sort((a, b){
+          return a['replies'] - b['replies'];
+        });
+        break;
+      case SortMethod.score_asc:
+        
+        croaks.sort((a, b){
+          return a['score'] - b['score'];
+        });
+      
+        break;
+      case SortMethod.date_des:
+        croaks.sort((a, b){
+          return a['created_at'].compareTo(b['created_at']);
+        });  
+        break;
+      case SortMethod.dist_des:
+        croaks.sort((a, b){
+          return b['distance'].toInt() - a['distance'].toInt();
+        });
+        break;
+      case SortMethod.pop_des:
+        croaks.sort((a, b){
+          return b['replies'] - a['replies'];
+        });
+        break;
+      case SortMethod.score_des:
+          croaks.sort((a, b){
+            return b['score'] - a['score'];
+          });
+        break;
+    }
+  }
+
   static LocalCroaksStore fromJSON(String str){
-    List croaks = List.from(jsonDecode(str));
+    List<Map> croaks = List.from(jsonDecode(str));
     return new LocalCroaksStore(croaks);
   }
 

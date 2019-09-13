@@ -104,7 +104,7 @@ class StateContainerState extends State<StateContainer>{
       state.query.localTags = LocalTagsStore.fromJSON(prefs.getString('local_tags'));
       state.localCroaks = LocalCroaksStore.fromJSON(prefs.getString('local_croaks'));
 
-      state.feed = jsonDecode(prefs.getString('feed_croaks'));
+      //state.feed = jsonDecode(prefs.getString('feed_croaks'));
       state.notifyCheckInterval = prefs.getInt('notify_check_interval');
       
       state.needsUpdate = prefs.getBool('needs_update');
@@ -116,7 +116,7 @@ class StateContainerState extends State<StateContainer>{
       state.query.localTags = new LocalTagsStore(null); 
       prefs.setString('local_tags', '');
       state.localCroaks = new LocalCroaksStore(null);
-      prefs.setString('local_croaks', '[]');
+      prefs.setString('local_croaks', '');
     }
     
     if (state.lat == null || state.lon == null){
@@ -218,13 +218,6 @@ class StateContainerState extends State<StateContainer>{
     
   }
 
-  void setCroakFeed(List crks){
-    setState((){
-      state.feed = crks;
-      state.fetchingCroaks = false;
-    }); 
-  }
-
   void setRadius(int r){
     print('store setting rad ' + r.toString());
     if (state.query.radius != r){
@@ -298,12 +291,12 @@ class StateContainerState extends State<StateContainer>{
     state.lastCroaksGet = DateTime.now().millisecondsSinceEpoch;
     prefs.setInt('last_croaks_get', state.lastCroaksGet);
     prefs.setBool('feed_outdated', false);
-    prefs.setString('feed_croaks', jsonEncode(state.feed));
+    //prefs.setString('feed_croaks', jsonEncode(state.feed));
 
     state.localCroaks.add(c, true, false);
     prefs.setString('local_croaks', state.localCroaks.toJSON());
   }
-  
+
   void croaking(){
     setState(() {
       state.croaking = true;
@@ -330,8 +323,9 @@ class StateContainerState extends State<StateContainer>{
     prefs.setInt('last_croaks_get', state.lastCroaksGet);
 
     prefs.setBool('feed_outdated', false);
-    prefs.setString('feed_croaks', jsonEncode(state.feed));
+    //prefs.setString('feed_croaks', jsonEncode(state.feed));
     prefs.setString('local_tags', state.query.localTags.toJSON());
+    prefs.setString('local_croaks', state.localCroaks.toJSON());
   }
 
   @protected

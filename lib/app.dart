@@ -21,22 +21,13 @@ along with Frog Pond.  If not, see <https://www.gnu.org/licenses/>.
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'state_container.dart';
 import 'package:location/location.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'screens/settings.dart';
 import 'screens/feed.dart';
 import 'screens/composecroak.dart';
-import 'screens/intro.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:async';
 
-
-import 'db.dart' as db;
-import 'api.dart' as api;
-import 'models.dart';
 
 class FrogPondApp extends StatelessWidget {
 
@@ -89,7 +80,6 @@ class FrogPondApp extends StatelessWidget {
         
       ),
       
-      //home: intro ? IntroScreen() : RootView()
       home: RootView()
     );
   }
@@ -110,14 +100,8 @@ class RootView extends StatefulWidget{
   RootState createState() => new RootState();
 }
 class RootState extends State<RootView> with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin<RootView>{
+  
   TabController controller;
-  //SharedPreferences prefs; //this global variable might not be necessary
-
-
-  //global state
-  List queryTags = [];
-  List croaksJSON = [];
-  LocationData location;
   StateContainerState store;
 
   @override
@@ -147,24 +131,13 @@ class RootState extends State<RootView> with SingleTickerProviderStateMixin, Aut
   @override
   void dispose(){
     controller.dispose();
-    /*
-    SharedPreferences.getInstance().then((prefs){
-      prefs.setDouble('lat', store.state.lat);
-      prefs.setDouble('lon', store.state.lon);
-      prefs.setInt('last_croaks_get', store.state.lastCroaksGet);
-      prefs.setStringList('tags', store.state.query.localTags.tags.map((lt){ return lt['label']; }));
-      prefs.setInt('radius', store.state.query.radius);
-      prefs.setInt('last_croaks_get', store.state.lastCroaksGet);
-    });
-    */
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     store = StateContainer.of(context);
-    //if (store.state.query.store.restoreState();
-
+    
     return new Scaffold(
       /*appBar: new AppBar(
         title: new Text("FrogPond"),

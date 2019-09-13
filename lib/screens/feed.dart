@@ -18,32 +18,18 @@ You should have received a copy of the GNU General Public License
 along with Frog Pond.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import 'dart:developer';
-import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../state_container.dart';
 import 'package:intl/intl.dart';
-import 'package:location/location.dart';
-import 'dart:async';
-
-import 'package:flutter/services.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:toast/toast.dart';
 
-import '../models.dart';
 
-import '../api.dart' as api;
 import '../util.dart' as util;
-import '../db.dart' as db;
 import '../consts.dart';
-
 import '../helpers/croakfeed.dart';
 
-//feed screen passes the query down to the croakfeed, then croakfeed fetches the croaks
-
+//feed screen fetches the croaks and passes them down to a CroakFeed widget
 class FeedScreen extends StatefulWidget {
 
   FeedScreen() : super();
@@ -57,8 +43,6 @@ class FeedScreen extends StatefulWidget {
 class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<FeedScreen>{
   
   StateContainerState store;
-  CroakFeed croakFeed;
-  List croaksJSON;
   bool fetching = false;
   bool stalled = false; //don't fetch
   bool error = false; //was there an error in the most recent fetch attempt?
@@ -172,7 +156,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
                 
               ],
               onSelected: (v){
-                sortFeedList(v);
+                store.state.localCroaks.sort(v);
               },
             )
           ],
@@ -221,7 +205,6 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
           fetching = false;
           stalled = true;
           error = true;
-          croaksJSON = null;
         });
         store.state.feedOutdated = false;
         refreshController.refreshCompleted();
@@ -237,8 +220,6 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
         fetching = false;
         stalled = true;
         error = false;
-        croaksJSON = cs; //TODO croaksJSON is probably unnecessary if keep croaks in appstate
-        store.state.feed = cs; 
       });
       store.gotFeed(cs);
       refreshController.refreshCompleted();
@@ -254,69 +235,6 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
       }
     );
     store.state.feedOutdated = false;
-  }
-  
-
-  void sortFeedList(SortMethod mthd){
-    // sort methods: date, proximity, popularity 
-    switch(mthd){
-      case SortMethod.date_asc:
-        setState(() {
-          croaksJSON.sort((a, b){
-            return b['created_at'].compareTo(a['created_at']);
-          });  
-        });
-        break;
-      case SortMethod.dist_asc:
-        setState(() {
-          croaksJSON.sort((a, b){
-            return a['distance'].toInt() - b['distance'].toInt();
-          });
-        });
-        break;
-      case SortMethod.pop_asc:
-        setState(() {
-          croaksJSON.sort((a, b){
-            return a['replies'] - b['replies'];
-          });
-        });
-        break;
-      case SortMethod.score_asc:
-        setState(() {
-          croaksJSON.sort((a, b){
-            return a['score'] - b['score'];
-          });
-        });
-        break;
-      case SortMethod.date_des:
-        setState(() {
-          croaksJSON.sort((a, b){
-            return a['created_at'].compareTo(b['created_at']);
-          });  
-        });
-        break;
-      case SortMethod.dist_des:
-        setState(() {
-          croaksJSON.sort((a, b){
-            return b['distance'].toInt() - a['distance'].toInt();
-          });
-        });
-        break;
-      case SortMethod.pop_des:
-        setState(() {
-          croaksJSON.sort((a, b){
-            return b['replies'] - a['replies'];
-          });
-        });
-        break;
-      case SortMethod.score_des:
-        setState(() {
-          croaksJSON.sort((a, b){
-            return b['score'] - a['score'];
-          });
-        });
-        break;
-    }
   }
 
 
