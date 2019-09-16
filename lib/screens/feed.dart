@@ -43,6 +43,7 @@ class FeedScreen extends StatefulWidget {
 class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<FeedScreen>{
   
   StateContainerState store;
+  List<Map> feed;
   bool fetching = false;
   bool stalled = false; //don't fetch
   bool error = false; //was there an error in the most recent fetch attempt?
@@ -55,6 +56,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   @override
   void initState(){
     super.initState();
+    feed = [];
   }
 
   @override
@@ -62,6 +64,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
     super.build(context);
     
     store = StateContainer.of(context);
+    //feed = store.state.localCroaks.getFeed(sortMethod);
     if (store.state.feedOutdated) stalled = false;
     if (!stalled) fetchCroaks(false);
 
@@ -85,7 +88,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
       );
     } else {
      body = Container(
-       child: CroakFeed(store.state.localCroaks.getFeed(), refresh)
+       child: CroakFeed(feed, refresh)
      );
     }
 
@@ -156,7 +159,10 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
                 
               ],
               onSelected: (v){
-                store.state.localCroaks.sort(v);
+                setState(() {
+                  sortMethod = v;
+                  feed = store.state.localCroaks.getFeed(sortMethod);
+                });
               },
             )
           ],
@@ -220,6 +226,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
         fetching = false;
         stalled = true;
         error = false;
+        feed = List.from(cs);
       });
       store.gotFeed(cs);
       refreshController.refreshCompleted();
@@ -260,6 +267,53 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
     return t;
   }
 
+  void sortFeed(SortMethod mthd){
+    // sort methods: date, proximity, popularity 
+    switch(mthd){
+      case SortMethod.date_asc:
+        feed.sort((a, b){
+          return b['created_at'].compareTo(a['created_at']);
+        });  
+        break;
+      case SortMethod.dist_asc:
+        feed.sort((a, b){
+          return a['distance'].toInt() - b['distance'].toInt();
+        });
+        break;
+      case SortMethod.pop_asc:
+        feed.sort((a, b){
+          return a['replies'] - b['replies'];
+        });
+        break;
+      case SortMethod.score_asc:
+        
+        feed.sort((a, b){
+          return a['score'] - b['score'];
+        });
+      
+        break;
+      case SortMethod.date_des:
+        feed.sort((a, b){
+          return a['created_at'].compareTo(b['created_at']);
+        });  
+        break;
+      case SortMethod.dist_des:
+        feed.sort((a, b){
+          return b['distance'].toInt() - a['distance'].toInt();
+        });
+        break;
+      case SortMethod.pop_des:
+        feed.sort((a, b){
+          return b['replies'] - a['replies'];
+        });
+        break;
+      case SortMethod.score_des:
+          feed.sort((a, b){
+            return b['score'] - a['score'];
+          });
+        break;
+    }
+  }
   
 
   @override

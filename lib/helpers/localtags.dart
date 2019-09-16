@@ -106,7 +106,7 @@ class TagChip extends StatefulWidget{
 class TagChipState extends State<TagChip>{
 
   bool sel = false;
-  StateContainerState store; //i think this is pretty close to the redux concept of a "store". thought var name "stateContainer" was too long
+  StateContainerState store;
 
   @override
   Widget build(BuildContext context) {

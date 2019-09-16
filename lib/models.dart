@@ -214,6 +214,7 @@ class LocalTagsStore{
 
   //returns a new LTS from the string representation stored in shared prefs
   static LocalTagsStore fromJSON(String str){
+    if (str.length == 0) return new LocalTagsStore(null);
     List tags = List.from(jsonDecode(str));
     return new LocalTagsStore(tags);
   }
@@ -263,63 +264,68 @@ class LocalCroaksStore{
     return add;
   }
 
-  List<Map> getFeed(){
-    return croaks.where( (c) => c['feed'] ).toList();
+  List<Map> getFeed(SortMethod sm){
+    List feed = croaks.where( (c) => c['feed'] ).toList();
+    if (sm != null) sort(feed, sm); 
+    return feed;
+
   }
 
   List<int> getListeningIDs(){
     return croaks.where( (c) => c['listen'] ).map( (c) => c['id'] ).toList();
   }
 
-  void sort(SortMethod mthd){
+  //can pass in a list (for now will only be a list of croaks) to sort or leave null to use entire LocalCroaksStore croaks
+  void sort(List l, SortMethod mthd){
     // sort methods: date, proximity, popularity 
+    print(mthd.toString());
+    if (l == null) l = croaks;
     switch(mthd){
       case SortMethod.date_asc:
-        croaks.sort((a, b){
+        l.sort((a, b){
           return b['created_at'].compareTo(a['created_at']);
         });  
         break;
       case SortMethod.dist_asc:
-        croaks.sort((a, b){
+        l.sort((a, b){
           return a['distance'].toInt() - b['distance'].toInt();
         });
         break;
       case SortMethod.pop_asc:
-        croaks.sort((a, b){
+        l.sort((a, b){
           return a['replies'] - b['replies'];
         });
         break;
       case SortMethod.score_asc:
-        
-        croaks.sort((a, b){
+        l.sort((a, b){
           return a['score'] - b['score'];
         });
-      
         break;
       case SortMethod.date_des:
-        croaks.sort((a, b){
+        l.sort((a, b){
           return a['created_at'].compareTo(b['created_at']);
         });  
         break;
       case SortMethod.dist_des:
-        croaks.sort((a, b){
+        l.sort((a, b){
           return b['distance'].toInt() - a['distance'].toInt();
         });
         break;
       case SortMethod.pop_des:
-        croaks.sort((a, b){
+        l.sort((a, b){
           return b['replies'] - a['replies'];
         });
         break;
       case SortMethod.score_des:
-          croaks.sort((a, b){
-            return b['score'] - a['score'];
-          });
+        l.sort((a, b){
+          return b['score'] - a['score'];
+        });
         break;
     }
   }
 
   static LocalCroaksStore fromJSON(String str){
+    if (str.length == 0) return new LocalCroaksStore(null);
     List<Map> croaks = List.from(jsonDecode(str));
     return new LocalCroaksStore(croaks);
   }

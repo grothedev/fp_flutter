@@ -215,7 +215,6 @@ class StateContainerState extends State<StateContainer>{
       state.needsUpdate = true;
       prefs.setString('local_tags', state.query.localTags.toJSON());
     }); 
-    
   }
 
   void setRadius(int r){

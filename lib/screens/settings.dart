@@ -181,7 +181,7 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                         ),
                       ),
                       */
-                      Text('Popular Tags: '),
+                      Text('Popular Tags: '), //SUGGEST TAGS
                       Container(
                         margin: formElemMargin,
                         child: (store.state.location == null || store.state.query.localTags.tags == null) ? Text('Loading Tags...') 
@@ -196,7 +196,7 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                         ),
                       ),
                       
-                      TextFormField( //TAGS INPUT
+                      TextFormField( //CUSTOM TAGS INPUT
                         controller: tagsText,
                         decoration: InputDecoration(
                           icon: Icon(Icons.category),

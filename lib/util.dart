@@ -59,7 +59,7 @@ Future<List> getCroaks(Query query, int lastUpdated, LocationData location) asyn
     print('last got croaks ' + lastUpdated.toString() + '. loading croaks from shared prefs');
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String croaksStr = prefs.getString('local_croaks');
-    List<dynamic> cs = LocalCroaksStore.fromJSON(croaksStr).getFeed().toList(); //i think there is some redundance going on here
+    List<dynamic> cs = LocalCroaksStore.fromJSON(croaksStr).getFeed(null).toList(); //i think there is some redundance going on here
     return cs;
   }
 }
@@ -171,7 +171,7 @@ void checkNotifications() async{ //TODO design how this is done:
   fileTest();
 
   SharedPreferences.getInstance().then((p){
-    List croaks = jsonDecode(p.getString('feed_croaks')).where( (c) => c['listen'] );
+    List croaks = jsonDecode(p.getString('local_croaks')).where( (c) => c['listen'] );
     croaks.forEach((c){
       getReplies(c['id']).then((res){
         //need to check if there are any new comments that don't exist in stored comments
