@@ -27,13 +27,12 @@ import 'package:http_parser/http_parser.dart';
 import 'package:path/path.dart';
 import 'dart:async';
 import 'dart:convert';
-import 'models.dart';
 import 'package:dio/dio.dart';
 
 //String host = 'grothe.ddns.net';
 //String host = '192.168.1.5'; //tmp local
-String host = '173.22.78.225';
-//String host = '192.168.1.5'; //tmp local
+//String host = '173.22.78.225';
+String host = '192.168.0.220';
 int port = 8090;
 String api_url = 'http://' + host + ':' + port.toString() + '/api/'; 
 
@@ -62,7 +61,6 @@ Future<List> getCroaks(double x, double y, int p_id, List<String> tl, bool at, i
   //print('api.getCroaks response body: '+ res.body);
   //print('api response: ' + res.body);
   return json.decode(res.body);
-
 }
 
 //takes file separately because Croak.toMap() had to give string representations of all of its instance vars
@@ -113,4 +111,16 @@ Future<String> getMOTD() async{
 Future<String> postVote(Map<String, dynamic> req) async{
   var res = await http.Client().post(api_url+'votes', body: req);
   return res.body.toString();
+}
+
+//is the server reachable?
+Future<bool> testConnection() async{
+  http.get(api_url).then((r){
+    print(r.toString());
+    return true;
+  }).catchError((e){
+    print('API test error: ' + e.toString());
+    return false;
+  });
+  
 }

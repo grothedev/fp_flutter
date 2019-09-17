@@ -160,6 +160,7 @@ class StateContainerState extends State<StateContainer>{
       state.feedOutdated = true;
     });
     prefs.setString('local_tags', state.query.localTags.toJSON());
+    prefs.setBool('feed_outdated', true);
   }
 
   //doesn't actually remove the tag, but exludes it from query
@@ -170,6 +171,7 @@ class StateContainerState extends State<StateContainer>{
       state.feedOutdated = true;
     });
     prefs.setString('local_tags', state.query.localTags.toJSON());
+    prefs.setBool('feed_outdated', true);
   }
 
   void removeLocalTags(){
@@ -194,6 +196,7 @@ class StateContainerState extends State<StateContainer>{
       state.feedOutdated = true;
     });
     prefs.setString('local_tags', state.query.localTags.toJSON());
+    prefs.setBool('feed_outdated', true);
   }
 
   void tagsIncludeAll(bool a){
@@ -202,6 +205,7 @@ class StateContainerState extends State<StateContainer>{
       state.feedOutdated = true;
     });
     prefs.setString('local_tags', state.query.localTags.toJSON());
+    prefs.setBool('feed_outdated', true);
   }
 
   void getSuggestedTags(){
@@ -224,6 +228,7 @@ class StateContainerState extends State<StateContainer>{
         state.query.radius = r;
         state.feedOutdated = true;
       });
+      prefs.setBool('feed_outdated', true);
     }
   }
 
@@ -233,6 +238,7 @@ class StateContainerState extends State<StateContainer>{
       state.query.distUnit = u;
       state.feedOutdated = true;
     });
+    prefs.setBool('feed_outdated', true);
   }
 
   void setSortMethod(int s){

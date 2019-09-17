@@ -26,6 +26,7 @@ import 'package:location/location.dart';
 import 'screens/settings.dart';
 import 'screens/feed.dart';
 import 'screens/composecroak.dart';
+import 'api.dart' as api;
 import 'package:shared_preferences/shared_preferences.dart';
 
 

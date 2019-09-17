@@ -37,7 +37,7 @@ class AppState {
   LocationData location;
   double lat, lon;
   bool needsUpdate = true; //this is used for some UI updates
-  bool feedOutdated; //has the query been modified since the last time the croaks were fetched from server?
+  bool feedOutdated = true; //has the query been modified since the last time the croaks were fetched from server?
   bool updateReplies = true;
   int lastCroaksGet; //milliseconds since epoch since last time croaks were fetched
   FlutterLocalNotificationsPlugin notificationsPlugin;
@@ -139,7 +139,7 @@ class LocalTagsStore{
   //might keep two lists of tags: include and exclude, then present two filter chip scrollables
 
   LocalTagsStore(List<dynamic> tags){
-    if (tags == null) return;
+    if (tags == null || tags.length == 0) return;
     if (tags[0] is String){
       tags.forEach((t){
         add(t, false);
