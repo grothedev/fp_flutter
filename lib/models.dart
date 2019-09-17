@@ -264,12 +264,21 @@ class LocalCroaksStore{
     return add;
   }
 
+  Map get(int id){
+    return croaks.firstWhere((c) => c['id'] == id);
+  }
+
   List<Map> getFeed(){
     return croaks.where( (c) => c['feed'] ).toList();
   }
 
   List<int> getListeningIDs(){
     return croaks.where( (c) => c['listen'] ).map( (c) => c['id'] ).toList();
+  }
+
+  void toggleSubscribe(int id){
+    Map c = croaks.firstWhere((c)=>c['id']==id);
+    c['listen'] = !c['listen'];
   }
 
   static LocalCroaksStore fromJSON(String str){

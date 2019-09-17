@@ -168,17 +168,23 @@ void checkNotifications() async{ //TODO design how this is done:
   //need to keep track of which croaks have been seen too
   //print('BG_FETCH: util notifications check');
 
-  fileTest();
-
   SharedPreferences.getInstance().then((p){
-    List croaks = jsonDecode(p.getString('local_croaks')).where( (c) => c['listen'] );
+    List croaks = List.from(jsonDecode(p.getString('local_croaks'))).where( (c) => c['listen'] ).toList();
+    List notifyIDs = []; //a list of ids of croaks which have new replies
+
     croaks.forEach((c){
       getReplies(c['id']).then((res){
-        //need to check if there are any new comments that don't exist in stored comments
-        //or maybe 'listen' flag could be an int telling the last time the croakdetail screen was looked at, then seeing if any of the comments were posted after that
+        List localReplies = croaks.where((r)=> (r['feed']==false && r['p_id'] == c['id']));
+        if (res.length != localReplies.length){
+          notifyIDs.add(c['id']);          
+        } else{
+          //there are no new replies for this croak
+        }
       });
     });
     
+    p.setString('notify_ids', jsonEncode(notifyIDs));
+
   });
 
   BackgroundFetch.finish();

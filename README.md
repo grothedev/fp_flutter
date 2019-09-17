@@ -4,6 +4,7 @@ TODO:
 * save sort preferences
 * implement data analysis (show locations of croaks w/ tags etc. )
 * tutorial mode?
+* add indicator for subscription
 * UI stuff
   - show video or audio player based on file type.
   - ripple-like watermarks??
@@ -14,7 +15,6 @@ TODO:
     -
 * attach file to reply
 * tag exclusion
-* remove unused stuff like the old tag list
 * button to show complete list of tags (also get more popular tags)
 * notifications
 * post-initial-release features

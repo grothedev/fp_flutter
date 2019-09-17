@@ -61,6 +61,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
   final fk = GlobalKey<FormState>();// form key
   List replies;
   String subToggleText;
+  StateContainerState store;
 
   //this stuff is now in the compose croak dialog
   //final replyController = TextEditingController();
@@ -85,13 +86,14 @@ class CroakDetailState extends State<CroakDetailScreen>{
 
   @override
   Widget build(BuildContext context) {
+    store = StateContainer.of(context);
     print(c['files'].toString());
     List tags = [];
     for (int j = 0; j < c['tags'].length; j++){
       tags.add(c['tags'][j]['label']);
     }
 
-    if (StateContainer.of(context).state.updateReplies) getReplies();
+    if (store.state.updateReplies) getReplies();
 
     String croakURL = ro_url_pre+c['id'].toString();
     return Scaffold( 
@@ -236,7 +238,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
         }
         this.replies = r;
       });
-      StateContainer.of(context).gotReplies();
+      store.gotReplies(this.replies);
     });
   }
 
@@ -294,17 +296,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
   }
 
   void toggleSubscribe(){
-    if (c.containsKey('listen')) {
-      setState(() {
-        c['listen'] = !c['listen'];  
-      });
-    }
-    else {
-      setState(() {
-        c['listen'] = true;
-      });
-    }
-
+    store.toggleSubscribe(c['id']);
     if (c['listen']){
       Toast.show('You will receive notifications when this croak is replied to', context);
     } else {
