@@ -60,15 +60,6 @@ class CroakFeedState extends State<CroakFeed>{
     Map ip_color = {};
     for (var c in croaksJSON){
       if (!ip_color.keys.contains(c['ip'])) ip_color[c['ip']] = Color(Random().nextInt(0xAA + 1<<24)); 
-      /*if (!ip_color.keys.contains(c['ip'])){
-        List colorVals = c['ip'].split('.');
-        int a = 15 * 16^3;
-        int r = int.parse(colorVals[1]) * 16^2;
-        int g = int.parse(colorVals[2]) * 16;
-        int b = int.parse(colorVals[3]); 
-        ip_color[c['ip']] = Color(1<<24+r+g+b);
-        print(a.toString() + ',' + r.toString() + ',' + g.toString() + ',' + b.toString());
-      }*/
       c['color'] = ip_color[c['ip']];
     }
   }
@@ -244,16 +235,6 @@ class CroakFeedState extends State<CroakFeed>{
         }),
       )
       );
-  }
-
-  void testRefresh() async{
-    print('test refresh');
-    refreshController.refreshCompleted();
-    setState(() {
-      croaksJSON.add( {'id': 99, 'content': 'testrefresh', 'created_at': 'a time', 'p_id': null, 'tags': [], 'files': []} );
-    });
-    refreshController.loadComplete();
-
   }
 
   //toggles "favorite" or normal for a croak  

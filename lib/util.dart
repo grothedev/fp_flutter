@@ -59,7 +59,7 @@ Future<List> getCroaks(Query query, int lastUpdated, LocationData location) asyn
     print('last got croaks ' + lastUpdated.toString() + '. loading croaks from shared prefs');
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String croaksStr = prefs.getString('local_croaks');
-    List<dynamic> cs = LocalCroaksStore.fromJSON(croaksStr).getFeed(null).toList(); //i think there is some redundance going on here
+    List<dynamic> cs = LocalCroaksStore.fromJSON(croaksStr).getFeed().toList(); //i think there is some redundance going on here
     return cs;
   }
 }

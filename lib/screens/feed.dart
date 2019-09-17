@@ -160,8 +160,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
               ],
               onSelected: (v){
                 setState(() {
-                  sortMethod = v;
-                  feed = store.state.localCroaks.getFeed(sortMethod);
+                  sortFeed(v);
                 });
               },
             )
@@ -181,6 +180,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
 
   
   void refresh(){
+    error = false;
     stalled = false;
     fetchCroaks(true);
   }
