@@ -174,7 +174,7 @@ void checkNotifications() async{ //TODO design how this is done:
 
     croaks.forEach((c){
       getReplies(c['id']).then((res){
-        List localReplies = croaks.where((r)=> (r['feed']==false && r['p_id'] == c['id']));
+        List localReplies = croaks.where((r)=> (r['feed']==false && r['p_id'] == c['id'])).toList();
         if (res.length != localReplies.length){
           notifyIDs.add(c['id']);          
         } else{

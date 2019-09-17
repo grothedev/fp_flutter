@@ -284,6 +284,7 @@ class StateContainerState extends State<StateContainer>{
       state.localCroaks.toggleSubscribe(id);  
     });
     prefs.setString('local_croaks', state.localCroaks.toJSON());
+    print(state.localCroaks.get(id).toString());
   }
 
   void updateReplies(){

@@ -47,6 +47,7 @@ class CroakFeedState extends State<CroakFeed>{
   RefreshController refreshController = RefreshController(initialRefresh: false);
   Function refresh;
   String pip;
+  Map ip_color = {};
 
   CroakFeedState(this.croaksJSON, this.refresh, {this.pip}){
     favs = new List<bool>();
@@ -57,10 +58,9 @@ class CroakFeedState extends State<CroakFeed>{
     super.initState();
     
     if (pip == null) return; //only do color association if this is a comment thread
-    Map ip_color = {};
     for (var c in croaksJSON){
       if (!ip_color.keys.contains(c['ip'])) ip_color[c['ip']] = Color(Random().nextInt(0xAA + 1<<24)); 
-      c['color'] = ip_color[c['ip']];
+      //c['color'] = ip_color[c['ip']]; //don't associate color with data model (that causes problems with JSON encoding)
     }
   }
 
@@ -121,7 +121,7 @@ class CroakFeedState extends State<CroakFeed>{
                 decoration: BoxDecoration(
                   border: Border.all(
                     //color: Colors.grey,
-                    color: pip != null ? c['color'] : Colors.grey ,
+                    color: pip != null ? ip_color[c['ip']] : Colors.grey ,
                     width: 1, style: BorderStyle.solid,
                   ),
                   shape: BoxShape.circle
@@ -155,7 +155,7 @@ class CroakFeedState extends State<CroakFeed>{
                 decoration: BoxDecoration(
                   border: Border.all(
                     //color: Colors.grey,
-                    color: pip != null ? c['color'] : Colors.grey ,
+                    color: pip != null ? ip_color[c['ip']] : Colors.grey ,
                     width: 1, style: BorderStyle.solid,
                   ),
                   shape: BoxShape.circle
