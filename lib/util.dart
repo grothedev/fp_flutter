@@ -161,12 +161,12 @@ Future<LocationData> initLocation() async{
 
 
 //checks if there are responses to croaks this user has posted, if so send system notification
-void checkNotifications() async{ //TODO design how this is done: 
+void checkNotifications() async{ 
   //store a collection of ids for which the user is concerned. by default, this is their own posts. sharedpref 'croaksListening'
   //need to keep track of which croaks have been seen too
   //print('BG_FETCH: util notifications check');
 
-  SharedPreferences.getInstance().then((p){
+  SharedPreferences.getInstance().then((p) async {
     List listeningIDs = LocalCroaksStore.fromJSON(p.getString('local_croaks')).getListeningIDs(); // .where( (c) => c['listen'] ).toList();
     List notifyIDs = []; //a list of ids of croaks which have new replies
 
@@ -179,10 +179,10 @@ void checkNotifications() async{ //TODO design how this is done:
         //there are no new replies for this croak
         notifyIDs.add(-1*id);
       }
+      p.setString('notify_ids', jsonEncode(notifyIDs));
     });
     
-    p.setString('notify_ids', jsonEncode(notifyIDs));
-
+    
   });
 
   BackgroundFetch.finish();
