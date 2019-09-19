@@ -52,8 +52,6 @@ Future<List> getCroaks(Query query, int lastUpdated, LocationData location) asyn
     if (query.localTags != null) tags = query.localTags.getActiveTagsLabels();
     List crks =  await queryCroaks(location, tags, query.tagsIncludeAll, query.radius);
     
-    crks.forEach((c) => c['listen'] = false );
-    
     return crks;
   } else {
     print('last got croaks ' + lastUpdated.toString() + '. loading croaks from shared prefs');
@@ -169,18 +167,18 @@ void checkNotifications() async{ //TODO design how this is done:
   //print('BG_FETCH: util notifications check');
 
   SharedPreferences.getInstance().then((p){
-    List croaks = List.from(jsonDecode(p.getString('local_croaks'))).where( (c) => c['listen'] ).toList();
+    List listeningIDs = LocalCroaksStore.fromJSON(p.getString('local_croaks')).getListeningIDs(); // .where( (c) => c['listen'] ).toList();
     List notifyIDs = []; //a list of ids of croaks which have new replies
 
-    croaks.forEach((c){
-      getReplies(c['id']).then((res){
-        List localReplies = croaks.where((r)=> (r['feed']==false && r['p_id'] == c['id'])).toList();
-        if (res.length != localReplies.length){
-          notifyIDs.add(c['id']);          
-        } else{
-          //there are no new replies for this croak
-        }
-      });
+    listeningIDs.forEach((id) async {
+      List replies = await getReplies(id);
+      List localReplies = listeningIDs.where((r)=> (r['feed']==false && r['p_id'] == id)).toList();
+      if (replies.length != localReplies.length){
+        notifyIDs.add(id);          
+      } else{
+        //there are no new replies for this croak
+        notifyIDs.add(-1*id);
+      }
     });
     
     p.setString('notify_ids', jsonEncode(notifyIDs));

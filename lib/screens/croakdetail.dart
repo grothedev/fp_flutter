@@ -114,11 +114,11 @@ class CroakDetailState extends State<CroakDetailScreen>{
               },
             ),
             IconButton(
-              icon: Icon(Icons.subscriptions),
+              icon: c['listen'] ? Icon(MdiIcons.toggleSwitch) : Icon(MdiIcons.toggleSwitchOff),
               onPressed:(){
                 toggleSubscribe();
               },
-              
+              tooltip: c['listen'] ? 'UnSubscribe' : 'Subscribe',      
             )
           ],
           

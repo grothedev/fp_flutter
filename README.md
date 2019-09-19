@@ -4,7 +4,6 @@ TODO:
 * save sort preferences
 * implement data analysis (show locations of croaks w/ tags etc. )
 * tutorial mode?
-* add indicator for subscription
 * UI stuff
   - show video or audio player based on file type.
   - ripple-like watermarks??
