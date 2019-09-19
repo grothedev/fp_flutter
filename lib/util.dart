@@ -181,7 +181,7 @@ void checkNotifications() async{
       }
       p.setString('notify_ids', jsonEncode(notifyIDs));
     });
-    
+    if (listeningIDs.length == 0) p.setString('notify_ids', 'no subscribed-to croaks');
     
   });
 
