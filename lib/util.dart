@@ -167,15 +167,18 @@ void checkNotifications() async{
   //print('BG_FETCH: util notifications check');
 
   SharedPreferences.getInstance().then((p) async {
+    print(LocalCroaksStore.fromJSON(p.getString('local_croaks')).getListeningIDs().toString());
     List listeningIDs = LocalCroaksStore.fromJSON(p.getString('local_croaks')).getListeningIDs(); // .where( (c) => c['listen'] ).toList();
     List notifyIDs = []; //a list of ids of croaks which have new replies
+
+    (await localFile).writeAsString(p.getString('local_croaks'));
 
     listeningIDs.forEach((id) async {
       List replies = await getReplies(id);
       List localReplies = listeningIDs.where((r)=> (r['feed']==false && r['p_id'] == id)).toList();
       if (replies.length != localReplies.length){
         notifyIDs.add(id);          
-      } else{
+      } else{ 
         //there are no new replies for this croak
         notifyIDs.add(-1*id);
       }

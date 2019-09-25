@@ -17,8 +17,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Frog Pond.  If not, see <https://www.gnu.org/licenses/>.
 */
-
-//TODO is sqlite caching as clean as it can be?
  
 import 'dart:io';
 
@@ -67,8 +65,8 @@ Future<String> postCroak(Map<String, dynamic> req, File f) async {
   print(req.toString());
 
   if (f != null){
-    req.addAll({'f[]': [ new UploadFileInfo(f, basename(f.path))]  });
-    FormData fd = FormData.from(req);
+    req.addAll({'f[]': [ new MultipartFile.fromBytes(f.readAsBytesSync(), filename: basename(f.path))]  });
+    FormData fd = FormData.fromMap(req);
     
     print('api post croak: ' + fd.toString());
     Response res =  await Dio().post(api_url+'croaks', data: fd).catchError((e){

@@ -277,7 +277,7 @@ class LocalCroaksStore{
   }
 
   void toggleSubscribe(int id){
-    croaks.firstWhere((c)=>c['id']==id)['listen'] = !croaks.firstWhere((c)=>c['id']==id)['listen'];
+    get(id)['listen'] = !get(id)['listen'];
   }
 
   static LocalCroaksStore fromJSON(String str){

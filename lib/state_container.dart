@@ -138,6 +138,7 @@ class StateContainerState extends State<StateContainer>{
       enableHeadless: true,
       minimumFetchInterval: 15,
       stopOnTerminate: false,
+      
     ), util.checkNotifications);
     //), (){ print('callback check'); });
 

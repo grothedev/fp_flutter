@@ -297,6 +297,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
 
   void toggleSubscribe(){
     store.toggleSubscribe(c['id']);
+    c = store.state.localCroaks.get(c['id']);
     if (c['listen']){
       Toast.show('You will receive notifications when this croak is replied to', context);
     } else {

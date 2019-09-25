@@ -33,7 +33,7 @@ dependencies:
   file_picker:
   toast:
   scoped_model:
-  dio:
+  dio: 3.0.2-dev.1
   splashscreen:
   url_launcher:
   video_player:

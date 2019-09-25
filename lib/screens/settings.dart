@@ -21,6 +21,7 @@ along with Frog Pond.  If not, see <https://www.gnu.org/licenses/>.
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
+import '../models.dart';
 import '../state_container.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -29,6 +30,7 @@ import 'package:toast/toast.dart';
 
 import '../api.dart' as api;
 import '../helpers/localtags.dart';
+import '../util.dart' as util;
 
 class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveClientMixin<SettingsScreen>{
   
@@ -105,6 +107,18 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
             onPressed: () => launch('http://' + api.host + ':8090/about'),
             tooltip: 'Help',
           ),
+          IconButton( //TODO REMOVE debug button for logging things, writing info to files, etc.
+            icon: Icon(Icons.bug_report),
+            onPressed: () {
+              SharedPreferences.getInstance().then((p) async {
+                //(await util.localFile).writeAsString(p.getString('local_croaks'));
+                List tl = LocalCroaksStore.fromJSON(p.getString('local_croaks')).croaks.where( (c){ return true; } ).toList();
+                (await util.localFile).writeAsString(tl.toString());
+                print(tl.toString());
+              });
+            },
+            tooltip: 'DBG'
+          )
         ]
       ),
       body:  SingleChildScrollView(
