@@ -240,11 +240,12 @@ class LocalTagsStore{
 class LocalCroaksStore{
   List<Map> croaks = [];
 
-  LocalCroaksStore(List<Map> croaks){
+  LocalCroaksStore(List croaks){
     if (croaks == null) return;
     croaks.forEach((c){
       if (!c.containsKey('listen')) c['listen'] = false;
       if (!c.containsKey('feed')) c['feed'] = false;
+      this.croaks.add(c);
     });
   }
 
@@ -282,7 +283,7 @@ class LocalCroaksStore{
 
   static LocalCroaksStore fromJSON(String str){
     if (str.length == 0) return new LocalCroaksStore(null);
-    List<Map> croaks = List.from(jsonDecode(str));
+    List croaks = jsonDecode(str).toList();
     return new LocalCroaksStore(croaks);
   }
 

@@ -18,6 +18,8 @@ You should have received a copy of the GNU General Public License
 along with Frog Pond.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
@@ -112,9 +114,9 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
             onPressed: () {
               SharedPreferences.getInstance().then((p) async {
                 //(await util.localFile).writeAsString(p.getString('local_croaks'));
-                List tl = LocalCroaksStore.fromJSON(p.getString('local_croaks')).croaks.where( (c){ return true; } ).toList();
+                List tl = LocalCroaksStore.fromJSON(p.getString('local_croaks')).croaks;//.croaks.where( (c){ return true; } ).toList();
                 (await util.localFile).writeAsString(tl.toString());
-                print(tl.toString());
+                print(new LocalCroaksStore(jsonDecode(p.getString('local_croaks')).toList()).croaks);
               });
             },
             tooltip: 'DBG'
