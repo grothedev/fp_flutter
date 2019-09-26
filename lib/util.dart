@@ -168,26 +168,25 @@ void checkNotifications() async{
 
   SharedPreferences.getInstance().then((p) async {
     print(LocalCroaksStore.fromJSON(p.getString('local_croaks')).getListeningIDs().toString());
-    List listeningIDs = LocalCroaksStore.fromJSON(p.getString('local_croaks')).getListeningIDs(); // .where( (c) => c['listen'] ).toList();
+    LocalCroaksStore croaksStore = LocalCroaksStore.fromJSON(p.getString('local_croaks'));
     List notifyIDs = []; //a list of ids of croaks which have new replies
-
-    (await localFile).writeAsString(p.getString('local_croaks'));
-
-    listeningIDs.forEach((id) async {
+    
+    List lids = croaksStore.getListeningIDs();
+    lids.asMap().forEach((i, id) async {
       List replies = await getReplies(id);
-      List localReplies = listeningIDs.where((r)=> (r['feed']==false && r['p_id'] == id)).toList();
+      List localReplies = croaksStore.croaks.where((r)=> (r['feed']==false && r['p_id'] == id)).toList();
       if (replies.length != localReplies.length){
         notifyIDs.add(id);          
       } else{ 
         //there are no new replies for this croak
         notifyIDs.add(-1*id);
       }
-      p.setString('notify_ids', jsonEncode(notifyIDs));
+      if (i == lids.length-1){
+        p.setString('notify_ids', jsonEncode(notifyIDs));
+        (await localFile).writeAsString(notifyIDs.toString());
+      }
     });
-    if (listeningIDs.length == 0) p.setString('notify_ids', 'no subscribed-to croaks');
-    
   });
-
   BackgroundFetch.finish();
 }
 

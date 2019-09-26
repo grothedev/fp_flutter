@@ -273,8 +273,8 @@ class LocalCroaksStore{
     return croaks.where( (c) => c['feed'] ).toList();
   }
 
-  List<int> getListeningIDs(){
-    return List<int>.from( croaks.where( (c) => c['listen'] || c['listen'] == 'true' ).map( (c) => c['id'] ).toList() );
+  List getListeningIDs(){
+    return List.from( croaks.where( (c) => c['listen'] || c['listen'] == 'true' ).map( (c) => c['id'] ).toList() );
   }
 
   void toggleSubscribe(int id){

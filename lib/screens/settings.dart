@@ -113,10 +113,7 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
             icon: Icon(Icons.bug_report),
             onPressed: () {
               SharedPreferences.getInstance().then((p) async {
-                //(await util.localFile).writeAsString(p.getString('local_croaks'));
-                List tl = LocalCroaksStore.fromJSON(p.getString('local_croaks')).croaks;//.croaks.where( (c){ return true; } ).toList();
-                (await util.localFile).writeAsString(tl.toString());
-                print(new LocalCroaksStore(jsonDecode(p.getString('local_croaks')).toList()).croaks);
+                util.checkNotifications();
               });
             },
             tooltip: 'DBG'
