@@ -156,7 +156,14 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
                   value: SortMethod.score_des,
                   child: Wrap( children: [ Icon(Icons.arrow_downward), Text('Replies') ] ),
                 ),
-                
+                PopupMenuItem<SortMethod>(
+                  value: SortMethod.sub_asc,
+                  child: Wrap( children: [ Icon(Icons.arrow_upward), Text('Subscriptions') ] ),
+                ),
+                PopupMenuItem<SortMethod>(
+                  value: SortMethod.sub_des,
+                  child: Wrap( children: [ Icon(Icons.arrow_downward), Text('Subscriptions') ] ),
+                ),
               ],
               onSelected: (v){
                 setState(() {
@@ -286,11 +293,14 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
         });
         break;
       case SortMethod.score_asc:
-        
         feed.sort((a, b){
           return a['score'] - b['score'];
         });
-      
+        break;
+      case SortMethod.sub_asc:
+        feed.sort((a, b){
+          return a['listen'] && !b['listen'] ? 1 : -1;
+        });
         break;
       case SortMethod.date_des:
         feed.sort((a, b){
@@ -311,6 +321,11 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
           feed.sort((a, b){
             return b['score'] - a['score'];
           });
+        break;
+      case SortMethod.sub_des:
+        feed.sort((a, b){
+          return b['listen'] && !a['listen'] ? 1 : -1;
+        });
         break;
     }
   }

@@ -288,6 +288,15 @@ class StateContainerState extends State<StateContainer>{
     print(state.localCroaks.get(id).toString());
   }
 
+  void unsubAll(){
+    setState(() {
+      state.localCroaks.getListeningIDs().forEach((l){
+        state.localCroaks.unsub(l);
+      });
+    });
+    prefs.setString('local_croaks', state.localCroaks.toJSON());
+  }
+
   void updateReplies(){
     setState((){
       state.updateReplies = true;
@@ -298,6 +307,7 @@ class StateContainerState extends State<StateContainer>{
       state.updateReplies = false;
     });
     state.localCroaks.add(r, false, false);
+    print('got replies: ' + state.localCroaks.repliesOf(r[0]['p_id']).toList().map((c)=>c['id']).toString());
     prefs.setString('local_croaks', state.localCroaks.toJSON());
   }
 

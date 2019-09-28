@@ -285,6 +285,14 @@ class LocalCroaksStore{
     get(id)['listen'] = !get(id)['listen'];
   }
 
+  void sub(int id){
+    get(id)['listen'] = true;
+  }
+
+  void unsub(int id){
+    get(id)['listen'] = false;
+  }
+
   static LocalCroaksStore fromJSON(String str){
     if (str == null || str.length == 0) return new LocalCroaksStore(null);
     List croaks = jsonDecode(str).toList();

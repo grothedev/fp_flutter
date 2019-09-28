@@ -283,7 +283,7 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                         ),
                         margin: EdgeInsets.only(top: 10, bottom: 2),
                       ),
-                      Row(
+                      Row(  //NOTIFY INTERVAL
                         children: [
                           Text('Notification interval: '),
                           Container(
@@ -311,7 +311,13 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                             margin: formElemMargin
                           ),
                         ]
-                      )
+                      ),
+                      RaisedButton( //UNSUB ALL
+                        child: Text('UnSubscribe from all croaks'),
+                        onPressed: (){
+                          store.unsubAll();
+                        },
+                      ),
                     ],
                     
                   ),
