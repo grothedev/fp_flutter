@@ -298,7 +298,7 @@ class StateContainerState extends State<StateContainer>{
       state.updateReplies = false;
     });
     state.localCroaks.add(r, false, false);
-    //prefs.setString(); TODO figure out best way to persist replies. will probably have to implement some system that deletes old ones after a while
+    prefs.setString('local_croaks', state.localCroaks.toJSON());
   }
 
 

@@ -112,9 +112,9 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
           IconButton( //TODO REMOVE debug button for logging things, writing info to files, etc.
             icon: Icon(Icons.bug_report),
             onPressed: () {
-              SharedPreferences.getInstance().then((p) async {
+              //SharedPreferences.getInstance().then((p) async {
                 util.checkNotifications();
-              });
+              //});
             },
             tooltip: 'DBG'
           )

@@ -254,19 +254,19 @@ class LocalCroaksStore{
     if (add is Map){
       add['feed'] = feed;
       add['listen'] = listen;
-      if ( croaks.where((d)=>d['id']==add['id']) == null ) croaks.add(add);
+      if ( croaks.where((d)=>d['id']==add['id']).isEmpty ) croaks.add(add);
     } else if (add is List){
       add.forEach((c){
         c['feed'] = feed;
         c['listen'] = listen;
-        if ( croaks.where((d)=>d['id']==c['id']) == null )croaks.add(c);
+        if ( croaks.where((d)=>d['id']==c['id']).isEmpty )croaks.add(c);
       });
     }
     return add;
   }
 
   Map get(int id){
-    return croaks.firstWhere((c) => c['id'] == id);
+    return croaks.where( (c) => c['id'] == id).toList()[0];
   }
 
   List<Map> getFeed(){
@@ -274,7 +274,7 @@ class LocalCroaksStore{
   }
 
   List getListeningIDs(){
-    return List.from( croaks.where( (c) => c['listen'] || c['listen'] == 'true' ).map( (c) => c['id'] ).toList() );
+    return croaks.where( (c) => c['listen'] || c['listen'] == 'true' ).map( (c) => c['id'] ).toList();
   }
 
   List repliesOf(pid){

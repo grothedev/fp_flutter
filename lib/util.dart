@@ -172,6 +172,8 @@ void checkNotifications() async{
     List notifyIDs = []; //a list of ids of croaks which have new replies
     
     List lids = croaksStore.getListeningIDs();
+    String lidsStr = lids.join(',');
+
     lids.asMap().forEach((i, id) async { //TODO reduce to one http request
       List replies = await getReplies(id);
       List localReplies = croaksStore.repliesOf(id);
