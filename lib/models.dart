@@ -254,12 +254,12 @@ class LocalCroaksStore{
     if (add is Map){
       add['feed'] = feed;
       add['listen'] = listen;
-      croaks.add(add);
+      if ( croaks.where((d)=>d['id']==add['id']) == null ) croaks.add(add);
     } else if (add is List){
       add.forEach((c){
         c['feed'] = feed;
         c['listen'] = listen;
-        croaks.add(c);
+        if ( croaks.where((d)=>d['id']==c['id']) == null )croaks.add(c);
       });
     }
     return add;
@@ -277,12 +277,16 @@ class LocalCroaksStore{
     return List.from( croaks.where( (c) => c['listen'] || c['listen'] == 'true' ).map( (c) => c['id'] ).toList() );
   }
 
+  List repliesOf(pid){
+    return croaks.where((r)=> (r['p_id'] == pid)).toList();
+  }
+
   void toggleSubscribe(int id){
     get(id)['listen'] = !get(id)['listen'];
   }
 
   static LocalCroaksStore fromJSON(String str){
-    if (str.length == 0) return new LocalCroaksStore(null);
+    if (str == null || str.length == 0) return new LocalCroaksStore(null);
     List croaks = jsonDecode(str).toList();
     return new LocalCroaksStore(croaks);
   }

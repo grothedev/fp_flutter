@@ -64,7 +64,7 @@ Future<List> getCroaks(Query query, int lastUpdated, LocationData location) asyn
 
 Future<List> getReplies(int pid) async{
   List resJSON = await api.getCroaks(null, null, pid, null, false, null);
-  resJSON.forEach( (c) => c['listen'] = false );
+  //resJSON.forEach( (c) => c['listen'] = false );
   resJSON.sort((a, b){
     return DateTime.parse(b['created_at']).millisecondsSinceEpoch - DateTime.parse(a['created_at']).millisecondsSinceEpoch;
   });
@@ -172,9 +172,14 @@ void checkNotifications() async{
     List notifyIDs = []; //a list of ids of croaks which have new replies
     
     List lids = croaksStore.getListeningIDs();
-    lids.asMap().forEach((i, id) async {
+    lids.asMap().forEach((i, id) async { //TODO reduce to one http request
       List replies = await getReplies(id);
-      List localReplies = croaksStore.croaks.where((r)=> (r['feed']==false && r['p_id'] == id)).toList();
+      List localReplies = croaksStore.repliesOf(id);
+      print('checking for new replies on croak ' + id.toString() + ': ' + replies.length.toString() + ', ' +  localReplies.length.toString() );
+      print(replies.toString());
+      print(localReplies.toString());
+      print('');
+
       if (replies.length != localReplies.length){
         notifyIDs.add(id);          
       } else{ 
@@ -184,6 +189,7 @@ void checkNotifications() async{
       if (i == lids.length-1){
         p.setString('notify_ids', jsonEncode(notifyIDs));
         (await localFile).writeAsString(notifyIDs.toString());
+        print('ids of croaks which user will be notified of replies: ' + notifyIDs.toString()); 
       }
     });
   });
