@@ -50,7 +50,7 @@ Future<List> getCroaks(double x, double y, int p_id, List<String> tl, bool at, i
   }
   print('api.getCroaks reqURL: ' + reqURL);
 
-  var res = await http.get(reqURL).catchError((e){ print('http get failed: ' + e.toString()); } ); //TODO handle location
+  var res = await http.get(reqURL).catchError((e){ print('http get failed: ' + e.toString()); } );
   if ( !(res is http.Response) ) {
     print('api: response retrieval error: ' + res.toString());
     return null;

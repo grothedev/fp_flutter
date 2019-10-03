@@ -84,7 +84,6 @@ class ComposeCroakDialog extends Dialog{
                         onPressed: () => { 
                               FilePicker.getFile(type: FileType.ANY).then((f){
                                 f.stat().then((s){
-                                  //todo file size check
                                   //wat do here cause can't set state
                                   print('reply attach file ' + f.path + ': ' + s.size.toString());
                                 });
@@ -111,7 +110,6 @@ class ComposeCroakDialog extends Dialog{
                               print('replying ' + parent.toString());
                               loading = true;
                               store.needsUpdate();
-                              //TODO disable button here or do loading feedback
                               util.submitReply(parent['id'], contentController.text, parent['tags'], true, store.state.location).then((s){
                                 if (s){
                                   Navigator.pop(context);

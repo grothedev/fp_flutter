@@ -22,7 +22,7 @@ import 'package:flutter/material.dart';
 import '../app.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-//this is basically a spash screen which will show on first launch
+//this is basically a spash screen which will show on first launch. currently unused
 class IntroScreen extends StatelessWidget{
   @override
   Widget build(BuildContext context) {

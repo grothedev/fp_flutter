@@ -67,7 +67,6 @@ class Query{
 }
 
 
-//TODO should this class be removed?. it is only used to construct a newly composed croak, which could be moved to LocalCroaksStore
 class Croak{
   int id;
   int pid; //parent

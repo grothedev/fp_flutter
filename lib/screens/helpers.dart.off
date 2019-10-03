@@ -361,7 +361,6 @@ class ComposeCroakDialog extends Dialog{
                               //Scaffold.of(context).showSnackBar(SnackBar(content: Text('Replying...')));
                               //Croak r = Croak();
                               print('replying ' + parent.toString());
-                              //TODO disable button here or do loading feedback
                               util.submitReply(parent['id'], contentController.text, parent['tags'], true).then((s){
                                 if (s){
                                   Navigator.pop(context);
@@ -369,7 +368,7 @@ class ComposeCroakDialog extends Dialog{
                                 } else {
                                   Scaffold.of(context).showSnackBar(SnackBar(content: Text('Reply Failed')));
                                 }
-                              }); //TODO add functionality to add additional tags?
+                              });
                             } else print('invalid');
                           },
                           child: Text("Reply"),
@@ -426,7 +425,7 @@ class TagChipState extends State<TagChip>{
           widget.onSelected(widget.label, sel);
           
           /*if (sel){
-            store.addTag(widget.label); //TODO make this only add to a set of tags which SuggestedTags widget has, with no further meaning, and parent widget can listen for sugtag selected tags change
+            store.addTag(widget.label); 
           } else {
             store.removeTag(widget.label);
           }
@@ -485,7 +484,7 @@ class SuggestedTagsState extends State<SuggestedTags> with AutomaticKeepAliveCli
         for (var i = 0; i < tags.length; i++){
           chips.add(TagChip(label: tags[i]['label'], prefs: prefs, onSelected: widget.onChipSelected));  
         }
-        /* TODO
+        /* 
         chips.add(
           TagChip(
             label: 'More',

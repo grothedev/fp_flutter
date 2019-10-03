@@ -25,6 +25,7 @@ import 'dart:math';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:toast/toast.dart';
 //import 'sugtags.dart';
 import '../models.dart';
 import '../state_container.dart';
@@ -170,7 +171,13 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                             onPressed: () => { 
                               FilePicker.getFile(type: FileType.ANY).then((f){
                                 f.stat().then((s){
-                                  //todo file size check
+                                  print('filesize = ' + s.size.toString()); 
+                                  if (s.size > 134217728) { //128MB max file size
+                                    setState((){
+                                      f = null;
+                                      Toast.show('File too big ( >128MB )', context, duration: 4);
+                                    });
+                                  }
                                   setState(() {
                                     file = f;
                                   });

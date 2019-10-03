@@ -242,10 +242,6 @@ class StateContainerState extends State<StateContainer>{
     prefs.setBool('feed_outdated', true);
   }
 
-  void setSortMethod(int s){
-    //TODO
-  }
-
   void getLocation(){
     util.initLocation().then((l){
       setState(() {

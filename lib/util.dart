@@ -97,7 +97,7 @@ Future<bool> submitReply(int p_id, String content, List tags, anon, LocationData
     tagsStrArr.add(t['label']);
   }
   Croak c = new Croak(content: content, timestamp: new DateTime.now().toString() , score: 0, pid: p_id, tags: tagsStrArr, type: 0, lat: loc.latitude, lon: loc.longitude);
-  return await postCroak(c.toMap(), null) != null; //for now will not handle files for replies, but should in the future TODO
+  return await postCroak(c.toMap(), null) != null; //for now will not handle files for replies, but should in the future 
 } 
 
 //return subbmited croak, or null on failure. saves croak to shared prefs
@@ -123,7 +123,6 @@ Future<int> vote(bool v, int c_id) async{
   return int.parse(res);
 }
 
-//TODO rename to getLocation ?
 Future<LocationData> initLocation() async{
     print('initing loc');
 
@@ -174,7 +173,7 @@ void checkNotifications() async{
     List lids = croaksStore.getListeningIDs();
     String lidsStr = lids.join(',');
 
-    lids.asMap().forEach((i, id) async { //TODO reduce to one http request
+    lids.asMap().forEach((i, id) async { // reduce to one http request
       List replies = await getReplies(id);
       List localReplies = croaksStore.repliesOf(id);
       print('checking for new replies on croak ' + id.toString() + ': ' + replies.length.toString() + ', ' +  localReplies.length.toString() );
