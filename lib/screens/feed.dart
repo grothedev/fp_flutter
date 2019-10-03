@@ -50,6 +50,10 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   Widget body;
   RefreshController refreshController = RefreshController(initialRefresh: true);
   SortMethod sortMethod = SortMethod.date_asc;
+  Map<FilterMethod, bool> filterSettings = {
+    FilterMethod.use_tags: true,
+    FilterMethod.use_subs: false,
+  };
 
   FeedState();
 
@@ -130,8 +134,36 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
                 refresh();
               },
             ),
-            PopupMenuButton(
+            PopupMenuButton( //feed filter settings
+              itemBuilder: (BuildContext context) => <PopupMenuEntry<FilterMethod>>[
+                PopupMenuItem(
+                  child: Text('Filter your feed')
+                ),
+                CheckedPopupMenuItem( //only show subs or non-subs
+                  value: FilterMethod.use_subs,
+                  checked: filterSettings[FilterMethod.use_subs],
+                  child: Wrap( children: [ Icon(Icons.subscriptions), Text('Subscribed-To')] ),
+                ),
+                CheckedPopupMenuItem( //show all croaks or use query tags?
+                  value: FilterMethod.use_tags,
+                  checked: filterSettings[FilterMethod.use_tags],
+                  child: Wrap( children: [ Icon(Icons.category), Text('Use Tags')] ),
+                )
+              ],
+              icon: Icon(Icons.filter_list),
+              onSelected: (fm){
+                setState((){
+                  filterSettings[fm] = !filterSettings[fm];
+                  filterFeed();
+                });
+              },
+              
+            ),
+            PopupMenuButton( //feed sort settings
               itemBuilder: (BuildContext context) => <PopupMenuEntry<SortMethod>>[
+                PopupMenuItem(
+                  child: Text('Sort your feed')
+                ),
                 PopupMenuItem<SortMethod>(
                   value: SortMethod.date_asc,
                   child: Wrap( children: [ Icon(Icons.arrow_upward), Text('Time') ] ),
@@ -170,7 +202,8 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
                   sortFeed(v);
                 });
               },
-            )
+              icon: Icon(Icons.sort),
+            ),
           ],
         ),
         body: body
@@ -330,6 +363,15 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
     }
   }
   
+  //i know that this method uses a class var whereas sortFeed() uses arg. it is easier to do it this way for filtering
+  void filterFeed(){ //i think there should be a 'visible' attr for feed croaks, 
+    if (filterSettings[FilterMethod.use_subs]){
+      feed.removeWhere((c) => !c['listen'] );
+    }
+    if (filterSettings[FilterMethod.use_tags]){
+      //TODO 
+    }
+  }
 
   @override
   bool get wantKeepAlive => ( !fetching );

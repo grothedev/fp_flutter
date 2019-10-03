@@ -27,3 +27,7 @@ enum SortMethod{
   date_asc, dist_asc, score_asc, pop_asc, sub_asc,
   date_des, dist_des, score_des, pop_des, sub_des
 }
+
+enum FilterMethod{
+  use_tags, use_subs
+}
