@@ -20,6 +20,7 @@ along with Frog Pond.  If not, see <https://www.gnu.org/licenses/>.
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../models.dart';
 import '../state_container.dart';
 import 'package:intl/intl.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -232,8 +233,8 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
       fetching = true;
     });
     print('feed getting croaks: ' + store.state.feedOutdated.toString());
-    util.getCroaks(store.state.query, (force || store.state.feedOutdated) ? 0 : store.state.lastCroaksGet, store.state.location).then((res){
-
+    util.getCroaks(filterSettings[FilterMethod.use_tags] ? store.state.query : new Query(), (force || store.state.feedOutdated) ? 0 : store.state.lastCroaksGet, store.state.location).then((res){
+      
       if (res == null){
         print('failed to fetch croaks');
         Scaffold.of(context).showSnackBar(SnackBar(content: Text('There was a problem while attempting to fetch croaks') ));
@@ -269,6 +270,9 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
         feed = List.from(cs);
       });
       store.gotFeed(cs);
+      feed.forEach((c){
+        c['vis'] = true;
+      });
       refreshController.refreshCompleted();
     }).timeout(new Duration(seconds: 15), 
       onTimeout: (){
@@ -351,9 +355,9 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
         });
         break;
       case SortMethod.score_des:
-          feed.sort((a, b){
-            return b['score'] - a['score'];
-          });
+        feed.sort((a, b){
+          return b['score'] - a['score'];
+        });
         break;
       case SortMethod.sub_des:
         feed.sort((a, b){
@@ -365,12 +369,24 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   
   //i know that this method uses a class var whereas sortFeed() uses arg. it is easier to do it this way for filtering
   void filterFeed(){ //i think there should be a 'visible' attr for feed croaks, 
+    
+    if (!filterSettings[FilterMethod.use_tags]){
+      setState(() {
+        feed.forEach((c) => c['vis'] = true );   
+      });
+    }
     if (filterSettings[FilterMethod.use_subs]){
-      feed.removeWhere((c) => !c['listen'] );
+      setState((){
+        feed.forEach((c) {
+          if ( c['listen'] ){
+            c['vis'] = true;
+          } else c['vis'] = false;
+        });
+      });
+      
     }
-    if (filterSettings[FilterMethod.use_tags]){
-      //TODO 
-    }
+    //refresh();
+    
   }
 
   @override

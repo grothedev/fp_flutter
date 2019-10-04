@@ -113,7 +113,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
                 getReplies();
               },
             ),
-            IconButton(
+            IconButton( //TODO fix initial switch position
               icon: c['listen'] ? Icon(MdiIcons.toggleSwitch) : Icon(MdiIcons.toggleSwitchOff),
               onPressed:(){
                 toggleSubscribe();
