@@ -20,7 +20,9 @@ along with Frog Pond.  If not, see <https://www.gnu.org/licenses/>.
 
 import 'dart:io';
 
+import 'package:FrogPond/screens/croakdetail.dart';
 import 'package:flutter/material.dart';
+import 'screens/notifications.dart';
 import 'state_container.dart';
 import 'package:location/location.dart';
 import 'screens/settings.dart';
@@ -81,7 +83,14 @@ class FrogPondApp extends StatelessWidget {
         
       ),
       
-      home: RootView()
+      home: RootView(),
+      initialRoute: '/',
+      routes:{
+        '/feed': (context) => RootView(),
+        '/settings': (context) => RootView(tab: 1),
+        '/compose': (context) => RootView(tab: 2),
+        '/detail': (context) => NotificationsScreen(),
+      }
     );
   }
 }
@@ -97,8 +106,12 @@ class FrogPondApp extends StatelessWidget {
 */
 
 class RootView extends StatefulWidget{
+  int tab;
+  
   @override
   RootState createState() => new RootState();
+
+  RootView({this.tab});
 }
 class RootState extends State<RootView> with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin<RootView>{
   
@@ -109,6 +122,9 @@ class RootState extends State<RootView> with SingleTickerProviderStateMixin, Aut
   void initState(){
     super.initState();
     controller = new TabController(length: 3, vsync: this);
+    if (widget.tab != null){
+      controller.index = widget.tab;
+    }
     print("INIT ROOT STATE");
 
     SharedPreferences.getInstance().then((p){

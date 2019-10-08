@@ -80,7 +80,7 @@ class StateContainerState extends State<StateContainer>{
       restoreState();
       
     }
-    initNotifications();
+    //initNotifications();
     super.initState();
   }
 
@@ -139,8 +139,8 @@ class StateContainerState extends State<StateContainer>{
       minimumFetchInterval: 15,
       stopOnTerminate: false,
       
-    ), util.checkNotifications);
-    //), (){ print('callback check'); });
+    //), util.checkNotifications);
+    ), checkNotifications);
 
     // BackgroundFetch.registerHeadlessTask(util.checkNotifications);
   }
@@ -347,6 +347,68 @@ class StateContainerState extends State<StateContainer>{
     //prefs.setString('feed_croaks', jsonEncode(state.feed));
     prefs.setString('local_tags', state.query.localTags.toJSON());
     prefs.setString('local_croaks', state.localCroaks.toJSON());
+  }
+
+  void checkNotifications() async {
+    if (prefs == null) prefs = await SharedPreferences.getInstance();
+  
+    print(LocalCroaksStore.fromJSON(prefs.getString('local_croaks')).getListeningIDs().toString());
+    LocalCroaksStore croaksStore = LocalCroaksStore.fromJSON(prefs.getString('local_croaks'));
+    List notifyIDs = []; //a list of ids of croaks which have new replies
+    
+    List lids = croaksStore.getListeningIDs();
+    String lidsStr = lids.join(',');
+
+    lids.asMap().forEach((i, id) async { // reduce to one http request
+      List replies = await util.getReplies(id);
+      List localReplies = croaksStore.repliesOf(id);
+      print('checking for new replies on croak ' + id.toString() + ': ' + replies.length.toString() + ', ' +  localReplies.length.toString() );
+      print(replies.toString());
+      print(localReplies.toString());
+      print('');
+
+      if (replies.length != localReplies.length){
+        notifyIDs.add(id);
+      } else{ 
+        //there are no new replies for this croak
+        notifyIDs.add(-1*id);
+      }
+      if (i == lids.length-1){
+        prefs.setString('notify_ids', jsonEncode(notifyIDs));
+        (await util.localFile).writeAsString(notifyIDs.toString());
+        print('ids of croaks which user will be notified of replies: ' + notifyIDs.toString()); 
+        notify(notifyIDs);
+      }
+    });
+    
+    BackgroundFetch.finish();
+  }
+
+  void notify(List ids) async{
+    FlutterLocalNotificationsPlugin notificationsPlugin = new FlutterLocalNotificationsPlugin();
+    // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
+    var initializationSettingsAndroid = new AndroidInitializationSettings('@mipmap/ic_launcher');
+    var initializationSettingsIOS = new IOSInitializationSettings( ); //onDidReceiveLocalNotification: onDidReceiveLocalNotification);
+    var initializationSettings = new InitializationSettings( initializationSettingsAndroid, initializationSettingsIOS);
+    notificationsPlugin.initialize(initializationSettings, onSelectNotification: handleSelectNotification);
+
+    //var scheduledNotificationDateTime = new DateTime.now().add(new Duration(seconds: 5));
+    var androidPlatformChannelSpecifics = new AndroidNotificationDetails('your other channel id',
+        'your other channel name', 'your other channel description', priority: Priority.High);
+    var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
+    NotificationDetails platformChannelSpecifics = new NotificationDetails(androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+    //await store.state.notificationsPlugin.schedule(0, 'someone has replied to you', '# frogs have croaked back since [time]', scheduledNotificationDateTime, platformChannelSpecifics);
+    notificationsPlugin.show(1, 'You have new replies!', ids.toString(), platformChannelSpecifics, payload: ids.toString());
+
+    //store.state.notificationsPlugin.periodicallyShow(1, 'test title', 'test body', RepeatInterval.EveryMinute, platformChannelSpecifics);
+    
+    //https://pub.dev/packages/flutter_local_notifications
+  }
+
+  Future handleSelectNotification(String idsStr){ //TODO need to get context of app here
+    List ids = idsStr.split(', ');
+    print('handling notification selection');
+    Navigator.pushNamed(context, '/feed');
   }
 
   @protected

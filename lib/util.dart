@@ -223,6 +223,7 @@ void notify(List ids) async{
 
 Future handleSelectNotification(String idsStr){ //TODO need to get context of app here
   List ids = idsStr.split(', ');
+  print('handling notification selection');
   //Navigator.push();
 }
 

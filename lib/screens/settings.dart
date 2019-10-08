@@ -113,8 +113,9 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
             icon: Icon(Icons.bug_report),
             onPressed: () {
               //SharedPreferences.getInstance().then((p) async {
-                util.checkNotifications();
+                //util.checkNotifications();
               //});
+              store.checkNotifications();
             },
             tooltip: 'DBG'
           )
