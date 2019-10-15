@@ -1,11 +1,16 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
-//where user will end up after selecting a notification
+import 'package:FrogPond/helpers/croakfeed.dart';
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../state_container.dart';
+
+//where user will end up after selecting a notification. actually maybe this should just be a FeedScreen
 class NotificationsScreen extends StatefulWidget{
-  Map c;
 
   NotificationsScreen(){
-    this.c = c;
+    
   }
 
   @override
@@ -16,9 +21,25 @@ class NotificationsScreen extends StatefulWidget{
 }
 
 class NotificationsScreenState extends State<NotificationsScreen>{
+  StateContainerState store;
+  List croaks;
+  List notifyIds;
+
+  @override
+  void initState() {
+    SharedPreferences.getInstance().then((p){
+      notifyIds = jsonDecode(p.getString('notify_ids'));
+      
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return null;
+    store = StateContainer.of(context);
+    notifyIds.forEach((i){
+      croaks.add(store.state.localCroaks.get(i));
+    });
+    return CroakFeed(croaks, null);
   }
-  
 }

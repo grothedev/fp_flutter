@@ -138,7 +138,6 @@ class StateContainerState extends State<StateContainer>{
       enableHeadless: true,
       minimumFetchInterval: 15,
       stopOnTerminate: false,
-      
     //), util.checkNotifications);
     ), checkNotifications);
 
@@ -378,6 +377,8 @@ class StateContainerState extends State<StateContainer>{
         (await util.localFile).writeAsString(notifyIDs.toString());
         print('ids of croaks which user will be notified of replies: ' + notifyIDs.toString()); 
         notify(notifyIDs);
+      } else{
+        notify([10]);
       }
     });
     
@@ -405,10 +406,22 @@ class StateContainerState extends State<StateContainer>{
     //https://pub.dev/packages/flutter_local_notifications
   }
 
-  Future handleSelectNotification(String idsStr){ //TODO need to get context of app here
+  Future handleSelectNotification(String idsStr) async{ // idsStr) async{
     List ids = idsStr.split(', ');
     print('handling notification selection');
-    Navigator.pushNamed(context, '/feed');
+    
+    setState(() {
+      ids.forEach((id){
+        state.localCroaks.get(id)['has_unread'] = true;
+      });
+      state.feedOutdated = true;
+      state.hasUnread = true;
+    });
+    prefs.setBool('feed_outdated', true);
+
+    //Navigator.pop(this.context);
+    //Navigator.push(jsonDecode(contextJSON), MaterialPageRoute(builder: (context){ return Container(child: Text('asfd')); }));
+    //await Navigator.pushReplacementNamed(context, '/notifications');
   }
 
   @protected

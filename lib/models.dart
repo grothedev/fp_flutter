@@ -29,6 +29,7 @@ class AppState {
 
   //List<Map> feed;
   LocalCroaksStore localCroaks;
+  bool hasUnread; //if there are croaks to which the user is subscribed and that have new replies
   bool gettingLocation;
   bool fetchingCroaks;
   int whenCroaksFetched;
@@ -104,27 +105,6 @@ class Croak{
     };
   }
 }
-
-class Tag{
-  int id;
-  String label;
-  List<Croak> croaks;
-
-  Tag({this.id, this.label, this.croaks});
-
-  Map<String, dynamic> toMap(){
-    return {
-      'id': id,
-      'label': label,
-      'croaks': croaks
-    };
-  }
-
-  String toString(){
-    return label;
-  }
-}
-
 /*
 a type of repository that handles the tags that are of concern to the user.
 decided to do it this way because i wanted a few things to happen:
@@ -244,6 +224,7 @@ class LocalCroaksStore{
     croaks.forEach((c){
       if (!c.containsKey('listen')) c['listen'] = false;
       if (!c.containsKey('feed')) c['feed'] = false;
+      c['has_unread'] = false;
       this.croaks.add(c);
     });
   }
@@ -251,13 +232,15 @@ class LocalCroaksStore{
   //add a single croak or a list of croaks
   dynamic add(dynamic add, bool feed, bool listen){
     if (add is Map){
-      add['feed'] = feed;
-      add['listen'] = listen;
+      add['feed'] = feed; //is this croak in the feed?
+      add['listen'] = listen; //is the user currently subscribed to this croak? (will receive notifications if it gets new replies)
+      add['has_unread'] = false; //are there new replies to this croak which the user has not yet seen?
       if ( croaks.where((d)=>d['id']==add['id']).isEmpty ) croaks.add(add);
     } else if (add is List){
       add.forEach((c){
         c['feed'] = feed;
         c['listen'] = listen;
+        c['has_unread'] = false;
         if ( croaks.where((d)=>d['id']==c['id']).isEmpty )croaks.add(c);
       });
     }

@@ -38,5 +38,12 @@ SharedPreferences:
   * notify_check_interval (int) : minutes between checking for conditions which send device notification 
   * feed_croaks (string) : a json string representing all of the croaks of the most recent feed the user was presented with
   * local_tags (string) : a json string representing the LocalTagsStore
-SQLite DB:
-    * croaks table is same as server except for one additional column, "listening" flag which tells if user wants to receive notifications for when that croak gets a new comment
+
+
+Data Structure Descriptions: (found in 'models.dart', see file for more detail on variables)
+  - AppState: flags and other data that widgets would want to access that can change in real time
+  - Query: everything needed for querying the API
+  - Croak: provides toMap() to convert a newly made croak (from ComposeCroakScreen) to POST parameters compatible with API.
+  - LocalTagsStore: a facade for dealing with tags. stores all tags that are of concern to the user (suggested, custom added by user, etc.) and associates relevant data (used for query, include/exclude mode,), and provides necessary functions.
+  - LocalCroaksStore: a facade for dealing with croaks, very similar to LocalTagsStore
+  

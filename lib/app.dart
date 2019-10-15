@@ -89,8 +89,8 @@ class FrogPondApp extends StatelessWidget {
         '/feed': (context) => RootView(),
         '/settings': (context) => RootView(tab: 1),
         '/compose': (context) => RootView(tab: 2),
-        '/detail': (context) => NotificationsScreen(),
-      }
+        '/notifications': (context) => NotificationsScreen(),
+      },
     );
   }
 }
