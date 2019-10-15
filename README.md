@@ -46,4 +46,12 @@ Data Structure Descriptions: (found in 'models.dart', see file for more detail o
   - Croak: provides toMap() to convert a newly made croak (from ComposeCroakScreen) to POST parameters compatible with API.
   - LocalTagsStore: a facade for dealing with tags. stores all tags that are of concern to the user (suggested, custom added by user, etc.) and associates relevant data (used for query, include/exclude mode,), and provides necessary functions.
   - LocalCroaksStore: a facade for dealing with croaks, very similar to LocalTagsStore
+
+State Management:
+  - the entire app exists within a StatefulWidget called StateContainer, whose state holds a reference to an instance of the app's AppState state and which itself contains an InheritedWidget called InheritedStateContainer.
+  - with this, any widget can access the global app state via StateContainer.of(context).state
+  - however, one should not access state directly from a widget, but should use the functions of StateContainerState as middleware, as they handle other relevant tasks related to state modification, such as updated SharedPreferences and updating flags. so StateContainerState can be thought of as a "store"
+  - this is why most of my widgets have 'store = StateContainer.of(context)'
+
+Screens:
   
