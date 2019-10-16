@@ -109,6 +109,7 @@ class StateContainerState extends State<StateContainer>{
       
       state.needsUpdate = prefs.getBool('needs_update');
       state.feedOutdated = prefs.getBool('feed_outdated') || false;
+      state.hasUnread = prefs.containsKey('has_unread') ? prefs.getBool('has_unread') : false;
     } else {
       prefs.setBool('ran_before', true); 
       prefs.setBool('feed_outdated', true);
@@ -399,7 +400,7 @@ class StateContainerState extends State<StateContainer>{
     var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
     NotificationDetails platformChannelSpecifics = new NotificationDetails(androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
     //await store.state.notificationsPlugin.schedule(0, 'someone has replied to you', '# frogs have croaked back since [time]', scheduledNotificationDateTime, platformChannelSpecifics);
-    notificationsPlugin.show(1, 'You have new replies!', ids.toString(), platformChannelSpecifics, payload: ids.toString());
+    notificationsPlugin.show(1, 'You have new replies!', ids.toString(), platformChannelSpecifics, payload: jsonEncode(ids));
 
     //store.state.notificationsPlugin.periodicallyShow(1, 'test title', 'test body', RepeatInterval.EveryMinute, platformChannelSpecifics);
     
@@ -407,9 +408,9 @@ class StateContainerState extends State<StateContainer>{
   }
 
   Future handleSelectNotification(String idsStr) async{ // idsStr) async{
-    List ids = idsStr.split(', ');
+    List ids = jsonDecode(idsStr);
     print('handling notification selection');
-    
+    print(ids.toString());
     setState(() {
       ids.forEach((id){
         state.localCroaks.get(id)['has_unread'] = true;
@@ -418,7 +419,8 @@ class StateContainerState extends State<StateContainer>{
       state.hasUnread = true;
     });
     prefs.setBool('feed_outdated', true);
-
+    prefs.setBool('has_unread', true);
+    
     //Navigator.pop(this.context);
     //Navigator.push(jsonDecode(contextJSON), MaterialPageRoute(builder: (context){ return Container(child: Text('asfd')); }));
     //await Navigator.pushReplacementNamed(context, '/notifications');

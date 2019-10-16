@@ -47,6 +47,7 @@ class AppState {
   AppState(){
     fetchingCroaks = false;
     croaking = false;
+    hasUnread = false;
     //needsUpdate = true;
     query = Query();
   }
@@ -257,6 +258,10 @@ class LocalCroaksStore{
 
   List getListeningIDs(){
     return croaks.where( (c) => c['listen'] || c['listen'] == 'true' ).map( (c) => c['id'] ).toList();
+  }
+
+  List getHasUnread(){ //croaks which have new replies that the user hasn't yet seen
+    return croaks.where( (c) => c['has_unread'] ).toList();
   }
 
   List repliesOf(pid){

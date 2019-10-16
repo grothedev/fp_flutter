@@ -54,4 +54,8 @@ State Management:
   - this is why most of my widgets have 'store = StateContainer.of(context)'
 
 Screens:
-  
+  - RootView (app.dart): container for the three main screens, has the swipeable bottom tab navbar thing
+  - FeedScreen (screens/feed.dart): main croak feed, contains a CroakFeed, has some actions on the action bar specific for the feed
+  - SettingsScreen (screens/settings.dart): where the user can adjust query parameters, notification interval, and see the developer's MOTD
+  - ComposeCroakScreen (screens/composecroak.dart): where the user can compose a croak with text content, files, and tags
+  - CroakDetailScreen (screens/croakdetail.dart): displays details of a single croak (attached file, timestamp, all tags, option to copy url), with comments underneath, and button for user to reply

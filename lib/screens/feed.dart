@@ -20,6 +20,7 @@ along with Frog Pond.  If not, see <https://www.gnu.org/licenses/>.
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:toast/toast.dart';
 import '../models.dart';
 import '../state_container.dart';
 import 'package:intl/intl.dart';
@@ -223,7 +224,11 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   void refresh(){
     error = false;
     stalled = false;
-    fetchCroaks(true);
+    if (store.state.hasUnread){
+      displayUnread();
+    } else {
+      fetchCroaks(true);
+    }
   }
 
   void fetchCroaks(bool force){
@@ -288,6 +293,12 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
     store.state.feedOutdated = false;
   }
 
+  void displayUnread(){
+    setState(() {
+      feed = store.state.localCroaks.getHasUnread();
+    });
+    store.state.feedOutdated = false;
+  }
 
   //toast text to display info about the query upon refresh
   String makeRefreshToastText(){
