@@ -106,7 +106,9 @@ class CroakFeedState extends State<CroakFeed>{
       ),
       child: ListTile(
         dense: false,
-        leading: Container(
+        leading: Column(
+          children: [
+            Container(
               child: Container(
                 child: Text( c['replies'].toString(), ),
                 padding: EdgeInsets.all(2),
@@ -116,7 +118,7 @@ class CroakFeedState extends State<CroakFeed>{
                   maxHeight: .06*MediaQuery.of(context).size.width,
                 ),
               ),
-              margin: EdgeInsets.only(left: 6, top: 2),
+              margin: EdgeInsets.only(left: 6, top: 6, bottom: 8),
               decoration: BoxDecoration(
                 border: Border.all(
                   //color: Colors.grey,
@@ -124,7 +126,10 @@ class CroakFeedState extends State<CroakFeed>{
                   width: 1, style: BorderStyle.solid,
                 ),
                 shape: BoxShape.circle
-              ),      
+              ),
+            ),
+            Text('Replies', style: Theme.of(context).textTheme.display4),
+          ]      
         ),
         title: RichText(
           text: TextSpan( 
@@ -135,18 +140,19 @@ class CroakFeedState extends State<CroakFeed>{
           overflow: TextOverflow.clip,
         ),
         //favorite/upvote button disabled now because the app will probably start off just going by popularity (# replies)
-        trailing: Container(
+        trailing: Column(
+          children: [
+            Container(
               child: Container(
                 child: Text( c['score'].toString(), ),
                 padding: EdgeInsets.all(2),
-                
                 alignment: Alignment.center,
                 constraints: BoxConstraints(
                   maxWidth: .06*MediaQuery.of(context).size.width,
                   maxHeight: .06*MediaQuery.of(context).size.width,
                 ),
               ),
-              margin: EdgeInsets.only(left: 6, top: 2),
+              margin: EdgeInsets.only(left: 6, top: 6, bottom: 8),
               decoration: BoxDecoration(
                 border: Border.all(
                   //color: Colors.grey,
@@ -155,6 +161,9 @@ class CroakFeedState extends State<CroakFeed>{
                 ),
                 shape: BoxShape.circle
               ),      
+            ),
+            Text('Points', style: Theme.of(context).textTheme.display4)
+          ]
         ),
         subtitle: Container(
           margin: EdgeInsets.only(top: 2),

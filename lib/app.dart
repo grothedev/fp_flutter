@@ -55,7 +55,7 @@ class FrogPondApp extends StatelessWidget {
           ),
           body2: TextStyle(
             fontFamily: 'Roboto',
-            fontSize: 12,
+            fontSize: 13,
             color: Colors.black87,
             fontWeight: FontWeight.w500
           ),
@@ -69,7 +69,15 @@ class FrogPondApp extends StatelessWidget {
           ),
           caption: TextStyle(
             fontSize: 12,
-
+            color: Colors.black87,
+            letterSpacing: .3
+          ),
+          display4: TextStyle(
+            fontFamily: 'Deja Vu',
+            fontSize: 9,
+            color: Color(0xFF000000),
+            fontWeight: FontWeight.w400,
+            letterSpacing: .4,
           ),
           headline: TextStyle(
             fontSize: 16,

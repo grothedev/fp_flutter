@@ -403,7 +403,7 @@ class StateContainerState extends State<StateContainer>{
     var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
     NotificationDetails platformChannelSpecifics = new NotificationDetails(androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
     //await store.state.notificationsPlugin.schedule(0, 'someone has replied to you', '# frogs have croaked back since [time]', scheduledNotificationDateTime, platformChannelSpecifics);
-    notificationsPlugin.show(1, 'You have new replies!', ids.toString(), platformChannelSpecifics, payload: jsonEncode(ids));
+    notificationsPlugin.show(1, 'Croak', 'You have ' + ids.length.toString() + ' comments to read!', platformChannelSpecifics, payload: jsonEncode(ids));
 
     //store.state.notificationsPlugin.periodicallyShow(1, 'test title', 'test body', RepeatInterval.EveryMinute, platformChannelSpecifics);
     
