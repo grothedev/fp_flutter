@@ -424,7 +424,12 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
     }
     if (filterSettings[FilterMethod.unread]){
       setState(() {
-        feed.addAll(List.from(localCroaks.getHasUnread()));
+        localCroaks.getHasUnread().forEach((c){
+          c['vis'] = true;
+          c['feed'] = true;
+          feed.add(c);
+          print(c);
+        });
         feed.forEach((c){
           if (c['has_unread']) c['vis'] = true;
           else c['vis'] = false;
