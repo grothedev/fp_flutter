@@ -15,7 +15,10 @@ TODO:
 * attach file to reply
 * tag exclusion
 * button to show complete list of tags (also get more popular tags)
-* notifications
+* hide or encrypt ip addresses on API 
+* ability to report posts for illegality or spam
+* wifi direct
+* limit # of tags in request
 * post-initial-release features
   - identify commenters or just OP?
   - different croak types (poll, resource bank, plant, tool library, event)

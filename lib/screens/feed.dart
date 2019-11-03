@@ -243,9 +243,6 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
           feed.insert(0, newc);
         }        
       });
-    } else {
-      print('FEED HAS NO UNREAD');
-      print(localCroaks.croaks.map((c)=>c['has_unread']).toList());
     }
   }
 

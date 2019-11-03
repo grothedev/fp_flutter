@@ -132,7 +132,11 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                         child: Icon(Icons.add, semanticLabel: 'Add Tag'),
                         onPressed: (){
                           setState(() {
-                            composeTags.add(tagsText.text, true); 
+                            if (composeTags.getActiveTagsLabels().length > 14){
+                              Toast.show('That is enough tags', context);
+                            } else {
+                              composeTags.add(tagsText.text, true); 
+                            }
                           });
                           tagsText.clear();
                         },
@@ -291,6 +295,10 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
   }
 */
   void selectTagChip(String tag, bool sel){
+    if (sel && composeTags.getActiveTagsLabels().length > 14){
+      Toast.show('That is enough tags', context);
+      return;
+    }
     composeTags.use(tag, sel);
   }
 }

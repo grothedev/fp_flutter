@@ -112,14 +112,14 @@ class CroakFeedState extends State<CroakFeed>{
             Container(
               child: Container(
                 child: c['has_unread'] ? Text( c['replies'].toString() + '!', style: Theme.of(context).textTheme.display3) : Text( c['replies'].toString(), ),
-                padding: EdgeInsets.all(2),
+                padding: EdgeInsets.all(1),
                 alignment: Alignment.center,
                 constraints: BoxConstraints(
-                  maxWidth: .06*MediaQuery.of(context).size.width,
-                  maxHeight: .06*MediaQuery.of(context).size.width,
+                  maxWidth: .03*MediaQuery.of(context).size.width,
+                  maxHeight: .03*MediaQuery.of(context).size.width,
                 ),
               ),
-              margin: EdgeInsets.only(left: 6, top: 6, bottom: 8),
+              margin: EdgeInsets.only(left: 6, top: 6, bottom: 4),
               decoration: BoxDecoration(
                 border: Border.all(
                   //color: Colors.grey,
@@ -137,7 +137,7 @@ class CroakFeedState extends State<CroakFeed>{
             text: c['content'],
             style: Theme.of(context).textTheme.body2,
           ),
-          maxLines: 4,
+          maxLines: 8,
           overflow: TextOverflow.clip,
         ),
         //favorite/upvote button disabled now because the app will probably start off just going by popularity (# replies)
@@ -149,11 +149,11 @@ class CroakFeedState extends State<CroakFeed>{
                 padding: EdgeInsets.all(2),
                 alignment: Alignment.center,
                 constraints: BoxConstraints(
-                  maxWidth: .06*MediaQuery.of(context).size.width,
-                  maxHeight: .06*MediaQuery.of(context).size.width,
+                  maxWidth: .03*MediaQuery.of(context).size.width,
+                  maxHeight: .03*MediaQuery.of(context).size.width,
                 ),
               ),
-              margin: EdgeInsets.only(left: 6, top: 6, bottom: 8),
+              margin: EdgeInsets.only(left: 6, top: 6, bottom: 4),
               decoration: BoxDecoration(
                 border: Border.all(
                   //color: Colors.grey,
