@@ -38,7 +38,7 @@ SharedPreferences:
   * notify_check_interval (int) : minutes between checking for conditions which send device notification 
   * feed_croaks (string) : a json string representing all of the croaks of the most recent feed the user was presented with
   * local_tags (string) : a json string representing the LocalTagsStore
-
+  * has_unread (bool) : are there new comments on any of the croaks to which the user is subscribed?
 
 Data Structure Descriptions: (found in 'models.dart', see file for more detail on variables)
   - AppState: flags and other data that widgets would want to access that can change in real time

@@ -20,15 +20,12 @@ along with Frog Pond.  If not, see <https://www.gnu.org/licenses/>.
 
 import 'dart:io';
 
-import 'package:FrogPond/screens/croakdetail.dart';
 import 'package:flutter/material.dart';
 import 'screens/notifications.dart';
 import 'state_container.dart';
-import 'package:location/location.dart';
 import 'screens/settings.dart';
 import 'screens/feed.dart';
 import 'screens/composecroak.dart';
-import 'api.dart' as api;
 import 'package:shared_preferences/shared_preferences.dart';
 
 

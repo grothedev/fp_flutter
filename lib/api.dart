@@ -34,13 +34,14 @@ int port = 8090;
 String api_url = 'http://' + host + ':' + port.toString() + '/api/'; 
 
 //tl = taglist ; at = should get croaks with all(true) or some(false) given tags ; p_id = parent id
-Future<List> getCroaks(double x, double y, int p_id, List<String> tl, bool at, int rad) async {
+Future<List> getCroaks(double x, double y, dynamic p_id, List<String> tl, bool at, int rad) async {
   var reqURL = api_url+'croaks?';
   if (tl != null && tl.length > 0){
     reqURL += 'tags=' + tl.join(',') + '&'; 
   }
   if (p_id != null){ 
-    reqURL += 'p_id=' + p_id.toString() + '&';
+    if (p_id is int) reqURL += 'p_id=' + p_id.toString() + '&';
+    else if (p_id is List) reqURL += 'p_id=' + p_id.join(',') + '&';
   }
   if (at){
     reqURL += 'mode=1&';

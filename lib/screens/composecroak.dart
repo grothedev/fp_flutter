@@ -19,8 +19,6 @@ along with Frog Pond.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 import 'dart:io';
-import 'dart:math';
-
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
@@ -30,9 +28,6 @@ import 'package:toast/toast.dart';
 import '../models.dart';
 import '../state_container.dart';
 import '../util.dart' as util;
-import '../utilwidg.dart' as utilw;
-import 'package:location/location.dart';
-import 'dart:async';
 
 import 'package:shared_preferences/shared_preferences.dart';
 

@@ -51,7 +51,6 @@ class AppState {
     //needsUpdate = true;
     query = Query();
   }
-
 }
 
 class Query{
@@ -249,7 +248,9 @@ class LocalCroaksStore{
   }
 
   Map get(int id){
-    return croaks.where( (c) => c['id'] == id).toList()[0];
+    if (croaks == null || croaks.length == 0) return null;
+    List cs = croaks.where( (c) => c['id'] == id).toList();
+    return cs.isNotEmpty ? cs[0] : null;
   }
 
   List<Map> getFeed(){
@@ -268,17 +269,20 @@ class LocalCroaksStore{
     return croaks.where((r)=> (r['p_id'] == pid)).toList();
   }
 
-  void toggleSubscribe(int id){
-    get(id)['listen'] = !get(id)['listen'];
-  }
+  void toggleSubscribe(int id) => get(id)['listen'] = !get(id)['listen'];
 
-  void sub(int id){
-    get(id)['listen'] = true;
-  }
+  void sub(int id) => get(id)['listen'] = true;
 
-  void unsub(int id){
-    get(id)['listen'] = false;
-  }
+  void unsub(int id) => get(id)['listen'] = false;
+
+  //declares that this croak has comments which the user hasn't seen
+  void setUnread(int id) => get(id)['has_unread'] = true;
+
+  bool hasUnread(int id) => get(id)['has_unread']; 
+
+  List getUnread() => croaks.where((c) => c['has_unread']).toList();
+
+  bool isEmpty() => croaks.isEmpty;
 
   static LocalCroaksStore fromJSON(String str){
     if (str == null || str.length == 0) return new LocalCroaksStore(null);

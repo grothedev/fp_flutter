@@ -21,7 +21,6 @@ along with Frog Pond.  If not, see <https://www.gnu.org/licenses/>.
 import 'dart:convert';
 
 import 'package:background_fetch/background_fetch.dart';
-import 'package:background_fetch/background_fetch.dart' as prefix0;
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:location/location.dart';
@@ -68,6 +67,7 @@ class StateContainerState extends State<StateContainer>{
   @override
   void initState(){
 
+    checkNotifications();
     setupBGFetch();
 
     if (widget.state != null){
@@ -349,37 +349,42 @@ class StateContainerState extends State<StateContainer>{
     prefs.setString('local_croaks', state.localCroaks.toJSON());
   }
 
+  //uses ids of subbed-to croaks to query server to get comments. 
+  //modifies 'notify_ids' of shared prefs
   void checkNotifications() async {
     if (prefs == null) prefs = await SharedPreferences.getInstance();
-  
-    print(LocalCroaksStore.fromJSON(prefs.getString('local_croaks')).getListeningIDs().toString());
-    LocalCroaksStore croaksStore = LocalCroaksStore.fromJSON(prefs.getString('local_croaks'));
+
+    LocalCroaksStore croaksStore = state.localCroaks;
+    if (croaksStore == null) croaksStore = LocalCroaksStore.fromJSON(prefs.getString('local_croaks'));
+    if (croaksStore.isEmpty()) return;
+    List lids = croaksStore.getListeningIDs();
+    if (lids.length == 0) return;
     List notifyIDs = []; //a list of ids of croaks which have new replies
     
-    List lids = croaksStore.getListeningIDs();
-    String lidsStr = lids.join(',');
-
-    lids.asMap().forEach((i, id) async { // reduce to one http request
-      List replies = await util.getReplies(id);
-      List localReplies = croaksStore.repliesOf(id);
-      print('checking for new replies on croak ' + id.toString() + ': ' + replies.length.toString() + ', ' +  localReplies.length.toString() );
-      print(replies.toString());
-      print(localReplies.toString());
-      print('');
-
-      if (replies.length != localReplies.length){
+    List replies = await util.getReplies(lids);
+    print(replies.length.toString() + ' replies of croaks ' + lids.toString());
+    print('REPLIES: ' + replies.toString());
+    if (replies == null) {
+      util.errLog('network error while getting replies');
+      return;
+    }
+    if (replies.length == 0){ //no new replies
+      return;
+    }
+    replies.asMap().forEach((i, reply) async {
+      int id = reply['id'];
+      if (notifyIDs.contains(id)) return;
+      List localReplies = croaksStore.repliesOf(reply['p_id']);
+      print(localReplies.length.toString() + ' local replies');
+      if (!localReplies.map((r)=>r['id']).contains(id)){
         notifyIDs.add(id);
-      } else{ 
-        //there are no new replies for this croak
-        notifyIDs.add(-1*id);
       }
+
       if (i == lids.length-1){
-        prefs.setString('notify_ids', jsonEncode(notifyIDs));
-        (await util.localFile).writeAsString(notifyIDs.toString());
+        prefs.setString('notify_ids', jsonEncode(notifyIDs)); //REFAC feel like this shouldn't be done separately like this
+        prefs.setString('local_croaks', croaksStore.toJSON());
         print('ids of croaks which user will be notified of replies: ' + notifyIDs.toString()); 
         notify(notifyIDs);
-      } else{
-        notify([10]);
       }
     });
     

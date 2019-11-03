@@ -45,7 +45,8 @@ class FeedScreen extends StatefulWidget {
 class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<FeedScreen>{
   
   StateContainerState store;
-  List<Map> feed;
+  List<Map> feed; //this is the data for the ListView, because it can be sorted unlike the croak store of the state
+  LocalCroaksStore localCroaks; //of the state
   bool fetching = false;
   bool stalled = false; //don't fetch
   bool error = false; //was there an error in the most recent fetch attempt?
@@ -63,13 +64,15 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   void initState(){
     super.initState();
     feed = [];
+
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    
     store = StateContainer.of(context);
+    localCroaks = store.state.localCroaks;
+    
     //feed = store.state.localCroaks.getFeed(sortMethod);
     if (store.state.feedOutdated) stalled = false;
     if (!stalled) fetchCroaks(false);
@@ -224,10 +227,12 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   void refresh(){
     error = false;
     stalled = false;
-    if (store.state.hasUnread){
-      displayUnread();
-    } else {
-      fetchCroaks(true);
+    fetchCroaks(true);
+
+    if (localCroaks.getUnread().isNotEmpty) notifyUnread();
+    else {
+      print('FEED HAS NO UNREAD');
+      print(localCroaks.croaks.map((c)=>c['has_unread']).toList());
     }
   }
 
@@ -295,6 +300,9 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
 
   void displayUnread(){
     setState(() {
+      fetching = false;
+      stalled = true;
+      error = false;
       feed = store.state.localCroaks.getHasUnread();
     });
     store.state.feedOutdated = false;
@@ -378,6 +386,11 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
     }
   }
   
+  void notifyUnread(){
+    Toast.show('You have unread comments', context);
+    print('FEED HAS UNREAD');
+  }
+
   //i know that this method uses a class var whereas sortFeed() uses arg. it is easier to do it this way for filtering
   void filterFeed(){ //i think there should be a 'visible' attr for feed croaks, 
     

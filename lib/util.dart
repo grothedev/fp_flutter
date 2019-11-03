@@ -64,9 +64,10 @@ Future<List> getCroaks(Query query, int lastUpdated, LocationData location) asyn
   }
 }
 
-Future<List> getReplies(int pid) async{
+Future<List> getReplies(dynamic pid) async{
   List resJSON = await api.getCroaks(null, null, pid, null, false, null);
   //resJSON.forEach( (c) => c['listen'] = false );
+  if (resJSON == null) return null; //network error
   resJSON.sort((a, b){
     return DateTime.parse(b['created_at']).millisecondsSinceEpoch - DateTime.parse(a['created_at']).millisecondsSinceEpoch;
   });
@@ -191,7 +192,6 @@ void checkNotifications() async{
       }
       if (i == lids.length-1){
         p.setString('notify_ids', jsonEncode(notifyIDs));
-        (await localFile).writeAsString(notifyIDs.toString());
         print('ids of croaks which user will be notified of replies: ' + notifyIDs.toString()); 
         notify(notifyIDs);
       }
@@ -235,8 +235,15 @@ double distance(double latA, double lonA, double latB, double lonB){
   return acos( sin(latA)*sin(latB) + cos(latA)*cos(latB)*cos(lonA-lonB) ) * 6371;
 }
 
+//log an error msg to a text file
+void errLog(String msg) async {
+  File f = await localFile('error.log');
+  f.writeAsString(DateTime.now().toIso8601String() + ': ' + msg);
+  print('ERRlog: ' + msg);
+}
+
 void fileTest() async{
-  File f = await localFile;
+  File f = await localFile('test.txt');
   print(f.path.toString());
   print(f.toString());
   f.writeAsString('file test: ' + DateTime.now().toLocal().toString());
@@ -247,7 +254,8 @@ Future<String> get localPath async {
   return directory.path;
 }
 
-Future<File> get localFile async {
+Future<File> localFile(String fname) async {
   final path = await localPath;
-  return File('$path/test.txt');
+  return File('$path/' + fname);
 }
+
