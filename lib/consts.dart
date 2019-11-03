@@ -29,5 +29,5 @@ enum SortMethod{
 }
 
 enum FilterMethod{
-  use_tags, use_subs
+  use_tags, use_subs, unread
 }

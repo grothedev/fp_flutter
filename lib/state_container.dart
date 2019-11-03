@@ -379,6 +379,7 @@ class StateContainerState extends State<StateContainer>{
       if (!localReplies.map((r)=>r['id']).contains(id)){
         notifyIDs.add(id);
         croaksStore.setUnread(reply['p_id']);
+        croaksStore.add(reply, false, false);
         print(croaksStore.get(reply['p_id']).toString());
       }
     });

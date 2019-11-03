@@ -236,6 +236,7 @@ class LocalCroaksStore{
       add['feed'] = feed; //is this croak in the feed?
       add['listen'] = listen; //is the user currently subscribed to this croak? (will receive notifications if it gets new replies)
       add['has_unread'] = false; //are there new replies to this croak which the user has not yet seen?
+      add['vis'] = true;
       croaks.add(add);
     } else if (add is List){
       add.forEach((c){
@@ -243,6 +244,7 @@ class LocalCroaksStore{
         c['feed'] = feed;
         c['listen'] = listen;
         c['has_unread'] = false;
+        c['vis'] = true;
         croaks.add(c);
       });
     }

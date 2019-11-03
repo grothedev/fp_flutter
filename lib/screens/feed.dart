@@ -56,6 +56,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   Map<FilterMethod, bool> filterSettings = {
     FilterMethod.use_tags: true,
     FilterMethod.use_subs: false,
+    FilterMethod.unread: false,
   };
 
   FeedState();
@@ -146,12 +147,17 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
                 CheckedPopupMenuItem( //only show subs or non-subs
                   value: FilterMethod.use_subs,
                   checked: filterSettings[FilterMethod.use_subs],
-                  child: Wrap( children: [ Icon(Icons.subscriptions), Text('Subscribed-To')] ),
+                  child: Wrap( children: [ Icon(Icons.subscriptions), Text('  Subscribed-To', style: Theme.of(context).textTheme.body1) ] ),
                 ),
                 CheckedPopupMenuItem( //show all croaks or use query tags?
                   value: FilterMethod.use_tags,
                   checked: filterSettings[FilterMethod.use_tags],
-                  child: Wrap( children: [ Icon(Icons.category), Text('Use Tags')] ),
+                  child: Wrap( children: [ Icon(Icons.category), Text('  Use Tags', style: Theme.of(context).textTheme.body1) ] ),
+                ),
+                CheckedPopupMenuItem( //only show croaks with unread comments
+                  value: FilterMethod.unread,
+                  checked: filterSettings[FilterMethod.unread],
+                  child: Wrap( children: [ Icon(Icons.mail), Text('  Unread Replies', style: Theme.of(context).textTheme.body1) ] ),
                 )
               ],
               icon: Icon(Icons.filter_list),
@@ -415,6 +421,15 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
         });
       });
       
+    }
+    if (filterSettings[FilterMethod.unread]){
+      setState(() {
+        feed.addAll(List.from(localCroaks.getHasUnread()));
+        feed.forEach((c){
+          if (c['has_unread']) c['vis'] = true;
+          else c['vis'] = false;
+        });
+      });
     }
     //refresh();
     

@@ -76,6 +76,7 @@ class CroakFeedState extends State<CroakFeed>{
         child: ListView.builder(
             itemCount: croaksJSON == null ? 0 : croaksJSON.length,
             itemBuilder: (context, i) {
+              if (!croaksJSON[i]['vis']) return null;
               return new Container(
                 child: feedItem(i),
               );
@@ -110,7 +111,7 @@ class CroakFeedState extends State<CroakFeed>{
           children: [
             Container(
               child: Container(
-                child: Text( c['replies'].toString(), ),
+                child: c['has_unread'] ? Text( c['replies'].toString() + '!', style: Theme.of(context).textTheme.display3) : Text( c['replies'].toString(), ),
                 padding: EdgeInsets.all(2),
                 alignment: Alignment.center,
                 constraints: BoxConstraints(
@@ -133,7 +134,7 @@ class CroakFeedState extends State<CroakFeed>{
         ),
         title: RichText(
           text: TextSpan( 
-            text: c['has_unread'] ? 'New Comments!\n' + c['content'] : c['content'],
+            text: c['content'],
             style: Theme.of(context).textTheme.body2,
           ),
           maxLines: 4,
