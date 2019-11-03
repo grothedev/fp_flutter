@@ -110,35 +110,30 @@ class CroakFeedState extends State<CroakFeed>{
               child: Container(
                 child: Text( c['replies'].toString(), ),
                 padding: EdgeInsets.all(2),
-                
                 alignment: Alignment.center,
                 constraints: BoxConstraints(
                   maxWidth: .06*MediaQuery.of(context).size.width,
                   maxHeight: .06*MediaQuery.of(context).size.width,
                 ),
               ),
-                margin: EdgeInsets.only(left: 6, top: 2),
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    //color: Colors.grey,
-                    color: pip != null ? ip_color[c['ip']] : Colors.grey ,
-                    width: 1, style: BorderStyle.solid,
-                  ),
-                  shape: BoxShape.circle
-                ),      
+              margin: EdgeInsets.only(left: 6, top: 2),
+              decoration: BoxDecoration(
+                border: Border.all(
+                  //color: Colors.grey,
+                  color: pip != null ? ip_color[c['ip']] : Colors.grey ,
+                  width: 1, style: BorderStyle.solid,
+                ),
+                shape: BoxShape.circle
+              ),      
         ),
         title: RichText(
-          
           text: TextSpan( 
-            
-            text: c['content'],
-            style: Theme.of(context).textTheme.body2
+            text: c['has_unread'] ? 'New Comments!\n' + c['content'] : c['content'],
+            style: Theme.of(context).textTheme.body2,
           ),
           maxLines: 4,
           overflow: TextOverflow.clip,
-          
         ),
-        
         //favorite/upvote button disabled now because the app will probably start off just going by popularity (# replies)
         trailing: Container(
               child: Container(
@@ -151,15 +146,15 @@ class CroakFeedState extends State<CroakFeed>{
                   maxHeight: .06*MediaQuery.of(context).size.width,
                 ),
               ),
-                margin: EdgeInsets.only(left: 6, top: 2),
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    //color: Colors.grey,
-                    color: pip != null ? ip_color[c['ip']] : Colors.grey ,
-                    width: 1, style: BorderStyle.solid,
-                  ),
-                  shape: BoxShape.circle
-                ),      
+              margin: EdgeInsets.only(left: 6, top: 2),
+              decoration: BoxDecoration(
+                border: Border.all(
+                  //color: Colors.grey,
+                  color: pip != null ? ip_color[c['ip']] : Colors.grey ,
+                  width: 1, style: BorderStyle.solid,
+                ),
+                shape: BoxShape.circle
+              ),      
         ),
         subtitle: Container(
           margin: EdgeInsets.only(top: 2),

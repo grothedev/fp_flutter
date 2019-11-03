@@ -56,8 +56,6 @@ Future<List> getCroaks(double x, double y, dynamic p_id, List<String> tl, bool a
     print('api: response retrieval error: ' + res.toString());
     return null;
   }
-  //print('api.getCroaks response body: '+ res.body);
-  //print('api response: ' + res.body);
   return json.decode(res.body);
 }
 

@@ -64,7 +64,6 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   void initState(){
     super.initState();
     feed = [];
-
   }
 
   @override
@@ -229,8 +228,16 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
     stalled = false;
     fetchCroaks(true);
 
-    if (localCroaks.getUnread().isNotEmpty) notifyUnread();
-    else {
+    if (localCroaks.getUnread().isNotEmpty) {
+      notifyUnread();
+      feed.forEach((c){
+        if (c['has_unread']) {
+          Map newc = Map.from(c);
+          feed.remove(c);
+          feed.insert(0, newc);
+        }        
+      });
+    } else {
       print('FEED HAS NO UNREAD');
       print(localCroaks.croaks.map((c)=>c['has_unread']).toList());
     }
@@ -242,7 +249,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
     setState((){
       fetching = true;
     });
-    print('feed getting croaks: ' + store.state.feedOutdated.toString());
+    print('feed getting croaks: ' + store.state.query.radius.toString());
     util.getCroaks(filterSettings[FilterMethod.use_tags] ? store.state.query : new Query(), (force || store.state.feedOutdated) ? 0 : store.state.lastCroaksGet, store.state.location).then((res){
       
       if (res == null){
@@ -277,9 +284,9 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
         fetching = false;
         stalled = true;
         error = false;
-        feed = List.from(cs);
       });
       store.gotFeed(cs);
+      feed = store.state.localCroaks.getFeed();
       feed.forEach((c){
         c['vis'] = true;
       });

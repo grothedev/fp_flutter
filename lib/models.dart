@@ -232,16 +232,18 @@ class LocalCroaksStore{
   //add a single croak or a list of croaks
   dynamic add(dynamic add, bool feed, bool listen){
     if (add is Map){
+      if ( croaks.where((d)=>d['id']==add['id']).isNotEmpty ) return add;
       add['feed'] = feed; //is this croak in the feed?
       add['listen'] = listen; //is the user currently subscribed to this croak? (will receive notifications if it gets new replies)
       add['has_unread'] = false; //are there new replies to this croak which the user has not yet seen?
-      if ( croaks.where((d)=>d['id']==add['id']).isEmpty ) croaks.add(add);
+      croaks.add(add);
     } else if (add is List){
       add.forEach((c){
+        if ( croaks.where((d)=>d['id']==c['id']).isNotEmpty ) return;
         c['feed'] = feed;
         c['listen'] = listen;
         c['has_unread'] = false;
-        if ( croaks.where((d)=>d['id']==c['id']).isEmpty )croaks.add(c);
+        croaks.add(c);
       });
     }
     return add;

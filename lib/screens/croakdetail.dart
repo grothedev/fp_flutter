@@ -209,7 +209,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
               flex: 1,
               child: replies != null && replies.length > 0 ? 
                 CroakFeed(
-                  replies, getReplies, pip: c['ip']
+                  store.state.localCroaks.repliesOf(c['id']), getReplies, pip: c['ip']
                 ) :
                 Text('No Replies')
             ),
@@ -238,8 +238,9 @@ class CroakDetailState extends State<CroakDetailScreen>{
         }
         this.replies = r;
       });
-      store.gotReplies(this.replies);
+      store.gotReplies(r);
     });
+    c['has_unread'] = false;
   }
 
   void copyURL(){

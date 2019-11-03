@@ -147,7 +147,7 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                             child: TextFormField(
                               keyboardType: TextInputType.number,
                               controller: radText,
-                              onEditingComplete: (){
+                              onChanged: (rad){
                                 radius = double.parse(radText.text);
                                 print('got rad ' + radius.toString());
                                 SharedPreferences.getInstance().then((pref){

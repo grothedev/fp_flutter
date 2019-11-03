@@ -371,23 +371,21 @@ class StateContainerState extends State<StateContainer>{
     if (replies.length == 0){ //no new replies
       return;
     }
-    replies.asMap().forEach((i, reply) async {
+    replies.asMap().forEach((i, reply) {
       int id = reply['id'];
       if (notifyIDs.contains(id)) return;
       List localReplies = croaksStore.repliesOf(reply['p_id']);
       print(localReplies.length.toString() + ' local replies');
       if (!localReplies.map((r)=>r['id']).contains(id)){
         notifyIDs.add(id);
-      }
-
-      if (i == lids.length-1){
-        prefs.setString('notify_ids', jsonEncode(notifyIDs)); //REFAC feel like this shouldn't be done separately like this
-        prefs.setString('local_croaks', croaksStore.toJSON());
-        print('ids of croaks which user will be notified of replies: ' + notifyIDs.toString()); 
-        notify(notifyIDs);
+        croaksStore.setUnread(reply['p_id']);
+        print(croaksStore.get(reply['p_id']).toString());
       }
     });
-    
+    prefs.setString('notify_ids', jsonEncode(notifyIDs)); //REFAC feel like this shouldn't be done separately like this
+    prefs.setString('local_croaks', croaksStore.toJSON());
+    print('ids of croaks which user will be notified of replies: ' + notifyIDs.toString()); 
+    if (notifyIDs.length > 0) notify(notifyIDs);
     BackgroundFetch.finish();
   }
 
