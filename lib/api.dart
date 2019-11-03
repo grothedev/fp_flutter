@@ -104,6 +104,11 @@ Future<String> getMOTD() async{
   return res.body;
 }
 
+Future<String> reportCroak(int id) async {
+  var res = await http.get(api_url+'croaks/report?id=' + id.toString());
+  return res.body;
+}
+
 Future<String> postVote(Map<String, dynamic> req) async{
   var res = await http.Client().post(api_url+'votes', body: req);
   return res.body.toString();

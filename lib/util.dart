@@ -161,6 +161,10 @@ Future<LocationData> initLocation() async{
       
   }
 
+void reportCroak(int id){
+  api.reportCroak(id);
+}
+
 
 //checks if there are responses to croaks this user has posted, if so send system notification
 void checkNotifications() async{ 

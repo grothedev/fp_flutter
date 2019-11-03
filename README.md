@@ -17,6 +17,7 @@ TODO:
 * button to show complete list of tags (also get more popular tags)
 * hide or encrypt ip addresses on API 
 * ability to report posts for illegality or spam
+  - increments num reports on croak. on server, if num is high enough, notify admin
 * wifi direct
 * limit # of tags in request
 * post-initial-release features

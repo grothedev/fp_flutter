@@ -113,6 +113,13 @@ class CroakDetailState extends State<CroakDetailScreen>{
                 getReplies();
               },
             ),
+            IconButton(
+              icon: Icon(Icons.report),
+              onPressed: (){
+                reportCroak();
+              },
+              tooltip: 'Report Illegal Content or Spam',
+            ),
             IconButton( //TODO fix initial switch position
               icon: c['listen'] ? Icon(MdiIcons.toggleSwitch) : Icon(MdiIcons.toggleSwitchOff),
               onPressed:(){
@@ -304,5 +311,10 @@ class CroakDetailState extends State<CroakDetailScreen>{
     } else {
       Toast.show('You will not receive notifications when this croak is replied to', context);
     }
+  }
+
+  //if enough users report a croak, it will get removed
+  void reportCroak(){
+    util.reportCroak(c['id']);
   }
 }
