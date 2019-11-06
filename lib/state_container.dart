@@ -299,6 +299,7 @@ class StateContainerState extends State<StateContainer>{
     });
   }
   void gotReplies(List r){
+    if (r==null || r.length == 0) return;
     setState(() {
       state.updateReplies = false;
     });

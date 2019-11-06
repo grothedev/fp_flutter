@@ -73,7 +73,7 @@ class FrogPondApp extends StatelessWidget {
           ),
           display3: TextStyle(
             fontSize: 12,
-            color: Colors.greenAccent,
+            color: Colors.green,
             fontWeight: FontWeight.bold
           ),
           display4: TextStyle(

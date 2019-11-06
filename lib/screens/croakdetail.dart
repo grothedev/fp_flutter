@@ -238,13 +238,13 @@ class CroakDetailState extends State<CroakDetailScreen>{
 
   void getReplies(){
     util.getReplies(c['id']).then((r){
-      setState((){
+      //setState((){
         for (int i = 0; i < r.length; i++){
           DateTime dt = DateFormat('yyyy-MM-d HH:mm').parse(r[i]['created_at']).toLocal();
           r[i]['timestampStr'] = dt.year.toString() + '/' + dt.month.toString() + '/' + dt.day.toString() + ' - ' + dt.hour.toString() + ':' + dt.minute.toString();
         }
         this.replies = r;
-      });
+      //});
       store.gotReplies(r);
     });
     c['has_unread'] = false;

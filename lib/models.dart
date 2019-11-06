@@ -20,6 +20,7 @@ along with Frog Pond.  If not, see <https://www.gnu.org/licenses/>.
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:intl/intl.dart';
 import 'package:location/location.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
@@ -237,6 +238,8 @@ class LocalCroaksStore{
       add['listen'] = listen; //is the user currently subscribed to this croak? (will receive notifications if it gets new replies)
       add['has_unread'] = false; //are there new replies to this croak which the user has not yet seen?
       add['vis'] = true;
+      DateTime dt = DateFormat('yyyy-MM-d HH:mm').parse(add['created_at']).toLocal();
+      add['timestampStr'] = dt.year.toString() + '/' + dt.month.toString() + '/' + dt.day.toString() + ' - ' + dt.hour.toString() + ':' + dt.minute.toString();
       croaks.add(add);
     } else if (add is List){
       add.forEach((c){
@@ -245,6 +248,8 @@ class LocalCroaksStore{
         c['listen'] = listen;
         c['has_unread'] = false;
         c['vis'] = true;
+        DateTime dt = DateFormat('yyyy-MM-d HH:mm').parse(c['created_at']).toLocal();
+        c['timestampStr'] = dt.year.toString() + '/' + dt.month.toString() + '/' + dt.day.toString() + ' - ' + dt.hour.toString() + ':' + dt.minute.toString();
         croaks.add(c);
       });
     }
