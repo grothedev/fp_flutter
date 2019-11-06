@@ -315,6 +315,22 @@ class CroakDetailState extends State<CroakDetailScreen>{
 
   //if enough users report a croak, it will get removed
   void reportCroak(){
-    util.reportCroak(c['id']);
+    showDialog(context: context, builder: (context){
+      return AlertDialog(
+        title: Text('Report this croak?', textAlign: TextAlign.center,),
+        content: Text('Please only report croaks which contain illegal content or are spam.'),
+        actions: [
+          MaterialButton(
+            child: Text('Yes'),
+            onPressed: () => util.reportCroak(c['id']),
+          ),
+          MaterialButton(
+            child: Text('No'),
+            onPressed: () => Navigator.of(context).pop()
+          )
+        ],
+        contentPadding: EdgeInsets.all(10),
+      );
+    });
   }
 }

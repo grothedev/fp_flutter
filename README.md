@@ -1,6 +1,8 @@
 FrogPond mobile application, made with flutter. https://flutter.dev/
 
 TODO:
+* fix croaks remaining on device even if no longer on server
+* have croaks get deleted after time of inactivity
 * save sort preferences
 * implement data analysis (show locations of croaks w/ tags etc. )
 * tutorial mode?
@@ -15,11 +17,7 @@ TODO:
 * attach file to reply
 * tag exclusion
 * button to show complete list of tags (also get more popular tags)
-* hide or encrypt ip addresses on API 
-* ability to report posts for illegality or spam
-  - increments num reports on croak. on server, if num is high enough, notify admin
 * wifi direct
-* limit # of tags in request
 * post-initial-release features
   - identify commenters or just OP?
   - different croak types (poll, resource bank, plant, tool library, event)

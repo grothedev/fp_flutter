@@ -105,7 +105,7 @@ Future<String> getMOTD() async{
 }
 
 Future<String> reportCroak(int id) async {
-  var res = await http.get(api_url+'croaks/report?id=' + id.toString());
+  var res = await http.get(api_url+'croaks/report?croak_id=' + id.toString());
   return res.body;
 }
 
