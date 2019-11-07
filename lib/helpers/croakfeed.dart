@@ -107,30 +107,22 @@ class CroakFeedState extends State<CroakFeed>{
       ),
       child: ListTile(
         dense: false,
-        leading: Column(
-          children: [
-            Container(
-              child: Container(
-                child: c['has_unread'] ? Text( '!', style: Theme.of(context).textTheme.display3) : Text( c['replies'].toString(), ),
-                padding: EdgeInsets.all(1),
-                alignment: Alignment.center,
-                constraints: BoxConstraints(
-                  maxWidth: .03*MediaQuery.of(context).size.width,
-                  maxHeight: .03*MediaQuery.of(context).size.width,
-                ),
-              ),
-              margin: EdgeInsets.only(left: 6, top: 6, bottom: 4),
-              decoration: BoxDecoration(
-                border: Border.all(
-                  //color: Colors.grey,
-                  color: pip != null ? ip_color[c['ip']] : Colors.grey ,
-                  width: 1, style: BorderStyle.solid,
-                ),
-                shape: BoxShape.circle
-              ),
+        leading: Container(
+          padding: EdgeInsets.all(6),
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Colors.black12
             ),
-            Text('Replies', style: Theme.of(context).textTheme.display4),
-          ]      
+            shape: BoxShape.circle,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              c['has_unread'] ? Text( '!', style: Theme.of(context).textTheme.display3) : Text( c['replies'].toString(), style: Theme.of(context).textTheme.caption),
+              Text('replies', style: Theme.of(context).textTheme.display4,)
+            ],
+            crossAxisAlignment: CrossAxisAlignment.center,
+          ),
         ),
         title: RichText(
           text: TextSpan( 
@@ -140,31 +132,22 @@ class CroakFeedState extends State<CroakFeed>{
           maxLines: 8,
           overflow: TextOverflow.clip,
         ),
-        //favorite/upvote button disabled now because the app will probably start off just going by popularity (# replies)
-        trailing: Column(
-          children: [
-            Container(
-              child: Container(
-                child: Text( c['score'].toString(), ),
-                padding: EdgeInsets.all(2),
-                alignment: Alignment.center,
-                constraints: BoxConstraints(
-                  maxWidth: .03*MediaQuery.of(context).size.width,
-                  maxHeight: .03*MediaQuery.of(context).size.width,
-                ),
-              ),
-              margin: EdgeInsets.only(left: 6, top: 6, bottom: 4),
-              decoration: BoxDecoration(
-                border: Border.all(
-                  //color: Colors.grey,
-                  color: pip != null ? ip_color[c['ip']] : Colors.grey ,
-                  width: 1, style: BorderStyle.solid,
-                ),
-                shape: BoxShape.circle
-              ),      
+        trailing: Container(
+          padding: EdgeInsets.all(6),
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Colors.black12
             ),
-            Text('Points', style: Theme.of(context).textTheme.display4)
-          ]
+            shape: BoxShape.circle
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text( c['score'].toString(), style: Theme.of(context).textTheme.caption),
+              Text('points', style: Theme.of(context).textTheme.display4)
+            ],
+            crossAxisAlignment: CrossAxisAlignment.center,
+          ),
         ),
         subtitle: Container(
           margin: EdgeInsets.only(top: 2),

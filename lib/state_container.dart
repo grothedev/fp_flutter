@@ -314,7 +314,9 @@ class StateContainerState extends State<StateContainer>{
     prefs.setInt('last_croaks_get', state.lastCroaksGet);
     prefs.setBool('feed_outdated', false);
     //prefs.setString('feed_croaks', jsonEncode(state.feed));
-
+    state.localCroaks.croaks.removeWhere((lc){
+      return !c.map((e)=>e['id']).contains(lc['id']);
+    });
     state.localCroaks.add(c, true, false);
     prefs.setString('local_croaks', state.localCroaks.toJSON());
   }
