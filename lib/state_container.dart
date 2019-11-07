@@ -378,10 +378,10 @@ class StateContainerState extends State<StateContainer>{
       List localReplies = croaksStore.repliesOf(reply['p_id']);
       print(localReplies.length.toString() + ' local replies');
       if (!localReplies.map((r)=>r['id']).contains(id)){
-        notifyIDs.add(id);
+        notifyIDs.add(reply['p_id']);
         croaksStore.setUnread(reply['p_id']);
         croaksStore.add(reply, false, false);
-        print(croaksStore.get(reply['p_id']).toString());
+        croaksStore.get(reply['p_id'])['replies'] += 1;
       }
     });
     prefs.setString('notify_ids', jsonEncode(notifyIDs)); //REFAC feel like this shouldn't be done separately like this
@@ -418,7 +418,7 @@ class StateContainerState extends State<StateContainer>{
     print(ids.toString());
     setState(() {
       ids.forEach((id){
-        state.localCroaks.get(id)['has_unread'] = true;
+        
       });
       state.feedOutdated = true;
       state.hasUnread = true;
