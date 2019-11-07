@@ -111,7 +111,7 @@ class CroakFeedState extends State<CroakFeed>{
           children: [
             Container(
               child: Container(
-                child: c['has_unread'] ? Text( c['replies'].toString() + '!', style: Theme.of(context).textTheme.display3) : Text( c['replies'].toString(), ),
+                child: c['has_unread'] ? Text( '!', style: Theme.of(context).textTheme.display3) : Text( c['replies'].toString(), ),
                 padding: EdgeInsets.all(1),
                 alignment: Alignment.center,
                 constraints: BoxConstraints(

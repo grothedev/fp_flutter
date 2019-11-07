@@ -54,8 +54,8 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   RefreshController refreshController = RefreshController(initialRefresh: true);
   SortMethod sortMethod = SortMethod.date_asc;
   Map<FilterMethod, bool> filterSettings = {
-    FilterMethod.use_tags: true,
-    FilterMethod.use_subs: false,
+    FilterMethod.query: true,
+    FilterMethod.subs: false,
     FilterMethod.unread: false,
   };
 
@@ -145,14 +145,14 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
                   child: Text('Filter your feed')
                 ),
                 CheckedPopupMenuItem( //only show subs or non-subs
-                  value: FilterMethod.use_subs,
-                  checked: filterSettings[FilterMethod.use_subs],
+                  value: FilterMethod.subs,
+                  checked: filterSettings[FilterMethod.subs],
                   child: Wrap( children: [ Icon(Icons.subscriptions), Text('  Subscribed-To', style: Theme.of(context).textTheme.body1) ] ),
                 ),
                 CheckedPopupMenuItem( //show all croaks or use query tags?
-                  value: FilterMethod.use_tags,
-                  checked: filterSettings[FilterMethod.use_tags],
-                  child: Wrap( children: [ Icon(Icons.category), Text('  Use Tags', style: Theme.of(context).textTheme.body1) ] ),
+                  value: FilterMethod.query,
+                  checked: filterSettings[FilterMethod.query],
+                  child: Wrap( children: [ Icon(Icons.category), Text('  Query', style: Theme.of(context).textTheme.body1) ] ),
                 ),
                 CheckedPopupMenuItem( //only show croaks with unread comments
                   value: FilterMethod.unread,
@@ -163,7 +163,10 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
               icon: Icon(Icons.filter_list),
               onSelected: (fm){
                 setState((){
-                  filterSettings[fm] = !filterSettings[fm];
+                  filterSettings[fm] = true;
+                  filterSettings[(fm.toInt()+1)%3] = false;
+                  filterSettings[(fm.toInt()+2)%3] = false;
+                  
                   filterFeed();
                 });
               },
@@ -253,7 +256,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
       fetching = true;
     });
     print('feed getting croaks: ' + store.state.query.radius.toString());
-    util.getCroaks(filterSettings[FilterMethod.use_tags] ? store.state.query : new Query(), (force || store.state.feedOutdated) ? 0 : store.state.lastCroaksGet, store.state.location).then((res){
+    util.getCroaks(filterSettings[FilterMethod.query] ? store.state.query : new Query(), (force || store.state.feedOutdated) ? 0 : store.state.lastCroaksGet, store.state.location).then((res){
       
       if (res == null){
         print('failed to fetch croaks');
@@ -404,37 +407,33 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   //i know that this method uses a class var whereas sortFeed() uses arg. it is easier to do it this way for filtering
   void filterFeed(){ //i think there should be a 'visible' attr for feed croaks, 
     
-    if (!filterSettings[FilterMethod.use_tags]){
+    if (filterSettings[FilterMethod.query]){
       setState(() {
-        feed.forEach((c) => c['vis'] = true );   
+        feed = localCroaks.useQuery(store.state.query);
       });
-    }
-    if (filterSettings[FilterMethod.use_subs]){
+    } else if (filterSettings[FilterMethod.subs]){
       setState((){
-        feed.forEach((c) {
-          if ( c['listen'] ){
-            c['vis'] = true;
-          } else c['vis'] = false;
-        });
+        feed = localCroaks.getListening();
       });
-      
-    }
-    if (filterSettings[FilterMethod.unread]){
+    } else if (filterSettings[FilterMethod.unread]){
       setState(() {
+
+        //feed = localCroaks.getHasUnread();
+
         localCroaks.getHasUnread().forEach((c){
           c['vis'] = true;
           c['feed'] = true;
-          feed.add(c);
+          if (!feed.contains(c)) feed.add(c);
           print(c);
         });
+        
         feed.forEach((c){
           if (c['has_unread']) c['vis'] = true;
           else c['vis'] = false;
         });
+        
       });
     }
-    //refresh();
-    
   }
 
   @override

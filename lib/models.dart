@@ -278,8 +278,36 @@ class LocalCroaksStore{
     return croaks.where( (c) => c['listen'] || c['listen'] == 'true' ).map( (c) => c['id'] ).toList();
   }
 
+  List getListening(){
+    return croaks.where( (c) => c['listen'] ).toList();
+  }
+
   List getHasUnread(){ //croaks which have new replies that the user hasn't yet seen
     return croaks.where( (c) => c['has_unread'] ).toList();
+  }
+
+  //sets croak visibility according to query
+  List useQuery(Query q){
+    croaks.forEach((c){
+      List cTags = c['tags'].map((t) => t['label']).toList();
+      if (q.tagsIncludeAll){
+        //check that all of the tags of this croak are contained within localTags active tags
+        c['vis'] = true;
+        cTags.forEach((t){
+          if (!q.localTags.getActiveTagsLabels().contains(t)){
+            c['vis'] = false;
+          }
+        });
+      } else {
+        //check that at least one tag of this croak is contained within localTags active tags
+        cTags.forEach((t){
+          if (q.localTags.getActiveTagsLabels().contains(t)){
+            c['vis'] = true;
+          }
+        });
+      }
+    });
+    return croaks;
   }
 
   List repliesOf(pid){
