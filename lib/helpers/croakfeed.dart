@@ -67,7 +67,7 @@ class CroakFeedState extends State<CroakFeed>{
 
   @override
   Widget build(BuildContext context) {
-    croaksJSON.removeWhere((c)=>c['vis']==false);
+    //croaksJSON.removeWhere((c)=>c['vis']==false);
     return SmartRefresher(
         enablePullDown: true,
         enablePullUp: false,
@@ -77,6 +77,7 @@ class CroakFeedState extends State<CroakFeed>{
         child: ListView.builder(
             itemCount: croaksJSON == null ? 0 : croaksJSON.length,
             itemBuilder: (context, i) {
+              if (!croaksJSON[i]['vis']) return null;
               return new Container(
                 child: feedItem(i),
               );
