@@ -49,8 +49,9 @@ class CroakFeedState extends State<CroakFeed>{
   String pip;
   Map ip_color = {};
 
-  CroakFeedState(this.croaksJSON, this.refresh, {this.pip}){
+  CroakFeedState(List croaksJSON, this.refresh, {this.pip}){
     favs = new List<bool>();
+    this.croaksJSON = List.from(croaksJSON);
   }
 
   @override
@@ -66,7 +67,7 @@ class CroakFeedState extends State<CroakFeed>{
 
   @override
   Widget build(BuildContext context) {
-
+    croaksJSON.removeWhere((c)=>c['vis']==false);
     return SmartRefresher(
         enablePullDown: true,
         enablePullUp: false,
@@ -76,7 +77,6 @@ class CroakFeedState extends State<CroakFeed>{
         child: ListView.builder(
             itemCount: croaksJSON == null ? 0 : croaksJSON.length,
             itemBuilder: (context, i) {
-              if (!croaksJSON[i]['vis']) return null;
               return new Container(
                 child: feedItem(i),
               );

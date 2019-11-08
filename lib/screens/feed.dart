@@ -284,9 +284,9 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
         error = false;
       });
       store.gotFeed(cs);
-      feed = store.state.localCroaks.getFeed();
+      feed = store.state.localCroaks.croaks;
       feed.forEach((c){
-        c['vis'] = true;
+        if (c['feed']) c['vis'] = true;
       });
       refreshController.refreshCompleted();
     }).timeout(new Duration(seconds: 15), 
@@ -398,7 +398,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
 
   //i know that this method uses a class var whereas sortFeed() uses arg. it is easier to do it this way for filtering
   void filterFeed(){ //i think there should be a 'visible' attr for feed croaks, 
-    
+    feed.forEach((c)=>c['vis']=true);
     if (filterMethod == FilterMethod.query){
       Query q = store.state.query;
       setState(() {
