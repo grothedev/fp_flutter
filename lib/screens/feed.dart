@@ -239,7 +239,6 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   }
 
   void fetchCroaks(bool force){
-    
     if (stalled || fetching) return;
     setState((){
       fetching = true;
@@ -400,10 +399,15 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
       setState(() {
         feed = localCroaks.useQuery(store.state.query);
       });
+      print(feed.length);
+      Toast.show('Showing Query Result', context);
     } else if (filterMethod == FilterMethod.subs){
       setState((){
-        feed = localCroaks.getListening();
+        feed = store.state.localCroaks.getListening();
       });
+      print(feed.length);
+      //print(store.state.localCroaks.getListening().map((l)=>l['content']));
+      Toast.show('Showing Subscribed-To Croaks', context);
     } else if (filterMethod == FilterMethod.unread){
       setState(() {
 
@@ -420,9 +424,11 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
           if (c['has_unread']) c['vis'] = true;
           else c['vis'] = false;
         });
-        
+        print(feed.length);
       });
+      Toast.show('Showing Subscribed-To Croaks with new Replies', context);
     }
+    fetchCroaks(false);
   }
 
   @override

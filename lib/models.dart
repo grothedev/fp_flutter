@@ -279,7 +279,7 @@ class LocalCroaksStore{
   }
 
   List getListening(){
-    return croaks.where( (c) => c['listen'] ).toList();
+    return croaks.where( (c) => c['listen'] || c['listen'] == 'true' ).toList();
   }
 
   List getHasUnread(){ //croaks which have new replies that the user hasn't yet seen
