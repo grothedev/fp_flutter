@@ -61,6 +61,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   void initState(){
     super.initState();
     feed = [];
+    print('initing FeedState');
   }
 
   @override
@@ -155,7 +156,10 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
               ],
               icon: Icon(Icons.filter_list),
               onSelected: (fm){
-                filterMethod = fm;
+                setState(() {
+                  filterMethod = fm;  
+                });
+                
                 filterFeed();
               },
 
@@ -396,23 +400,26 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   void filterFeed(){ //i think there should be a 'visible' attr for feed croaks, 
     
     if (filterMethod == FilterMethod.query){
+      Query q = store.state.query;
       setState(() {
-        feed = localCroaks.useQuery(store.state.query);
+        feed.forEach((c){ //this logic is convoluted, but just setting feed = localCroaks.ofQuery(q) doesn't work for some reason
+          if (localCroaks.satisfiesQuery(c['id'], q)) c['vis'] = true;
+          else c['vis'] = false;  
+        });
       });
       print(feed.length);
       Toast.show('Showing Query Result', context);
     } else if (filterMethod == FilterMethod.subs){
       setState((){
-        feed = store.state.localCroaks.getListening();
+        feed.forEach((c){
+          if (c['listen']) c['vis'] = true;
+          else c['vis'] = false;
+        });
       });
       print(feed.length);
-      //print(store.state.localCroaks.getListening().map((l)=>l['content']));
       Toast.show('Showing Subscribed-To Croaks', context);
     } else if (filterMethod == FilterMethod.unread){
       setState(() {
-
-        //feed = localCroaks.getHasUnread();
-
         localCroaks.getHasUnread().forEach((c){
           c['vis'] = true;
           c['feed'] = true;
@@ -428,7 +435,6 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
       });
       Toast.show('Showing Subscribed-To Croaks with new Replies', context);
     }
-    fetchCroaks(false);
   }
 
   @override

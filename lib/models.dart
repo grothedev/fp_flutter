@@ -286,8 +286,8 @@ class LocalCroaksStore{
     return croaks.where( (c) => c['has_unread'] ).toList();
   }
 
-  //sets croak visibility according to query
-  List useQuery(Query q){
+  //returns the croaks that satisfy given query
+  List ofQuery(Query q){
     croaks.forEach((c){
       List cTags = c['tags'].map((t) => t['label']).toList();
       if (q.tagsIncludeAll){
@@ -308,6 +308,10 @@ class LocalCroaksStore{
       }
     });
     return croaks;
+  }
+
+  bool satisfiesQuery(int id, Query q){
+    return ofQuery(q).map((c)=>c['id']).contains(id);
   }
 
   List repliesOf(pid){
