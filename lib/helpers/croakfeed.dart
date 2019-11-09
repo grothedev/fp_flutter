@@ -67,19 +67,20 @@ class CroakFeedState extends State<CroakFeed>{
 
   @override
   Widget build(BuildContext context) {
-    //croaksJSON.removeWhere((c)=>c['vis']==false);
+    List listItems = croaksJSON.where((c)=>c['vis']).toList();
+    //List listItems = List.from(croaksJSON);
     return SmartRefresher(
         enablePullDown: true,
         enablePullUp: false,
-       // header: Text('uhh'),
         controller: refreshController,
         onRefresh: refresh,
         child: ListView.builder(
-            itemCount: croaksJSON == null ? 0 : croaksJSON.length,
+            //itemCount: croaksJSON == null ? 0 : croaksJSON.length,
+            itemCount: listItems.length,
             itemBuilder: (context, i) {
-              if (!croaksJSON[i]['vis']) return null;
+              //if (!croaksJSON[i]['vis']) return null;
               return new Container(
-                child: feedItem(i),
+                child: feedItem(listItems[i]),
               );
             },
             shrinkWrap: true,    
@@ -87,15 +88,15 @@ class CroakFeedState extends State<CroakFeed>{
       );
   }
 
-  Widget feedItem(i){
+  Widget feedItem(item){
     List tags = [];
     
-    for (int j = 0; j < croaksJSON[i]['tags'].length; j++){
-      tags.add(croaksJSON[i]['tags'][j]['label']);
+    for (int j = 0; j < item['tags'].length; j++){
+      tags.add(item['tags'][j]['label']);
     }
 
     favs.add(false);
-    Map c = croaksJSON[i];
+    Map c = item;
 
     return new Container(
       padding: EdgeInsets.only(left: 6, right: 6),
