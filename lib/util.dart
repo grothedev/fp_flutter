@@ -113,7 +113,11 @@ Future<Map> submitCroak(String croak, List<String> tags, bool anon, double lat, 
 Future<Map> postCroak(Map c, File f) async{
   String s = await api.postCroak(c, f);
   if (s == '-1') return null;
-  return jsonDecode(s);
+  try {
+    return jsonDecode(s);
+  } catch (e) {
+    return {'error': e.toString() + ':  ' + s};
+  }
 }
 
 //returns that croak's current score

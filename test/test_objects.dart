@@ -2,6 +2,8 @@
   this file defines mock objects used for testing
 */
 
+import 'dart:io';
+
 import 'package:FrogPond/models.dart';
 
 Query query = new Query();
@@ -107,44 +109,15 @@ List<Map> croaks = [
   },
 ];
 
-List<Map> dbCroaks = [
-  {
-    'id': 1, 
-    'created_at': '2019-08-24 22:06:41', 
-    'x': -93.6152362, 
-    'y': 42.0391029, 
-    'ip': '174.217.22.6', 
-    'content': 'test croak',
-    'score': 0, 
-    'p_id': null,  
-    'replies': 0, 
-    'tags': 'test,random', 
-    'listen': false
-  },
-  {
-    'id': 2, 
-    'created_at': '2019-08-25 21:09:31', 
-    'x': -93.6152362, 
-    'y': 42.0391029, 
-    'ip': '174.217.22.7', 
-    'content': 'test croak 2',
-    'score': 0, 
-    'p_id': null,  
-    'replies': 0, 
-    'tags': 'test',
-    'listen': false 
-  },
-  {
-    'id': 4, 
-    'created_at': '2019-08-24 02:55:17', 
-    'x': -93.6152362, 
-    'y': 42.0391029, 
-    'ip': '174.217.22.5', 
-    'content': 'test croak 3',
-    'score': 0, 
-    'p_id': null,  
-    'replies': 0, 
-    'tags': 'test,random,general',
-    'listen': false 
-  },
-];
+File testFile = new File('/home/thomas/dev/fp_flutter/test/test_file.txt');
+
+Croak croakToSubmit = new Croak(
+  content: "this croak is a flutter test", 
+  tags: ['test', 'flutter'], 
+  type: 0, 
+  pid: null, 
+  lat: 0, 
+  lon: 90, 
+  files: [testFile]
+);
+

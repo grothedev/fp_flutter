@@ -246,6 +246,10 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                                 print('croakin with tags: ' + tags.toString());
                                 util.submitCroak(croakText.text, composeTags.getActiveTagsLabels(), true, store.state.lat, store.state.lon, file).then((r){
                                   if (r != null){
+                                    if (r.containsKey('error')){
+                                      print(r.toString());
+                                      return;
+                                    }
                                     Scaffold.of(context).removeCurrentSnackBar();
                                     Scaffold.of(context).showSnackBar(SnackBar(content: Text('Success')));
                                     setState((){
@@ -287,13 +291,6 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
   @override
   bool get wantKeepAlive => true;
   
-  /*
-  @override
-  void didChangeDependencies(){
-    super.didChangeDependencies();
-    context.inheritFromWidgetOfExactType(Scaffold);
-  }
-*/
   void selectTagChip(String tag, bool sel){
     if (sel && composeTags.getActiveTagsLabels().length > 14){
       Toast.show('That is enough tags', context);

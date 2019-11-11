@@ -65,14 +65,17 @@ Future<String> postCroak(Map<String, dynamic> req, File f) async {
   print(f.toString());
 
   if (f != null){
-    req.addAll({'f[]': [ new MultipartFile.fromBytes(f.readAsBytesSync(), filename: basename(f.path))]  });
+    req.addAll({'f': [ MultipartFile.fromBytes(f.readAsBytesSync(), filename: basename(f.path))]  });
+    //req.addAll({'f': [ MultipartFile.fromFile(f.path, filename: basename(f.path))] });
     FormData fd = FormData.fromMap(req);
     
-    print('api post croak: ' + fd.toString());
-    Response res =  await Dio().post(api_url+'croaks', data: fd).catchError((e){
+    print('api post croak: ' + fd.files.toString());
+    print(fd.fields.toString() + ',  ' + req.toString());
+    Response res =  await Dio().post(api_url+'croaks', data: fd, options: Options(contentType: "application/x-www-form-urlencoded", )).catchError((e){
       print('Dio error: ' + e.toString());
+      return e.toString();
     });
-    return res.data;
+    return jsonEncode(res.data);
 
   } else {
     print('api post croak: ' + req.toString());
