@@ -403,7 +403,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
       Query q = store.state.query;
       setState(() {
         feed.forEach((c){ //this logic is convoluted, but just setting feed = localCroaks.ofQuery(q) doesn't work for some reason
-          if (localCroaks.ofQuery(q).contains(c['id'])) c['vis'] = true;
+          if (localCroaks.ofQuery(q).map((e)=>e['id']).contains(c['id'])) c['vis'] = true;
           else c['vis'] = false;  
         });
       });
