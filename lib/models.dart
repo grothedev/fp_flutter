@@ -242,6 +242,7 @@ class LocalCroaksStore{
       add['listen'] = listen; //is the user currently subscribed to this croak? (will receive notifications if it gets new replies)
       add['has_unread'] = false; //are there new replies to this croak which the user has not yet seen?
       add['vis'] = true;
+      if (add['replies'] == null) add['replies'] = 0;
       DateTime dt = DateFormat('yyyy-MM-d HH:mm').parse(add['created_at']).toLocal();
       add['timestampStr'] = dt.year.toString() + '/' + dt.month.toString() + '/' + dt.day.toString() + ' - ' + dt.hour.toString() + ':' + dt.minute.toString();
       croaks.add(add);
@@ -256,6 +257,7 @@ class LocalCroaksStore{
         c['listen'] = listen;
         c['has_unread'] = false;
         c['vis'] = true;
+        if (c['replies'] == null) c['replies'] = 0;
         DateTime dt = DateFormat('yyyy-MM-d HH:mm').parse(c['created_at']).toLocal();
         c['timestampStr'] = dt.year.toString() + '/' + dt.month.toString() + '/' + dt.day.toString() + ' - ' + dt.hour.toString() + ':' + dt.minute.toString();
         croaks.add(c);
@@ -283,7 +285,7 @@ class LocalCroaksStore{
   }
 
   List getHasUnread(){ //croaks which have new replies that the user hasn't yet seen
-    return croaks.where( (c) => c['has_unread'] ).toList();
+    return croaks.where( (c) => c['has_unread']==true ).toList();
   }
 
   //returns the croaks that satisfy given query

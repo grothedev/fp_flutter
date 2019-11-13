@@ -41,7 +41,7 @@ class CroakFeed extends StatefulWidget{
 }
 
 class CroakFeedState extends State<CroakFeed>{
-  List croaksJSON; //json array
+  List listItems;
   List<bool> favs;
   StateContainerState store;
   RefreshController refreshController = RefreshController(initialRefresh: false);
@@ -51,7 +51,7 @@ class CroakFeedState extends State<CroakFeed>{
 
   CroakFeedState(List croaksJSON, this.refresh, {this.pip}){
     favs = new List<bool>();
-    this.croaksJSON = List.from(croaksJSON);
+    this.listItems = List.from(croaksJSON);
   }
 
   @override
@@ -59,7 +59,7 @@ class CroakFeedState extends State<CroakFeed>{
     super.initState();
     
     if (pip == null) return; //only do color association if this is a comment thread
-    for (var c in croaksJSON){
+    for (var c in listItems){
       if (!ip_color.keys.contains(c['ip'])) ip_color[c['ip']] = Color(Random().nextInt(0xAA + 1<<24)); 
       //c['color'] = ip_color[c['ip']]; //don't associate color with data model (that causes problems with JSON encoding)
     }
@@ -67,8 +67,6 @@ class CroakFeedState extends State<CroakFeed>{
 
   @override
   Widget build(BuildContext context) {
-    List listItems = croaksJSON.where((c)=>c['vis']).toList();
-    //List listItems = List.from(croaksJSON);
     return SmartRefresher(
         enablePullDown: true,
         enablePullUp: false,
@@ -78,9 +76,8 @@ class CroakFeedState extends State<CroakFeed>{
             //itemCount: croaksJSON == null ? 0 : croaksJSON.length,
             itemCount: listItems.length,
             itemBuilder: (context, i) {
-              //if (!croaksJSON[i]['vis']) return null;
               return new Container(
-                child: feedItem(listItems[i]),
+                child: feedItem(i),
               );
             },
             shrinkWrap: true,    
@@ -88,11 +85,13 @@ class CroakFeedState extends State<CroakFeed>{
       );
   }
 
-  Widget feedItem(item){
+  Widget feedItem(id){
+    Map item = listItems[id];
     List tags = [];
-    
-    for (int j = 0; j < item['tags'].length; j++){
-      tags.add(item['tags'][j]['label']);
+    if (item['tags'] != null){
+      for (int j = 0; j < item['tags'].length; j++){
+        tags.add(item['tags'][j]['label']);
+      }
     }
 
     favs.add(false);

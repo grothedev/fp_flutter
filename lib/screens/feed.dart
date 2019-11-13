@@ -94,7 +94,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
       );
     } else {
      body = Container(
-       child: CroakFeed(feed, refresh)
+       child: CroakFeed(feed.where((c)=>c['vis']==true).toList(), refresh)
      );
     }
 
@@ -412,7 +412,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
     } else if (filterMethod == FilterMethod.subs){
       setState((){
         feed.forEach((c){
-          if (c['listen']) c['vis'] = true;
+          if (c['listen']==true) c['vis'] = true;
           else c['vis'] = false;
         });
       });
