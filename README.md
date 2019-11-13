@@ -47,6 +47,16 @@ Data Structure Descriptions: (found in 'models.dart', see file for more detail o
   - Croak: provides toMap() to convert a newly made croak (from ComposeCroakScreen) to POST parameters compatible with API.
   - LocalTagsStore: a facade for dealing with tags. stores all tags that are of concern to the user (suggested, custom added by user, etc.) and associates relevant data (used for query, include/exclude mode,), and provides necessary functions.
   - LocalCroaksStore: a facade for dealing with croaks, very similar to LocalTagsStore
+    - croaks : (List<Map>) a copy of the json structure of croaks from the API plus some extra fields
+      - listen : (bool) is the user subscribed (listening for new comments)
+      - feed : (bool) is the croak on the feed (p_id = 0)
+        - unnecessary; just check p_id instead
+      - has_unread : (bool) are there comments on this croak that the user has not yet seen?
+        - only set to true by bg fetch; set back to false by building of CroakFeed of that croak
+      - vis : (bool) is this croak currently visible in any feed?
+        - actively changes based on feed filter settings. 
+      - replies : (int) number of replies to this croak
+      - timestampStr : (String) text to display the datetime of post
 
 State Management:
   - the entire app exists within a StatefulWidget called StateContainer, whose state holds a reference to an instance of the app's AppState state and which itself contains an InheritedWidget called InheritedStateContainer.

@@ -291,7 +291,7 @@ class LocalCroaksStore{
   //returns the croaks that satisfy given query
   List ofQuery(Query q){
     croaks.forEach((c){
-      List cTags = c['tags'].map((t) => t['label']).toList();
+      List cTags = c['tags'] == null ? [] : c['tags'].map((t) => t['label']).toList();
       if (q.tagsIncludeAll){
         //check that all of the tags of this croak are contained within localTags active tags
         c['vis'] = true;
