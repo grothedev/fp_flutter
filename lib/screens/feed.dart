@@ -93,9 +93,10 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
           ]
       );
     } else {
-     body = Container(
-       child: CroakFeed(feed.where((c)=>c['vis']==true).toList(), refresh)
-     );
+      body = Container(
+        child: CroakFeed(localCroaks.croaks, refresh)
+      );  
+    
     }
 
     if (error){
@@ -399,10 +400,11 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   //i know that this method uses a class var whereas sortFeed() uses arg. it is easier to do it this way for filtering
   void filterFeed(){ //i think there should be a 'visible' attr for feed croaks, 
     feed.forEach((c)=>c['vis']=true);
+    localCroaks.croaks.forEach((c)=>c['vis']=true);
     if (filterMethod == FilterMethod.query){
       Query q = store.state.query;
       setState(() {
-        feed.forEach((c){ //this logic is convoluted, but just setting feed = localCroaks.ofQuery(q) doesn't work for some reason
+        localCroaks.croaks.forEach((c){ //this logic is convoluted, but just setting feed = localCroaks.ofQuery(q) doesn't work for some reason
           if (localCroaks.ofQuery(q).map((e)=>e['id']).contains(c['id'])) c['vis'] = true;
           else c['vis'] = false;  
         });
@@ -411,7 +413,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
       Toast.show('Showing Query Result', context);
     } else if (filterMethod == FilterMethod.subs){
       setState((){
-        feed.forEach((c){
+        localCroaks.croaks.forEach((c){
           if (c['listen']==true) c['vis'] = true;
           else c['vis'] = false;
         });
@@ -427,7 +429,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
           print(c);
         });
         
-        feed.forEach((c){
+        localCroaks.croaks.forEach((c){
           if (c['has_unread']) c['vis'] = true;
           else c['vis'] = false;
         });

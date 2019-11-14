@@ -41,7 +41,8 @@ class CroakFeed extends StatefulWidget{
 }
 
 class CroakFeedState extends State<CroakFeed>{
-  List listItems;
+  List listItems = [];
+  List croaks;
   List<bool> favs;
   StateContainerState store;
   RefreshController refreshController = RefreshController(initialRefresh: false);
@@ -51,7 +52,8 @@ class CroakFeedState extends State<CroakFeed>{
 
   CroakFeedState(List croaksJSON, this.refresh, {this.pip}){
     favs = new List<bool>();
-    this.listItems = List.from(croaksJSON);
+    this.croaks = croaksJSON;
+    print('constructing CroakFeed');
   }
 
   @override
@@ -67,6 +69,8 @@ class CroakFeedState extends State<CroakFeed>{
 
   @override
   Widget build(BuildContext context) {
+    print('building CroakFeed');
+    listItems = croaks.where((c)=>c['vis']==true).toList();
     return SmartRefresher(
         enablePullDown: true,
         enablePullUp: false,
