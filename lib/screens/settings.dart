@@ -109,7 +109,7 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
             onPressed: () => launch('http://' + api.host + ':8090/about'),
             tooltip: 'Help',
           ),
-          IconButton( //TODO REMOVE debug button for logging things, writing info to files, etc.
+          /*IconButton( //TODO REMOVE debug button for logging things, writing info to files, etc.
             icon: Icon(Icons.bug_report),
             onPressed: () {
               //SharedPreferences.getInstance().then((p) async {
@@ -118,7 +118,7 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
               store.checkNotifications();
             },
             tooltip: 'DBG'
-          )
+          )*/
         ]
       ),
       body:  SingleChildScrollView(
@@ -296,9 +296,7 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                               controller: notifyIntervalTC,
                               onEditingComplete: (){
                                 notifyInterval = int.parse(notifyIntervalTC.text);
-                                SharedPreferences.getInstance().then((pref){
-                                  pref.setInt('notify_check_interval', notifyInterval);
-                                });
+                                if (notifyInterval > 15) notifyInterval = 15;
                                 store.setNotificationInterval(notifyInterval);   
                                 Focus.of(context).requestFocus(new FocusNode());           
                               },

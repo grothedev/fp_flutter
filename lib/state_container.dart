@@ -68,7 +68,6 @@ class StateContainerState extends State<StateContainer>{
   void initState(){
 
     checkNotifications();
-    setupBGFetch();
 
     if (widget.state != null){
       print('state container widget already has appstate');
@@ -78,8 +77,8 @@ class StateContainerState extends State<StateContainer>{
       print('init state container widget appstate');
       state = AppState();
       restoreState();
-      
     }
+    setupBGFetch();
     //initNotifications();
     super.initState();
   }
@@ -137,7 +136,7 @@ class StateContainerState extends State<StateContainer>{
     //so far this works for app onPause (home button), but not for onStop (back button)
     BackgroundFetch.configure(BackgroundFetchConfig(
       enableHeadless: true,
-      minimumFetchInterval: 15,
+      minimumFetchInterval: prefs.getInt('notify_check_interval'),
       stopOnTerminate: false,
     //), util.checkNotifications);
     ), checkNotifications);
@@ -274,6 +273,7 @@ class StateContainerState extends State<StateContainer>{
     setState(() {
       state.notifyCheckInterval = ni;
     });
+    prefs.setInt('notify_check_interval', ni);                       
   }
 
   void toggleSubscribe(int id){
