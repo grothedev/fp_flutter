@@ -109,6 +109,8 @@ class StateContainerState extends State<StateContainer>{
       state.needsUpdate = prefs.getBool('needs_update');
       state.feedOutdated = prefs.getBool('feed_outdated') || false;
       state.hasUnread = prefs.containsKey('has_unread') ? prefs.getBool('has_unread') : false;
+      if (!prefs.containsKey('notify_check_interval')) prefs.setInt('notify_check_interval', 15);
+      state.notifyCheckInterval = prefs.getInt('notify_check_interval');
     } else {
       prefs.setBool('ran_before', true); 
       prefs.setBool('feed_outdated', true);
@@ -117,6 +119,7 @@ class StateContainerState extends State<StateContainer>{
       prefs.setString('local_tags', '');
       state.localCroaks = new LocalCroaksStore(null);
       prefs.setString('local_croaks', '');
+      prefs.setInt('notify_check_interval', 15);
     }
     
     if (state.lat == null || state.lon == null){
@@ -134,9 +137,10 @@ class StateContainerState extends State<StateContainer>{
 
   void setupBGFetch(){
     //so far this works for app onPause (home button), but not for onStop (back button)
+
     BackgroundFetch.configure(BackgroundFetchConfig(
       enableHeadless: true,
-      minimumFetchInterval: prefs.getInt('notify_check_interval'),
+      minimumFetchInterval: prefs == null ? 15 : prefs.getInt('notify_check_interval'),
       stopOnTerminate: false,
     //), util.checkNotifications);
     ), checkNotifications);
