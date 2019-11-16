@@ -1,6 +1,12 @@
 FrogPond mobile application, made with flutter. https://flutter.dev/
 
 TODO:
+* first priority 
+  - fix new croak then view on feed error
+  - fix can't click on links
+  - loading animation (croaking)
+  - fix sorting
+  - fix voting
 * have croaks get deleted after time of inactivity
 * save sort preferences
 * implement data analysis (show locations of croaks w/ tags etc. )

@@ -98,7 +98,21 @@ class CroakDetailState extends State<CroakDetailScreen>{
     String croakURL = ro_url_pre+c['id'].toString();
     return Scaffold( 
         appBar: AppBar(
-          title: Text(c['timestampStr']),
+          title: c['p_id'] == null || c['p_id'] == 0 ? Text(c['timestampStr']) 
+          : Row(
+            children: [
+              Text(c['timestampStr'] + ' ; Reply to '),
+              IconButton(
+                tooltip: c['timestampStr'] + ' ; Reply to ' + c['p_id'].toString(),
+                icon: Icon(Icons.arrow_upward),
+                onPressed: (){
+                  Navigator.push(this.context, MaterialPageRoute(
+                    builder: (context) => CroakDetailScreen(store.state.localCroaks.get(c['p_id']))
+                  ));
+                },
+              ),
+            ]
+          ),
           actions: [
             IconButton(
               icon: Icon(Icons.share),

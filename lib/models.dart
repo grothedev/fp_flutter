@@ -291,24 +291,29 @@ class LocalCroaksStore{
   //returns the croaks that satisfy given query
   List ofQuery(Query q){
     croaks.forEach((c){
-      List cTags = c['tags'] == null ? [] : c['tags'].map((t) => t['label']).toList();
-      if (q.tagsIncludeAll){
-        //check that all of the tags of this croak are contained within localTags active tags
-        c['vis'] = true;
-        cTags.forEach((t){
-          if (!q.localTags.getActiveTagsLabels().contains(t)){
-            c['vis'] = false;
-          }
-        });
+      if (c['p_id'] != null && c['p_id'] > 0){ //comments are never results of a query
+        c['vis'] = false;
       } else {
-        //check that at least one tag of this croak is contained within localTags active tags
-        cTags.forEach((t){
-          if (q.localTags.getActiveTagsLabels().contains(t)){
-            c['vis'] = true;
-          }
-        });
+        List cTags = c['tags'] == null ? [] : c['tags'].map((t) => t['label']).toList();
+        if (q.tagsIncludeAll){
+          //check that all of the tags of this croak are contained within localTags active tags
+          c['vis'] = true;
+          cTags.forEach((t){
+            if (!q.localTags.getActiveTagsLabels().contains(t)){
+              c['vis'] = false;
+            }
+          });
+        } else {
+          //check that at least one tag of this croak is contained within localTags active tags
+          cTags.forEach((t){
+            if (q.localTags.getActiveTagsLabels().contains(t)){
+              c['vis'] = true;
+            }
+          });
+        }
       }
     });
+    
     return croaks;
   }
 
