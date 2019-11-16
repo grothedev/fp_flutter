@@ -61,8 +61,8 @@ Future<List> getCroaks(double x, double y, dynamic p_id, List<String> tl, bool a
 
 //takes file separately because Croak.toMap() had to give string representations of all of its instance vars
 Future<String> postCroak(Map<String, dynamic> req, File f) async {
-  print(req.toString());
-  print(f.toString());
+  //print(req.toString());
+  //print(f.toString());
 
   if (f != null){
     req.addAll({'f': [ MultipartFile.fromBytes(f.readAsBytesSync(), filename: basename(f.path))]  });

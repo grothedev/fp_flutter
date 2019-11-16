@@ -89,7 +89,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
     store = StateContainer.of(context);
     print(c['files'].toString());
     List tags = [];
-    for (int j = 0; j < c['tags'].length; j++){
+    for (int j = 0; c['tags'] != null && j < c['tags'].length; j++){
       tags.add(c['tags'][j]['label']);
     }
 
