@@ -3,7 +3,6 @@ FrogPond mobile application, made with flutter. https://flutter.dev/
 TODO:
 * first priority 
   - fix new croak no tags
-  - fix voting
   - fix can't click on links
   - loading animation (croaking)
   - fix sorting

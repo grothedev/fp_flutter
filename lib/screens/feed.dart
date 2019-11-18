@@ -60,7 +60,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   @override
   void initState(){
     super.initState();
-    feed = [];
+    //feed = [];
     print('initing FeedState');
   }
 
@@ -230,17 +230,6 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
     error = false;
     stalled = false;
     fetchCroaks(true);
-
-    if (localCroaks.getUnread().isNotEmpty) {
-      notifyUnread();
-      feed.forEach((c){
-        if (c['has_unread']) {
-          Map newc = Map.from(c);
-          feed.remove(c);
-          feed.insert(0, newc);
-        }        
-      });
-    }
   }
 
   void fetchCroaks(bool force){
@@ -248,7 +237,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
     setState((){
       fetching = true;
     });
-    print('feed getting croaks: ' + store.state.query.radius.toString());
+
     util.getCroaks(filterMethod == FilterMethod.query ? store.state.query : new Query(), (force || store.state.feedOutdated) ? 0 : store.state.lastCroaksGet, store.state.location).then((res){
       
       if (res == null){
@@ -285,9 +274,9 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
         error = false;
       });
       store.gotFeed(cs);
-      feed = store.state.localCroaks.croaks;
-      feed.forEach((c){
-        if (c['feed']) c['vis'] = true;
+      //feed = store.state.localCroaks.croaks;
+      localCroaks.croaks.forEach((c){
+        if (c['feed'] || c['p_id'] == 0) c['vis'] = true;
       });
       refreshController.refreshCompleted();
     }).timeout(new Duration(seconds: 15), 
@@ -340,52 +329,52 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
     // sort methods: date, proximity, popularity 
     switch(mthd){
       case SortMethod.date_asc:
-        feed.sort((a, b){
+        localCroaks.croaks.sort((a, b){
           return b['created_at'].compareTo(a['created_at']);
         });  
         break;
       case SortMethod.dist_asc:
-        feed.sort((a, b){
+        localCroaks.croaks.sort((a, b){
           return a['distance'].toInt() - b['distance'].toInt();
         });
         break;
       case SortMethod.pop_asc:
-        feed.sort((a, b){
+        localCroaks.croaks.sort((a, b){
           return a['replies'] - b['replies'];
         });
         break;
       case SortMethod.score_asc:
-        feed.sort((a, b){
+        localCroaks.croaks.sort((a, b){
           return a['score'] - b['score'];
         });
         break;
       case SortMethod.sub_asc:
-        feed.sort((a, b){
+        localCroaks.croaks.sort((a, b){
           return a['listen'] && !b['listen'] ? 1 : -1;
         });
         break;
       case SortMethod.date_des:
-        feed.sort((a, b){
+        localCroaks.croaks.sort((a, b){
           return a['created_at'].compareTo(b['created_at']);
         });  
         break;
       case SortMethod.dist_des:
-        feed.sort((a, b){
+        localCroaks.croaks.sort((a, b){
           return b['distance'].toInt() - a['distance'].toInt();
         });
         break;
       case SortMethod.pop_des:
-        feed.sort((a, b){
+        localCroaks.croaks.sort((a, b){
           return b['replies'] - a['replies'];
         });
         break;
       case SortMethod.score_des:
-        feed.sort((a, b){
+        localCroaks.croaks.sort((a, b){
           return b['score'] - a['score'];
         });
         break;
       case SortMethod.sub_des:
-        feed.sort((a, b){
+        localCroaks.croaks.sort((a, b){
           return b['listen'] && !a['listen'] ? 1 : -1;
         });
         break;
@@ -398,8 +387,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   }
 
   //i know that this method uses a class var whereas sortFeed() uses arg. it is easier to do it this way for filtering
-  void filterFeed(){ //i think there should be a 'visible' attr for feed croaks, 
-    feed.forEach((c)=>c['vis']=true);
+  void filterFeed(){ 
     localCroaks.croaks.forEach((c)=>c['vis']=true);
     if (filterMethod == FilterMethod.query){
       Query q = store.state.query;
@@ -409,7 +397,6 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
           else c['vis'] = false;  
         });
       });
-      print(feed.length);
       Toast.show('Showing Query Result', context);
     } else if (filterMethod == FilterMethod.subs){
       setState((){
@@ -418,7 +405,6 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
           else c['vis'] = false;
         });
       });
-      print(feed.length);
       Toast.show('Showing Subscribed-To Croaks', context);
     } else if (filterMethod == FilterMethod.unread){
       setState(() {
@@ -433,7 +419,6 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
           if (c['has_unread']) c['vis'] = true;
           else c['vis'] = false;
         });
-        print(feed.length);
       });
       Toast.show('Showing Subscribed-To Croaks with new Replies', context);
     }

@@ -100,8 +100,6 @@ class CroakFeedState extends State<CroakFeed>{
 
     favs.add(false);
     Map c = item;
-    if (c.containsKey('distance')) print(id.toString() + ' dist = ' + c['distance'].toString());
-    else print(id.toString() + ' has no distance key');
 
     return new Container(
       padding: EdgeInsets.only(left: 6, right: 6),
@@ -161,7 +159,7 @@ class CroakFeedState extends State<CroakFeed>{
           child: Row(
             children: <Widget>[
               c.containsKey('distance') ? 
-                                Text(c['timestampStr'] + ', ' + c['distance'].toInt().toString() + ' km', style: Theme.of(context).textTheme.subtitle,)
+                                Text(c['timestampStr'] + '; ' + c['distance'].toInt().toString() + ' km', style: Theme.of(context).textTheme.subtitle,)
                                 : Text(c['timestampStr'], style: Theme.of(context).textTheme.subtitle),
               Spacer(
                 flex: 2

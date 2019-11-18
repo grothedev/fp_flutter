@@ -53,7 +53,6 @@ Future<List> getCroaks(Query query, int lastUpdated, LocationData location) asyn
     List<String> tags;
     if (query.localTags != null) tags = query.localTags.getActiveTagsLabels();
     List crks =  await queryCroaks(location, tags, query.tagsIncludeAll, query.radius);
-    
     return crks;
   } else {
     print('last got croaks ' + lastUpdated.toString() + '. loading croaks from shared prefs');
