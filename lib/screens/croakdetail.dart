@@ -195,6 +195,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
                   RaisedButton(
                     child: Icon(Icons.arrow_downward),
                     onPressed: () => util.vote(false, c['id']).then((s){
+                      if (s==null) return;
                       setState(() {
                         c['score'] = s;
                       });
@@ -208,6 +209,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
                     child: Icon(Icons.arrow_upward),
                     onPressed: () => util.vote(true, c['id']).then((s){
                       setState(() {
+                        if (s==null) return;
                         c['score'] = s;
                       });
                     }),

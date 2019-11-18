@@ -127,7 +127,8 @@ Future<int> vote(bool v, int c_id) async{
     'croak_id': c_id.toString()
   };
   String res = await api.postVote(req); 
-  return int.parse(res);
+  if (res != null) return int.parse(res);
+  return null;
 }
 
 Future<LocationData> initLocation() async{
