@@ -192,19 +192,19 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
                 ),
                 PopupMenuItem<SortMethod>(
                   value: SortMethod.score_asc,
-                  child: Wrap( children: [ Icon(Icons.arrow_upward), Text('Replies') ] ),
+                  child: Wrap( children: [ Icon(Icons.arrow_upward), Text('Score') ] ),
                 ),
                 PopupMenuItem<SortMethod>(
                   value: SortMethod.score_des,
+                  child: Wrap( children: [ Icon(Icons.arrow_downward), Text('Score') ] ),
+                ),
+                PopupMenuItem<SortMethod>(
+                  value: SortMethod.pop_asc,
+                  child: Wrap( children: [ Icon(Icons.arrow_upward), Text('Replies') ] ),
+                ),
+                PopupMenuItem<SortMethod>(
+                  value: SortMethod.pop_des,
                   child: Wrap( children: [ Icon(Icons.arrow_downward), Text('Replies') ] ),
-                ),
-                PopupMenuItem<SortMethod>(
-                  value: SortMethod.sub_asc,
-                  child: Wrap( children: [ Icon(Icons.arrow_upward), Text('Subscriptions') ] ),
-                ),
-                PopupMenuItem<SortMethod>(
-                  value: SortMethod.sub_des,
-                  child: Wrap( children: [ Icon(Icons.arrow_downward), Text('Subscriptions') ] ),
                 ),
               ],
               onSelected: (v){
