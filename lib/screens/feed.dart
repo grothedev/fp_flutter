@@ -241,7 +241,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
       fetching = true;
     });
 
-    util.getCroaks(filterMethod == FilterMethod.query ? store.state.query : new Query(), (force || store.state.feedOutdated) ? 0 : store.state.lastCroaksGet, store.state.location).then((res){
+    util.getCroaks(filterMethod == FilterMethod.query ? store.state.query : new Query(), (force || store.state.feedOutdated) ? 0 : store.state.lastCroaksGet[0], store.state.location).then((res){
       
       if (res == null){
         print('failed to fetch croaks');

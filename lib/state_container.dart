@@ -89,7 +89,7 @@ class StateContainerState extends State<StateContainer>{
     print('FROGPOND RESTORING SHARED PREFS');
 
     if (prefs.containsKey('ran_before')){
-      state.lastCroaksGet = prefs.getInt('last_croaks_get');
+      state.lastCroaksGet = jsonDecode( prefs.getString('last_croaks_get') );
       state.feedOutdated = prefs.getBool('feed_outdated');
 
       state.lat = prefs.getDouble('lat');
@@ -314,8 +314,8 @@ class StateContainerState extends State<StateContainer>{
   }
 
   void gotFeed(List c){
-    state.lastCroaksGet = DateTime.now().millisecondsSinceEpoch;
-    prefs.setInt('last_croaks_get', state.lastCroaksGet);
+    state.lastCroaksGet[0] = DateTime.now().millisecondsSinceEpoch;
+    prefs.setString('last_croaks_get', state.lastCroaksGet.toString());
     prefs.setBool('feed_outdated', false);
     //prefs.setString('feed_croaks', jsonEncode(state.feed));
     state.localCroaks.croaks.removeWhere((lc){
@@ -346,9 +346,8 @@ class StateContainerState extends State<StateContainer>{
     
     prefs.setDouble('lat', state.lat);
     prefs.setDouble('lon', state.lon);
-    prefs.setInt('last_croaks_get', state.lastCroaksGet);
+    prefs.setString('last_croaks_get', state.lastCroaksGet.toString());
     prefs.setInt('radius', state.query.radius);
-    prefs.setInt('last_croaks_get', state.lastCroaksGet);
 
     prefs.setBool('feed_outdated', false);
     //prefs.setString('feed_croaks', jsonEncode(state.feed));

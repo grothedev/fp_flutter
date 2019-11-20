@@ -42,11 +42,12 @@ class AppState {
   bool feedOutdated = true; //has the query been modified since the last time the croaks were fetched from server?
   bool updateReplies = true;
   bool newReplies = false;
-  int lastCroaksGet; //milliseconds since epoch since last time croaks were fetched
+  Map<int, int> lastCroaksGet; //milliseconds since epoch since last time croaks were fetched for each p_id (0=root)
   FlutterLocalNotificationsPlugin notificationsPlugin;
   int notifyCheckInterval; //minutes between checking for conditions which trigger notification
 
   AppState(){
+    lastCroaksGet = Map<int, int>();
     fetchingCroaks = false;
     croaking = false;
     hasUnread = false;

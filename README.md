@@ -3,6 +3,7 @@ FrogPond mobile application, made with flutter. https://flutter.dev/
 TODO:
 * first priority 
   - refactor making replies. fix showing up in root feed. 
+  - more options for creating replies
   - loading animation (croaking)
   - why does it ask for location permission 3 times?
   - refresh suggested tags
