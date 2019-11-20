@@ -20,6 +20,7 @@ along with Frog Pond.  If not, see <https://www.gnu.org/licenses/>.
 
 import 'dart:io';
 
+import 'package:FrogPond/consts.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -80,7 +81,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
   @override
   void initState(){
     super.initState(); 
-    getReplies(); 
+    fetchReplies(false); 
   }
 
 
@@ -124,7 +125,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
             IconButton(
               icon: Icon(Icons.refresh),
               onPressed: (){
-                getReplies();
+                fetchReplies(true);
               },
             ),
             IconButton(
@@ -254,19 +255,22 @@ class CroakDetailState extends State<CroakDetailScreen>{
 
   void getReplies(){
     util.getReplies(c['id']).then((r){
-      //setState((){
-        for (int i = 0; i < r.length; i++){
-          DateTime dt = DateFormat('yyyy-MM-d HH:mm').parse(r[i]['created_at']).toLocal();
-          r[i]['timestampStr'] = dt.year.toString() + '/' + dt.month.toString() + '/' + dt.day.toString() + ' - ' + dt.hour.toString() + ':' + dt.minute.toString();
-        }
-        
-      //});
         store.gotReplies(r);
         
         replies = new List.from( store.state.localCroaks.repliesOf(c['id']).toList() );
         replies.forEach((c) => c['vis'] = true);
     });
     c['has_unread'] = false;
+  }
+
+  void fetchReplies(bool force){
+    if (force || DateTime.now().millisecondsSinceEpoch - store.state.lastCroaksGet[c['id']] > CROAKS_GET_TIMEOUT){
+      util.getReplies(c['id']).then((r){
+        store.gotReplies(r);
+      });
+    }
+    replies = new List.from( store.state.localCroaks.repliesOf(c['id']).toList() );
+    replies.forEach((c) => c['vis'] = true);
   }
 
   void copyURL(){

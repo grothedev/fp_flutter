@@ -32,7 +32,7 @@ TODO:
 * implement usage stats for API
 
 SharedPreferences:
-  * last_croaks_get (int) : ms since croaks were last retreived
+  * last_croaks_get (string) : JSON Map<int, int> ms since croaks were last retreived for each parent id (0=root feed, anything else is replies of some croak)
   * lat (double) : latitude of user
   * lon (double) : longitude of user
   * exclusive (bool) : get croaks by contain all(1) or some(0) of given tags

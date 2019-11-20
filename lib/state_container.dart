@@ -309,8 +309,10 @@ class StateContainerState extends State<StateContainer>{
       state.newReplies = true; //so that feed knows to hide replies
     });
     state.localCroaks.add(r, false, false);
+    state.lastCroaksGet[r[0]['p_id']] = DateTime.now().millisecondsSinceEpoch;
     print('got replies: ' + state.localCroaks.repliesOf(r[0]['p_id']).toList().map((c)=>c['id']).toString());
     prefs.setString('local_croaks', state.localCroaks.toJSON());
+    prefs.setString('last_croaks_get', state.localCroaks.toString());
   }
 
   void gotFeed(List c){

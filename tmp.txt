@@ -1,0 +1,8 @@
+- when click on croak in list, push new CroakDetailScreen.
+- upon CroakDetailScreen build, get the replies of that croak
+    - refer to croak store initially (unless they haven't been retrieved before), force api call when manual refresh. this should be very similar fetchCroaks() of FeedScreen
+    -
+
+CroakFeed should no longer check visibility of the croak list it's handed; that should be handled by the object that creates it
+
+make AppState.lastCroaksGet int a Map<int, int> associating parent id to last time api called, so that it can be kept track of for each CroakDetailScreen
