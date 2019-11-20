@@ -40,7 +40,6 @@ class AppState {
   double lat, lon;
   bool needsUpdate = true; //this is used for some UI updates
   bool feedOutdated = true; //has the query been modified since the last time the croaks were fetched from server?
-  bool updateReplies = true;
   bool newReplies = false;
   Map<int, int> lastCroaksGet; //milliseconds since epoch since last time croaks were fetched for each p_id (0=root)
   FlutterLocalNotificationsPlugin notificationsPlugin;
@@ -54,6 +53,7 @@ class AppState {
     //needsUpdate = true;
     query = Query();
   }
+  
 }
 
 class Query{

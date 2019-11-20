@@ -114,11 +114,12 @@ class StateContainerState extends State<StateContainer>{
     } else {
       prefs.setBool('ran_before', true); 
       prefs.setBool('feed_outdated', true);
+      prefs.setString('last_croaks_get', jsonEncode(state.lastCroaksGet));
       state.feedOutdated = true;    
       state.query.localTags = new LocalTagsStore(null); 
       prefs.setString('local_tags', '');
       state.localCroaks = new LocalCroaksStore(null);
-      prefs.setString('local_croaks', '');
+      prefs.setString('local_croaks', state.localCroaks.toJSON());
       prefs.setInt('notify_check_interval', 15);
     }
     
@@ -297,27 +298,21 @@ class StateContainerState extends State<StateContainer>{
     prefs.setString('local_croaks', state.localCroaks.toJSON());
   }
 
-  void updateReplies(){
-    setState((){
-      state.updateReplies = true;
-    });
-  }
   void gotReplies(List r){
     if (r==null || r.length == 0) return;
     setState(() {
-      state.updateReplies = false;
-      state.newReplies = true; //so that feed knows to hide replies
+      state.newReplies = true; //so that feed knows to hide replies. TODO maybe unnecessary
     });
     state.localCroaks.add(r, false, false);
     state.lastCroaksGet[r[0]['p_id']] = DateTime.now().millisecondsSinceEpoch;
     print('got replies: ' + state.localCroaks.repliesOf(r[0]['p_id']).toList().map((c)=>c['id']).toString());
     prefs.setString('local_croaks', state.localCroaks.toJSON());
-    prefs.setString('last_croaks_get', state.localCroaks.toString());
+    prefs.setString('last_croaks_get', jsonEncode(state.localCroaks));
   }
 
   void gotFeed(List c){
     state.lastCroaksGet[0] = DateTime.now().millisecondsSinceEpoch;
-    prefs.setString('last_croaks_get', state.lastCroaksGet.toString());
+    prefs.setString('last_croaks_get', jsonEncode( state.lastCroaksGet ) ) ;
     prefs.setBool('feed_outdated', false);
     //prefs.setString('feed_croaks', jsonEncode(state.feed));
     state.localCroaks.croaks.removeWhere((lc){
@@ -348,7 +343,7 @@ class StateContainerState extends State<StateContainer>{
     
     prefs.setDouble('lat', state.lat);
     prefs.setDouble('lon', state.lon);
-    prefs.setString('last_croaks_get', state.lastCroaksGet.toString());
+    prefs.setString('last_croaks_get', jsonEncode(state.lastCroaksGet) );
     prefs.setInt('radius', state.query.radius);
 
     prefs.setBool('feed_outdated', false);

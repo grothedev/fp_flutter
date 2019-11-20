@@ -63,6 +63,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
   List replies;
   String subToggleText;
   StateContainerState store;
+  bool updateReplies; 
 
   //this stuff is now in the compose croak dialog
   //final replyController = TextEditingController();
@@ -81,7 +82,6 @@ class CroakDetailState extends State<CroakDetailScreen>{
   @override
   void initState(){
     super.initState(); 
-    fetchReplies(false); 
   }
 
 
@@ -94,7 +94,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
       tags.add(c['tags'][j]['label']);
     }
 
-    if (store.state.updateReplies) getReplies();
+    if (updateReplies) fetchReplies(false);
     
     String croakURL = ro_url_pre+c['id'].toString();
     return Scaffold( 
@@ -244,7 +244,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
         floatingActionButton: FloatingActionButton(
           onPressed: (){
             showDialog(context: context, builder: (context) {
-              return ComposeCroakDialog(c);
+              return ComposeCroakDialog(c, onSubmitReply);
             });
           },
           child: Icon(Icons.reply),
@@ -361,5 +361,10 @@ class CroakDetailState extends State<CroakDetailScreen>{
         contentPadding: EdgeInsets.all(10),
       );
     });
+  }
+
+  //what happens upon reply submission, called by the compose dialog
+  void onSubmitReply(){
+    //TODO update the reply list on this screen and add the reply to LCS
   }
 }

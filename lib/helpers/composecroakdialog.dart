@@ -19,6 +19,7 @@ along with Frog Pond.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 
+import 'package:FrogPond/screens/croakdetail.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../state_container.dart';
@@ -39,8 +40,9 @@ class ComposeCroakDialog extends Dialog{
   bool anon = true;
   StateContainerState store;
   bool loading = false;
+  Function onSubmitReply;
 
-  ComposeCroakDialog(this.parent);
+  ComposeCroakDialog(this.parent, this.onSubmitReply);
   
   @override
   Widget build(BuildContext context){
@@ -113,7 +115,8 @@ class ComposeCroakDialog extends Dialog{
                               util.submitReply(parent['id'], contentController.text, parent['tags'], true, store.state.location).then((s){
                                 if (s){
                                   Navigator.pop(context);
-                                  StateContainer.of(context).updateReplies();
+                                  //StateContainer.of(context).updateReplies();
+                                  onSubmitReply();
                                 } else {
                                   Scaffold.of(context).showSnackBar(SnackBar(content: Text('Reply Failed')));
                                 }
