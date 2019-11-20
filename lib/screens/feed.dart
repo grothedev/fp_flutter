@@ -62,6 +62,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
     super.initState();
     //feed = [];
     print('initing FeedState');
+
   }
 
   @override
@@ -70,6 +71,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
     store = StateContainer.of(context);
     localCroaks = store.state.localCroaks;
     
+
     //feed = store.state.localCroaks.getFeed(sortMethod);
     if (store.state.feedOutdated) stalled = false;
     if (!stalled) fetchCroaks(false);
@@ -157,10 +159,9 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
               icon: Icon(Icons.filter_list),
               onSelected: (fm){
                 setState(() {
-                  filterMethod = fm;  
+                  filterMethod = fm;
+                  filterFeed();
                 });
-                
-                filterFeed();
               },
 
               
@@ -393,23 +394,23 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
     localCroaks.croaks.forEach((c)=>c['vis']=true);
     if (filterMethod == FilterMethod.query){
       Query q = store.state.query;
-      setState(() {
+      //setState(() {
         localCroaks.croaks.forEach((c){ //this logic is convoluted, but just setting feed = localCroaks.ofQuery(q) doesn't work for some reason
           if (localCroaks.ofQuery(q).map((e)=>e['id']).contains(c['id'])) c['vis'] = true;
           else c['vis'] = false;  
         });
-      });
+      //});
       Toast.show('Showing Query Result', context);
     } else if (filterMethod == FilterMethod.subs){
-      setState((){
+      //setState((){
         localCroaks.croaks.forEach((c){
           if (c['listen']==true) c['vis'] = true;
           else c['vis'] = false;
         });
-      });
+      //});
       Toast.show('Showing Subscribed-To Croaks', context);
     } else if (filterMethod == FilterMethod.unread){
-      setState(() {
+      //setState(() {
         localCroaks.getHasUnread().forEach((c){
           c['vis'] = true;
           c['feed'] = true;
@@ -421,7 +422,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
           if (c['has_unread']) c['vis'] = true;
           else c['vis'] = false;
         });
-      });
+      //});
       Toast.show('Showing Subscribed-To Croaks with new Replies', context);
     }
   }

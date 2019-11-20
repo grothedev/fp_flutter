@@ -94,7 +94,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
     }
 
     if (store.state.updateReplies) getReplies();
-
+    
     String croakURL = ro_url_pre+c['id'].toString();
     return Scaffold( 
         appBar: AppBar(
@@ -232,7 +232,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
               flex: 1,
               child: replies != null && replies.length > 0 ? 
                 CroakFeed(
-                  store.state.localCroaks.repliesOf(c['id']), getReplies, pip: c['ip']
+                  replies, getReplies, pip: c['ip']
                 ) :
                 Text('No Replies')
             ),
@@ -259,9 +259,11 @@ class CroakDetailState extends State<CroakDetailScreen>{
           DateTime dt = DateFormat('yyyy-MM-d HH:mm').parse(r[i]['created_at']).toLocal();
           r[i]['timestampStr'] = dt.year.toString() + '/' + dt.month.toString() + '/' + dt.day.toString() + ' - ' + dt.hour.toString() + ':' + dt.minute.toString();
         }
-        this.replies = r;
+        
       //});
-      store.gotReplies(r);
+        store.gotReplies(r);
+        replies = store.state.localCroaks.repliesOf(c['id']);
+        replies.forEach((c) => c['vis'] = true);
     });
     c['has_unread'] = false;
   }
