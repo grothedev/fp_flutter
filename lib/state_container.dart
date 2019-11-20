@@ -72,7 +72,7 @@ class StateContainerState extends State<StateContainer>{
     if (widget.state != null){
       print('state container widget already has appstate');
       state = widget.state;
-      prefs = widget.prefs;
+      prefs = widget.prefs; 
     } else {
       print('init state container widget appstate');
       state = AppState();
@@ -318,7 +318,7 @@ class StateContainerState extends State<StateContainer>{
     prefs.setBool('feed_outdated', false);
     //prefs.setString('feed_croaks', jsonEncode(state.feed));
     state.localCroaks.croaks.removeWhere((lc){
-      return !c.map((e)=>e['id']).contains(lc['id']);
+      return !c.map((e)=>e['id']).toList().contains(lc['id']);
     });
     state.localCroaks.add(c, true, false);
     prefs.setString('local_croaks', state.localCroaks.toJSON());

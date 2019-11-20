@@ -28,7 +28,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 
 //String host = 'grothe.ddns.net';
-//String host = '192.168.1.5'; //tmp local
+//String host = '192.168.1.18'; //tmp local
 String host = '173.22.78.225';
 int port = 8090;
 String api_url = 'http://' + host + ':' + port.toString() + '/api/'; 

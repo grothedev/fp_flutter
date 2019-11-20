@@ -70,6 +70,7 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
     }
     print(composeTags.getLabels().toString());
 
+    /* TODO test this (disabled button when croaking)
     if (store.state.croaking){
       //originally i had a more dynamic implementation, where screens could still be switched between while uploading, but i was having some issues dealing with the widget tree stuff.
       //so i will leave it like this for now. eventually i should implement the original idea, because that would useful for large files
@@ -79,8 +80,8 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
             Text('Croaking...'),
           ],elevation: 3,
         );
-    
     }
+    */
     return Scaffold(
       //appBar: ScreenTitle('Croak with your fellow tadpoles'),
       appBar: AppBar(
@@ -230,7 +231,7 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                       padding: EdgeInsets.symmetric(vertical: 12.0),
                       child: Center(
                         child: IgnorePointer(
-                          ignoring: false,
+                          ignoring: store.state.croaking,
 
                           child: RaisedButton(
                             
@@ -263,7 +264,7 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                                     Scaffold.of(context).removeCurrentSnackBar();
                                     Scaffold.of(context).showSnackBar(SnackBar(content: Text('Failed to Croak')));
                                   }
-                                  store.croaked(r);
+                                  store.croaked(r); //TODO add to LCS with tags
                                 }).catchError((e){
                                   print('compose croak error: ' + e.toString());
                                   store.croaked(null);

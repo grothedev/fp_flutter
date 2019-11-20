@@ -2,12 +2,12 @@ FrogPond mobile application, made with flutter. https://flutter.dev/
 
 TODO:
 * first priority 
-  - fix new croak no tags
+  - refactor making replies. fix showing up in root feed. 
   - fix can't click on links
   - loading animation (croaking)
   - fix sorting
+  - why does it ask for location permission 3 times?
   - refresh suggested tags
-  - distance on list of croaks
 * have croaks get deleted after time of inactivity
 * save sort preferences
 * implement data analysis (show locations of croaks w/ tags etc. )

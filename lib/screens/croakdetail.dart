@@ -87,7 +87,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
   @override
   Widget build(BuildContext context) {
     store = StateContainer.of(context);
-    print(c['files'].toString());
+    print('files: ' + c['files'].toString());
     List tags = [];
     for (int j = 0; c['tags'] != null && j < c['tags'].length; j++){
       tags.add(c['tags'][j]['label']);
@@ -101,7 +101,6 @@ class CroakDetailState extends State<CroakDetailScreen>{
           title: c['p_id'] == null || c['p_id'] == 0 ? Text(c['timestampStr']) 
           : Row(
             children: [
-              Text(c['timestampStr'] + ' ; Reply to '),
               IconButton(
                 tooltip: c['timestampStr'] + ' ; Reply to ' + c['p_id'].toString(),
                 icon: Icon(Icons.arrow_upward),
@@ -111,6 +110,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
                   ));
                 },
               ),
+              Text(c['timestampStr']),
             ]
           ),
           actions: [
@@ -272,6 +272,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
 
   Widget fileView(List files){
     String fn = files[0]['filename'].toString();
+    print(fn);
     /*if (fn.endsWith('.mp4') || fn.endsWith('.mov') || fn.endsWith('mpeg')){
       VideoPlayerController vpc = VideoPlayerController.network('http://' + api.host + '/f/' + fn);
       vpc.initialize().then((_){
@@ -300,7 +301,12 @@ class CroakDetailState extends State<CroakDetailScreen>{
             child: Image.network(
               'http://' + api.host + '/f/' + fn,
               fit: BoxFit.fitHeight,
-              
+              semanticLabel: "attached image",
+              loadingBuilder: (context, w, e){ 
+                                  return e == null ? w : 
+                                    CircularProgressIndicator(
+                                      value: e.cumulativeBytesLoaded / e.expectedTotalBytes,
+                                    ); },
             ),
           )
         ),

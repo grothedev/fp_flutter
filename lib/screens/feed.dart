@@ -96,7 +96,6 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
       body = Container(
         child: CroakFeed(localCroaks.croaks, refresh)
       );  
-    
     }
 
     if (error){
@@ -274,6 +273,9 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
         error = false;
       });
       store.gotFeed(cs);
+      setState(() {
+        body = body;
+      });
       //feed = store.state.localCroaks.croaks;
       localCroaks.croaks.forEach((c){
         if (c['feed'] || c['p_id'] == 0) c['vis'] = true;
