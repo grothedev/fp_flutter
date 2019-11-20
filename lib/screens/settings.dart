@@ -269,7 +269,9 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                       ),
                       motd != null ?
                       Container( //DEV MESSAGE
-                        child: Linkify(text: motd),
+                        child: Linkify(text: motd, 
+                          onOpen: (link)=>{ launch(link.url) }
+                        ),
                         decoration: BoxDecoration(
                           border: Border.all(color: Colors.grey)
                         ),

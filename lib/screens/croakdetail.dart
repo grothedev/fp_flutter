@@ -262,7 +262,8 @@ class CroakDetailState extends State<CroakDetailScreen>{
         
       //});
         store.gotReplies(r);
-        replies = store.state.localCroaks.repliesOf(c['id']);
+        
+        replies = new List.from( store.state.localCroaks.repliesOf(c['id']).toList() );
         replies.forEach((c) => c['vis'] = true);
     });
     c['has_unread'] = false;

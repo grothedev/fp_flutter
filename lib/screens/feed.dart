@@ -70,7 +70,10 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
     super.build(context);
     store = StateContainer.of(context);
     localCroaks = store.state.localCroaks;
-    
+    /*if (store.state.newReplies){//TODO i think i can create a better design for this. 
+      filterFeed();
+      store.state.newReplies = false;
+    } */
 
     //feed = store.state.localCroaks.getFeed(sortMethod);
     if (store.state.feedOutdated) stalled = false;
@@ -160,8 +163,8 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
               onSelected: (fm){
                 setState(() {
                   filterMethod = fm;
-                  filterFeed();
                 });
+                filterFeed();
               },
 
               

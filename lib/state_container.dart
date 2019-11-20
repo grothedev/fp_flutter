@@ -306,6 +306,7 @@ class StateContainerState extends State<StateContainer>{
     if (r==null || r.length == 0) return;
     setState(() {
       state.updateReplies = false;
+      state.newReplies = true; //so that feed knows to hide replies
     });
     state.localCroaks.add(r, false, false);
     print('got replies: ' + state.localCroaks.repliesOf(r[0]['p_id']).toList().map((c)=>c['id']).toString());
