@@ -235,7 +235,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
               flex: 1,
               child: replies != null && replies.length > 0 ? 
                 CroakFeed(
-                  replies, getReplies, pip: c['ip']
+                  replies, ()=>fetchReplies(true), pip: c['ip']
                 ) :
                 Text('No Replies')
             ),
@@ -274,7 +274,8 @@ class CroakDetailState extends State<CroakDetailScreen>{
       });
     }
     replies = new List.from( store.state.localCroaks.repliesOf(c['id']).toList() );
-    replies.forEach((r) => r['vis'] = true);
+    //replies.forEach((r) => r['vis'] = true);
+    print(replies);
   }
 
   void copyURL(){

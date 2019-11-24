@@ -100,7 +100,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
       );
     } else {
       body = Container(
-        child: CroakFeed(store.state.localCroaks.croaks, refresh)
+        child: CroakFeed(store.state.localCroaks.croaks.where((c)=>c['vis']==true).toList(), refresh)
       );  
     }
 
@@ -390,6 +390,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   //i know that this method uses a class var whereas sortFeed() uses arg. it is easier to do it this way for filtering
   void filterFeed(){ 
     localCroaks.croaks.forEach((c)=>c['vis']=true);
+    
     if (filterMethod == FilterMethod.query){
       Query q = store.state.query;
       //setState(() {

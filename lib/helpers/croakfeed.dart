@@ -70,7 +70,8 @@ class CroakFeedState extends State<CroakFeed>{
   @override
   Widget build(BuildContext context) {
     print('building CroakFeed');
-    listItems = croaks.where((c)=>c['vis']==true).toList();
+    //listItems = croaks.where((c)=>c['vis']==true).toList();
+    listItems = List.from(croaks);
     return SmartRefresher(
         enablePullDown: true,
         enablePullUp: false,
