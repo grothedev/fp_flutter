@@ -18,6 +18,7 @@ You should have received a copy of the GNU General Public License
 along with Frog Pond.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import 'dart:collection';
 import 'dart:convert';
 
 import 'package:background_fetch/background_fetch.dart';
@@ -89,8 +90,10 @@ class StateContainerState extends State<StateContainer>{
     print('FROGPOND RESTORING SHARED PREFS');
 
     if (prefs.containsKey('ran_before')){
-      state.lastCroaksGet = jsonDecode( prefs.getString('last_croaks_get') );
+      state.lastCroaksGet = Map.from(jsonDecode( prefs.getString('last_croaks_get') )).cast<String, int>();
       state.feedOutdated = prefs.getBool('feed_outdated');
+      state.localCroaks = LocalCroaksStore.fromJSON(prefs.getString('local_croaks'));
+      print(LocalCroaksStore.fromJSON(prefs.getString('local_croaks')));
 
       state.lat = prefs.getDouble('lat');
       state.lon = prefs.getDouble('lon');
@@ -101,7 +104,6 @@ class StateContainerState extends State<StateContainer>{
       if (state.query.radius == null) state.query.radius = 15;
       //state.query.localTags = new LocalTagsStore(prefs.getStringList('tags')); //NOTE: currently cant save if the tag is being used. can only save list of strings
       state.query.localTags = LocalTagsStore.fromJSON(prefs.getString('local_tags'));
-      state.localCroaks = LocalCroaksStore.fromJSON(prefs.getString('local_croaks'));
 
       //state.feed = jsonDecode(prefs.getString('feed_croaks'));
       state.notifyCheckInterval = prefs.getInt('notify_check_interval');
@@ -112,8 +114,9 @@ class StateContainerState extends State<StateContainer>{
       if (!prefs.containsKey('notify_check_interval')) prefs.setInt('notify_check_interval', 15);
       state.notifyCheckInterval = prefs.getInt('notify_check_interval');
     } else {
-      prefs.setBool('ran_before', true); 
+      prefs.setBool('ran_before', true);   
       prefs.setBool('feed_outdated', true);
+      state.lastCroaksGet = Map<String, int>();
       prefs.setString('last_croaks_get', jsonEncode(state.lastCroaksGet));
       state.feedOutdated = true;    
       state.query.localTags = new LocalTagsStore(null); 
@@ -304,15 +307,15 @@ class StateContainerState extends State<StateContainer>{
       state.newReplies = true; //so that feed knows to hide replies. TODO maybe unnecessary
     });
     state.localCroaks.add(r, false, false);
-    state.lastCroaksGet[r[0]['p_id']] = DateTime.now().millisecondsSinceEpoch;
+    state.lastCroaksGet[r[0]['p_id'].toString()] = DateTime.now().millisecondsSinceEpoch;
     print('got replies: ' + state.localCroaks.repliesOf(r[0]['p_id']).toList().map((c)=>c['id']).toString());
     prefs.setString('local_croaks', state.localCroaks.toJSON());
-    prefs.setString('last_croaks_get', jsonEncode(state.localCroaks));
+    prefs.setString('last_croaks_get', state.localCroaks.toJSON());
   }
 
   void gotFeed(List c){
-    state.lastCroaksGet[0] = DateTime.now().millisecondsSinceEpoch;
-    prefs.setString('last_croaks_get', jsonEncode( state.lastCroaksGet ) ) ;
+    state.lastCroaksGet['0'] = DateTime.now().millisecondsSinceEpoch;
+    prefs.setString('last_croaks_get', jsonEncode(state.lastCroaksGet) ) ;
     prefs.setBool('feed_outdated', false);
     //prefs.setString('feed_croaks', jsonEncode(state.feed));
     state.localCroaks.croaks.removeWhere((lc){

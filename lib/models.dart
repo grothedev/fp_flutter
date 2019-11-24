@@ -18,6 +18,7 @@ You should have received a copy of the GNU General Public License
 along with Frog Pond.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
 import 'package:intl/intl.dart';
@@ -41,12 +42,12 @@ class AppState {
   bool needsUpdate = true; //this is used for some UI updates
   bool feedOutdated = true; //has the query been modified since the last time the croaks were fetched from server?
   bool newReplies = false;
-  Map<int, int> lastCroaksGet; //milliseconds since epoch since last time croaks were fetched for each p_id (0=root)
+  Map<String, int> lastCroaksGet; //milliseconds since epoch since last time croaks were fetched for each p_id (0=root). String -> int to keep w/ JSON format; would be ideal to have int -> int
   FlutterLocalNotificationsPlugin notificationsPlugin;
   int notifyCheckInterval; //minutes between checking for conditions which trigger notification
 
   AppState(){
-    lastCroaksGet = Map<int, int>();
+    lastCroaksGet = Map<String, int>();
     fetchingCroaks = false;
     croaking = false;
     hasUnread = false;

@@ -244,6 +244,11 @@ double distance(double latA, double lonA, double latB, double lonB){
   return acos( sin(latA)*sin(latB) + cos(latA)*cos(latB)*cos(lonA-lonB) ) * 6371;
 }
 
+//my own jsonEncode made when i had to deal with a Map<int, int> (convert it to Map<String, int>)
+String jsonEncodeM(Map m){
+  return jsonEncode( m.map( (i, t) => MapEntry<String, int>(i.toString(), t) ) );
+}
+
 //log an error msg to a text file
 void errLog(String msg) async {
   File f = await localFile('error.log');

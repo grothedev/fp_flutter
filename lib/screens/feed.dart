@@ -69,6 +69,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   Widget build(BuildContext context) {
     super.build(context);
     store = StateContainer.of(context);
+    print(store.state.localCroaks.toString());
     localCroaks = store.state.localCroaks;
     /*if (store.state.newReplies){//TODO i think i can create a better design for this. 
       filterFeed();
@@ -99,7 +100,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
       );
     } else {
       body = Container(
-        child: CroakFeed(localCroaks.croaks, refresh)
+        child: CroakFeed(store.state.localCroaks.croaks, refresh)
       );  
     }
 
@@ -266,21 +267,15 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
         return;
       }
       
-      List cs = res;
-      for (int i = 0; i < cs.length; i++){
-        DateTime dt = DateFormat('yyyy-MM-d HH:mm').parse(cs[i]['created_at']).toLocal();
-        cs[i]['timestampStr'] = dt.year.toString() + '/' + dt.month.toString() + '/' + dt.day.toString() + ' - ' + dt.hour.toString() + ':' + dt.minute.toString();
-      } 
       setState((){
         fetching = false;
         stalled = true;
         error = false;
       });
-      store.gotFeed(cs);
+      store.gotFeed(res);
       setState(() {
         body = body;
       });
-      //feed = store.state.localCroaks.croaks;
       localCroaks.croaks.forEach((c){
         if (c['feed'] || c['p_id'] == 0) c['vis'] = true;
       });

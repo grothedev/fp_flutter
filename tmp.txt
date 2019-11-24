@@ -6,3 +6,8 @@
 CroakFeed should no longer check visibility of the croak list it's handed; that should be handled by the object that creates it
 
 make AppState.lastCroaksGet int a Map<int, int> associating parent id to last time api called, so that it can be kept track of for each CroakDetailScreen
+
+
+for submitting replies:
+    - upon post success, have the new reply on the detail screen
+    -

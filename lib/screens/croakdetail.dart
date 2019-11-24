@@ -63,7 +63,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
   List replies;
   String subToggleText;
   StateContainerState store;
-  bool updateReplies; 
+  bool updateReplies = true; 
 
   //this stuff is now in the compose croak dialog
   //final replyController = TextEditingController();
@@ -88,6 +88,8 @@ class CroakDetailState extends State<CroakDetailScreen>{
   @override
   Widget build(BuildContext context) {
     store = StateContainer.of(context);
+    print(store.state.toString());
+
     print('files: ' + c['files'].toString());
     List tags = [];
     for (int j = 0; c['tags'] != null && j < c['tags'].length; j++){
@@ -264,13 +266,14 @@ class CroakDetailState extends State<CroakDetailScreen>{
   }
 
   void fetchReplies(bool force){
-    if (force || DateTime.now().millisecondsSinceEpoch - store.state.lastCroaksGet[c['id']] > CROAKS_GET_TIMEOUT){
+    if (force || store.state.lastCroaksGet[c['id']] == null || DateTime.now().millisecondsSinceEpoch - store.state.lastCroaksGet[c['id'].toString()] > CROAKS_GET_TIMEOUT){
       util.getReplies(c['id']).then((r){
         store.gotReplies(r);
+        print('got ' + r.length.toString() + ' replies');
       });
     }
     replies = new List.from( store.state.localCroaks.repliesOf(c['id']).toList() );
-    replies.forEach((c) => c['vis'] = true);
+    replies.forEach((r) => r['vis'] = true);
   }
 
   void copyURL(){
