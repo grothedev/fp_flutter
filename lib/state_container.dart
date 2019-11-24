@@ -310,7 +310,7 @@ class StateContainerState extends State<StateContainer>{
     state.lastCroaksGet[r[0]['p_id'].toString()] = DateTime.now().millisecondsSinceEpoch;
     print('got replies: ' + state.localCroaks.repliesOf(r[0]['p_id']).toList().map((c)=>c['id']).toString());
     prefs.setString('local_croaks', state.localCroaks.toJSON());
-    prefs.setString('last_croaks_get', state.localCroaks.toJSON());
+    prefs.setString('last_croaks_get', jsonEncode(state.lastCroaksGet));
   }
 
   void gotFeed(List c){

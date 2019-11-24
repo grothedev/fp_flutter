@@ -266,7 +266,8 @@ class CroakDetailState extends State<CroakDetailScreen>{
   }
 
   void fetchReplies(bool force){
-    if (force || store.state.lastCroaksGet[c['id']] == null || DateTime.now().millisecondsSinceEpoch - store.state.lastCroaksGet[c['id'].toString()] > CROAKS_GET_TIMEOUT){
+    print(store.state.lastCroaksGet[c['id'].toString()]);
+    if (force || store.state.lastCroaksGet[c['id'].toString()] == null || DateTime.now().millisecondsSinceEpoch - store.state.lastCroaksGet[c['id'].toString()] > CROAKS_GET_TIMEOUT){
       util.getReplies(c['id']).then((r){
         store.gotReplies(r);
         print('got ' + r.length.toString() + ' replies');
