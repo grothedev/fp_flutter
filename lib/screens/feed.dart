@@ -69,8 +69,10 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   Widget build(BuildContext context) {
     super.build(context);
     store = StateContainer.of(context);
-    print(store.state.localCroaks.toString());
     localCroaks = store.state.localCroaks;
+    filterFeed();
+    print(store.state.localCroaks.toString());
+    
     /*if (store.state.newReplies){//TODO i think i can create a better design for this. 
       filterFeed();
       store.state.newReplies = false;
@@ -100,7 +102,8 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
       );
     } else {
       body = Container(
-        child: CroakFeed(store.state.localCroaks.croaks.where((c)=>c['vis']==true).toList(), refresh)
+        //child: CroakFeed(store.state.localCroaks.croaks.where((c)=>c['vis']==true).toList(), refresh)
+        child: CroakFeed(feed, refresh),
       );  
     }
 
@@ -390,7 +393,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   //i know that this method uses a class var whereas sortFeed() uses arg. it is easier to do it this way for filtering
   void filterFeed(){ 
     localCroaks.croaks.forEach((c)=>c['vis']=true);
-    
+
     if (filterMethod == FilterMethod.query){
       Query q = store.state.query;
       //setState(() {
@@ -424,6 +427,9 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
       //});
       Toast.show('Showing Subscribed-To Croaks with new Replies', context);
     }
+    //setState((){
+      feed = List.from(localCroaks.croaks.where((c)=>c['vis']));
+    //});
   }
 
   @override
