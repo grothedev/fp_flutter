@@ -1,0 +1,292 @@
+XARGS(1)                    General Commands Manual                   XARGS(1)
+
+NNAAMMEE
+       xargs - build and execute command lines from standard input
+
+SSYYNNOOPPSSIISS
+       xxaarrggss [_o_p_t_i_o_n_s] [_c_o_m_m_a_n_d [_i_n_i_t_i_a_l_-_a_r_g_u_m_e_n_t_s]]
+
+DDEESSCCRRIIPPTTIIOONN
+       This manual page documents the GNU version of xxaarrggss.  xxaarrggss reads items
+       from the standard input, delimited by blanks (which  can  be  protected
+       with  double or single quotes or a backslash) or newlines, and executes
+       the _c_o_m_m_a_n_d (default is _/_b_i_n_/_e_c_h_o) one or more times with any  _i_n_i_t_i_a_l_-
+       _a_r_g_u_m_e_n_t_s  followed  by items read from standard input.  Blank lines on
+       the standard input are ignored.
+
+       The command line for _c_o_m_m_a_n_d is built up until it reaches a  system-de‐
+       fined  limit  (unless  the  --nn and --LL options are used).  The specified
+       _c_o_m_m_a_n_d will be invoked as many times as necessary to use up  the  list
+       of  input  items.   In general, there will be many fewer invocations of
+       _c_o_m_m_a_n_d than there were items in the input.  This  will  normally  have
+       significant  performance  benefits.  Some commands can usefully be exe‐
+       cuted in parallel too; see the --PP option.
+
+       Because Unix filenames can contain blanks and  newlines,  this  default
+       behaviour is often problematic; filenames containing blanks and/or new‐
+       lines are incorrectly processed by xxaarrggss.  In these  situations  it  is
+       better to use the --00 option, which prevents such problems.   When using
+       this option you will need to ensure that the program which produces the
+       input  for  xxaarrggss  also  uses a null character as a separator.  If that
+       program is GNU ffiinndd for example, the --pprriinntt00 option does this for you.
+
+       If any invocation of the command exits with a status of 255, xxaarrggss will
+       stop  immediately  without reading any further input.  An error message
+       is issued on stderr when this happens.
+
+OOPPTTIIOONNSS
+       --00,, ----nnuullll
+              Input items are terminated by a null  character  instead  of  by
+              whitespace,  and the quotes and backslash are not special (every
+              character is taken literally).  Disables the end of file string,
+              which  is  treated  like  any other argument.  Useful when input
+              items might contain white space, quote  marks,  or  backslashes.
+              The  GNU  find  -print0  option produces input suitable for this
+              mode.
+
+       --aa _f_i_l_e,, ----aarrgg--ffiillee==_f_i_l_e
+              Read items from _f_i_l_e instead of standard input.  If you use this
+              option,  stdin  remains unchanged when commands are run.  Other‐
+              wise, stdin is redirected from _/_d_e_v_/_n_u_l_l.
+
+       ----ddeelliimmiitteerr==_d_e_l_i_m,, --dd _d_e_l_i_m
+              Input items are terminated  by  the  specified  character.   The
+              specified delimiter may be a single character, a C-style charac‐
+              ter escape such as \\nn, or an octal or hexadecimal  escape  code.
+              Octal  and  hexadecimal  escape  codes are understood as for the
+              pprriinnttff command.   Multibyte characters are not supported.   When
+              processing  the input, quotes and backslash are not special; ev‐
+              ery character in the input is taken literally.   The  --dd  option
+              disables any end-of-file string, which is treated like any other
+              argument.  You can use this option when the  input  consists  of
+              simply  newline-separated  items,  although  it is almost always
+              better to design your program to use ----nnuullll where this is possi‐
+              ble.
+
+       --EE _e_o_f_-_s_t_r
+              Set  the  end  of  file  string  to _e_o_f_-_s_t_r.  If the end of file
+              string occurs as a line of input, the rest of the input  is  ig‐
+              nored.   If  neither --EE nor --ee is used, no end of file string is
+              used.
+
+       --ee[_e_o_f_-_s_t_r], ----eeooff[_=_e_o_f_-_s_t_r]
+              This option is a synonym for the --EE option.  Use --EE instead, be‐
+              cause  it  is POSIX compliant while this option is not.  If _e_o_f_-
+              _s_t_r is omitted, there is no end of file string.  If  neither  --EE
+              nor --ee is used, no end of file string is used.
+
+       --II _r_e_p_l_a_c_e_-_s_t_r
+              Replace occurrences of _r_e_p_l_a_c_e_-_s_t_r in the initial-arguments with
+              names read from standard input.  Also, unquoted  blanks  do  not
+              terminate  input  items;  instead  the  separator is the newline
+              character.  Implies --xx and --LL 1.
+
+       --ii[_r_e_p_l_a_c_e_-_s_t_r], ----rreeppllaaccee[_=_r_e_p_l_a_c_e_-_s_t_r]
+              This option is a synonym for  --II_r_e_p_l_a_c_e_-_s_t_r  if  _r_e_p_l_a_c_e_-_s_t_r  is
+              specified.   If  the _r_e_p_l_a_c_e_-_s_t_r argument is missing, the effect
+              is the same as --II{}.  This option is deprecated; use --II instead.
+
+       --LL _m_a_x_-_l_i_n_e_s
+              Use at most _m_a_x_-_l_i_n_e_s nonblank input  lines  per  command  line.
+              Trailing blanks cause an input line to be logically continued on
+              the next input line.  Implies --xx.
+
+       --ll[_m_a_x_-_l_i_n_e_s], ----mmaaxx--lliinneess[=_m_a_x_-_l_i_n_e_s]
+              Synonym for the --LL option.  Unlike --LL, the _m_a_x_-_l_i_n_e_s argument is
+              optional.   If  _m_a_x_-_l_i_n_e_s  is not specified, it defaults to one.
+              The --ll option is deprecated since the POSIX  standard  specifies
+              --LL instead.
+
+       --nn _m_a_x_-_a_r_g_s,, ----mmaaxx--aarrggss=_m_a_x_-_a_r_g_s
+              Use  at  most  _m_a_x_-_a_r_g_s  arguments per command line.  Fewer than
+              _m_a_x_-_a_r_g_s arguments will be used if the size (see the --ss  option)
+              is  exceeded, unless the --xx option is given, in which case xxaarrggss
+              wwiillll eexxiitt..
+
+       --PP _m_a_x_-_p_r_o_c_s, ----mmaaxx--pprrooccss=_m_a_x_-_p_r_o_c_s
+              Run up to _m_a_x_-_p_r_o_c_s processes at a time; the default is  1.   If
+              _m_a_x_-_p_r_o_c_s  is 0, xxaarrggss will run as many processes as possible at
+              a time.  Use the --nn option or the --LL option with  --PP;  otherwise
+              chances  are  that  only  one exec will be done.  While xxaarrggss is
+              running, you can send its process a SIGUSR1 signal  to  increase
+              the  number  of  commands to run simultaneously, or a SIGUSR2 to
+              decrease the number.  You cannot increase it above an  implemen‐
+              tation-defined  limit  (which is shown with --show-limits).  You
+              cannot decrease it below 1.  xxaarrggss  never  terminates  its  com‐
+              mands; when asked to decrease, it merely waits for more than one
+              existing command to terminate before starting another.
+
+              PPlleeaassee nnoottee that it is up to the called  processes  to  properly
+              manage  parallel  access  to  shared resources.  For example, if
+              more than one of them tries to print to stdout, the output  will
+              be produced in an indeterminate order (and very likely mixed up)
+              unless the processes collaborate in some way  to  prevent  this.
+              Using  some  kind  of  locking scheme is one way to prevent such
+              problems.  In general, using a locking scheme will  help  ensure
+              correct  output  but  reduce  performance.  If you don't want to
+              tolerate the performance difference,  simply  arrange  for  each
+              process to produce a separate output file (or otherwise use sep‐
+              arate resources).
+
+       --oo,, ----ooppeenn--ttttyy
+              Reopen stdin as _/_d_e_v_/_t_t_y in the child process  before  executing
+              the  command.  This is useful if you want xxaarrggss to run an inter‐
+              active application.
+
+       --pp,, ----iinntteerraaccttiivvee
+              Prompt the user about whether to run each command line and  read
+              a  line from the terminal.  Only run the command line if the re‐
+              sponse starts with `y' or `Y'.  Implies --tt.
+
+       ----pprroocceessss--sslloott--vvaarr=_n_a_m_e
+              Set the environment variable _n_a_m_e to a unique value in each run‐
+              ning  child process.  Values are reused once child processes ex‐
+              it.  This can be used in a rudimentary load distribution scheme,
+              for example.
+
+       --rr,, ----nnoo--rruunn--iiff--eemmppttyy
+              If the standard input does not contain any nonblanks, do not run
+              the command.  Normally, the command is run once even if there is
+              no input.  This option is a GNU extension.
+
+       --ss _m_a_x_-_c_h_a_r_s, ----mmaaxx--cchhaarrss_=_m_a_x_-_c_h_a_r_s
+              Use at most _m_a_x_-_c_h_a_r_s characters per command line, including the
+              command and initial-arguments and the terminating nulls  at  the
+              ends of the argument strings.  The largest allowed value is sys‐
+              tem-dependent, and is calculated as the  argument  length  limit
+              for  exec, less the size of your environment, less 2048 bytes of
+              headroom.  If this value is more than 128KiB, 128Kib is used  as
+              the  default value; otherwise, the default value is the maximum.
+              1KiB is 1024 bytes.  xxaarrggss automatically adapts to tighter  con‐
+              straints.
+
+       ----sshhooww--lliimmiittss
+              Display  the limits on the command-line length which are imposed
+              by the operating system, xxaarrggss' choice of buffer size and the --ss
+              option.   Pipe  the  input  from  _/_d_e_v_/_n_u_l_l (and perhaps specify
+              ----nnoo--rruunn--iiff--eemmppttyy) if you don't want xxaarrggss to do anything.
+
+       --tt,, ----vveerrbboossee
+              Print the command line on the standard error output before  exe‐
+              cuting it.
+
+       --xx,, ----eexxiitt
+              Exit if the size (see the --ss option) is exceeded.
+
+       ----hheellpp Print a summary of the options to xxaarrggss and exit.
+
+       ----vveerrssiioonn
+              Print the version number of xxaarrggss and exit.
+
+EEXXAAMMPPLLEESS
+       ffiinndd //ttmmpp --nnaammee ccoorree --ttyyppee ff --pprriinntt || xxaarrggss //bbiinn//rrmm --ff
+
+       Find  files  named ccoorree in or below the directory //ttmmpp and delete them.
+       Note that this will work incorrectly if there are  any  filenames  con‐
+       taining newlines or spaces.
+
+       ffiinndd //ttmmpp --nnaammee ccoorree --ttyyppee ff --pprriinntt00 || xxaarrggss --00 //bbiinn//rrmm --ff
+
+       Find  files  named ccoorree in or below the directory //ttmmpp and delete them,
+       processing filenames in such a way that file or  directory  names  con‐
+       taining spaces or newlines are correctly handled.
+
+       ffiinndd //ttmmpp --ddeepptthh --nnaammee ccoorree --ttyyppee ff --ddeelleettee
+
+       Find  files  named ccoorree in or below the directory //ttmmpp and delete them,
+       but more efficiently than in the previous example (because we avoid the
+       need  to use ffoorrkk(2) and eexxeecc(2) to launch rrmm and we don't need the ex‐
+       tra xxaarrggss process).
+
+       ccuutt --dd:: --ff11 << //eettcc//ppaasssswwdd || ssoorrtt || xxaarrggss eecchhoo
+
+       Generates a compact listing of all the users on the system.
+
+EEXXIITT SSTTAATTUUSS
+       xxaarrggss exits with the following status:
+       0 if it succeeds
+       123 if any invocation of the command exited with status 1-125
+       124 if the command exited with status 255
+       125 if the command is killed by a signal
+       126 if the command cannot be run
+       127 if the command is not found
+       1 if some other error occurred.
+
+       Exit codes greater than 128 are used by the shell to  indicate  that  a
+       program died due to a fatal signal.
+
+SSTTAANNDDAARRDDSS CCOONNFFOORRMMAANNCCEE
+       As of GNU xargs version 4.2.9, the default behaviour of xxaarrggss is not to
+       have a logical end-of-file marker.  POSIX (IEEE Std 1003.1,  2004  Edi‐
+       tion) allows this.
+
+       The -l and -i options appear in the 1997 version of the POSIX standard,
+       but do not appear in the 2004 version of the standard.   Therefore  you
+       should use -L and -I instead, respectively.
+
+       The -o option is an extension to the POSIX standard for better compati‐
+       bility with BSD.
+
+       The POSIX standard allows implementations to have a limit on  the  size
+       of arguments to the eexxeecc functions.  This limit could be as low as 4096
+       bytes including the size of the environment.  For scripts to be  porta‐
+       ble,  they  must not rely on a larger value.  However, I know of no im‐
+       plementation whose actual limit is that small.  The  ----sshhooww--lliimmiittss  op‐
+       tion  can be used to discover the actual limits in force on the current
+       system.
+
+SSEEEE AALLSSOO
+       ffiinndd(1),  llooccaattee(1),  llooccaatteeddbb(5),  uuppddaatteeddbb(1),  ffoorrkk(2),   eexxeeccvvpp(3),
+       kkiillll(1), ssiiggnnaall(7),
+
+       The   full  documentation  for xxaarrggss is maintained as a Texinfo manual.
+       If the iinnffoo and xxaarrggss programs are properly installed at your site, the
+       command iinnffoo xxaarrggss should give you access to the complete manual.
+
+CCOOPPYYRRIIGGHHTT
+       Copyright  ©  1990-2019 Free Software Foundation, Inc.  License GPLv3+:
+       GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>.
+       This is free software: you are free  to  change  and  redistribute  it.
+       There is NO WARRANTY, to the extent permitted by law.
+
+BBUUGGSS
+       The  --LL  option  is incompatible with the --II option, but perhaps should
+       not be.
+
+       It is not possible for xxaarrggss to be used securely, since there will  al‐
+       ways  be  a  time gap between the production of the list of input files
+       and their use in the commands that xxaarrggss issues.  If other  users  have
+       access  to  the  system, they can manipulate the filesystem during this
+       time window to force the action of the commands xxaarrggss runs to apply  to
+       files  that  you didn't intend.  For a more detailed discussion of this
+       and related problems, please refer to the  ``Security  Considerations''
+       chapter in the findutils Texinfo documentation.  The --eexxeeccddiirr option of
+       ffiinndd can often be used as a more secure alternative.
+
+       When you use the --II option, each line read from the input  is  buffered
+       internally.    This means that there is an upper limit on the length of
+       input line that xxaarrggss will accept when used with  the  --II  option.   To
+       work  around this limitation, you can use the --ss option to increase the
+       amount of buffer space that xxaarrggss uses, and you can also use  an  extra
+       invocation  of  xxaarrggss to ensure that very long lines do not occur.  For
+       example:
+
+       ssoommeeccoommmmaanndd || xxaarrggss --ss 5500000000 eecchhoo || xxaarrggss --II ''{{}}'' --ss 110000000000 rrmm ''{{}}''
+
+       Here, the first invocation of xxaarrggss has no input line length limit  be‐
+       cause  it  doesn't  use  the --ii option.  The second invocation of xxaarrggss
+       does have such a limit, but we have ensured that the it  never  encoun‐
+       ters  a line which is longer than it can handle.   This is not an ideal
+       solution.  Instead, the --ii option should not impose a line length  lim‐
+       it,  which  is  why  this  discussion appears in the BUGS section.  The
+       problem doesn't occur with the output of ffiinndd(1) because it emits  just
+       one filename per line.
+
+       The  best  way  to  report  a  bug is to use the form at https://savan‐
+       nah.gnu.org/bugs/?group=findutils.  The reason for  this  is  that  you
+       will then be able to track progress in fixing the problem.   Other com‐
+       ments about xxaarrggss(1) and about the findutils package in general can  be
+       sent  to  the _b_u_g_-_f_i_n_d_u_t_i_l_s mailing list.  To join the list, send email
+       to _b_u_g_-_f_i_n_d_u_t_i_l_s_-_r_e_q_u_e_s_t_@_g_n_u_._o_r_g.
+
+                                                                      XARGS(1)

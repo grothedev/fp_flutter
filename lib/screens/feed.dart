@@ -79,7 +79,9 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
     } */
 
     //feed = store.state.localCroaks.getFeed(sortMethod);
-    if (store.state.feedOutdated) stalled = false;
+    if (store.state.feedOutdated) {
+      stalled = false;
+    }
     if (!stalled) fetchCroaks(false);
 
     if (fetching){
@@ -103,7 +105,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
     } else {
       body = Container(
         //child: CroakFeed(store.state.localCroaks.croaks.where((c)=>c['vis']==true).toList(), refresh)
-        child: CroakFeed(feed, refresh),
+        child: CroakFeed(feedPresented(), refresh),
       );  
     }
 
@@ -245,55 +247,58 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
       fetching = true;
     });
 
-    util.getCroaks(filterMethod == FilterMethod.query ? store.state.query : new Query(), (force || store.state.feedOutdated) ? 0 : store.state.lastCroaksGet[0], store.state.location).then((res){
-      
-      if (res == null){
-        print('failed to fetch croaks');
-        Scaffold.of(context).showSnackBar(SnackBar(content: Text('There was a problem while attempting to fetch croaks') ));
-        setState(() {
+    if (force || store.state.lastCroaksGet[0] == null || DateTime.now().millisecondsSinceEpoch - store.state.lastCroaksGet[0] > CROAKS_GET_TIMEOUT){
+      util.getCroaks(filterMethod == FilterMethod.query ? store.state.query : new Query(), store.state.location).then((res){
+        
+        if (res == null){
+          print('failed to fetch croaks');
+          Scaffold.of(context).showSnackBar(SnackBar(content: Text('There was a problem while attempting to fetch croaks') ));
+          setState(() {
+            fetching = false;
+            stalled = true;
+            error = true;
+          });
+          refreshController.refreshCompleted();
+          return;
+        }
+        if (res.length == 0){
+          Scaffold.of(context).showSnackBar(SnackBar(content: Text('There are no croaks within this area')));
+          setState(() {
+            fetching = false;
+            stalled = true;
+            error = true;
+          });
+          store.state.feedOutdated = false;
+          refreshController.refreshCompleted();
+          return;
+        }
+        
+        setState((){
           fetching = false;
           stalled = true;
-          error = true;
+          error = false;
+        });
+        store.gotFeed(res);
+        setState(() {
+          body = body;
+        });
+        localCroaks.croaks.forEach((c){
+          if (c['feed'] || c['p_id'] == 0) c['vis'] = true;
         });
         refreshController.refreshCompleted();
-        return;
-      }
-      if (res.length == 0){
-        Scaffold.of(context).showSnackBar(SnackBar(content: Text('There are no croaks within this area')));
-        setState(() {
-          fetching = false;
-          stalled = true;
-          error = true;
-        });
-        store.state.feedOutdated = false;
-        refreshController.refreshCompleted();
-        return;
-      }
-      
-      setState((){
-        fetching = false;
-        stalled = true;
-        error = false;
-      });
-      store.gotFeed(res);
-      setState(() {
-        body = body;
-      });
-      localCroaks.croaks.forEach((c){
-        if (c['feed'] || c['p_id'] == 0) c['vis'] = true;
-      });
-      refreshController.refreshCompleted();
-    }).timeout(new Duration(seconds: 15), 
-      onTimeout: (){
-        print('timed out while fetching croaks');
-        Scaffold.of(context).showSnackBar(SnackBar(content: Text('Unable to Reach Server to Fetch Croaks') ));
-        setState(() {
-          fetching = false;
-          stalled = true;
-          error = true;
-        });
-      }
-    );
+      }).timeout(new Duration(seconds: 15), 
+        onTimeout: (){
+          print('timed out while fetching croaks');
+          Scaffold.of(context).showSnackBar(SnackBar(content: Text('Unable to Reach Server to Fetch Croaks') ));
+          setState(() {
+            fetching = false;
+            stalled = true;
+            error = true;
+          });
+        }
+      );
+    }
+    feed = feedPresented();
     store.state.feedOutdated = false;
   }
 
@@ -385,6 +390,33 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
     }
   }
   
+  //returns the list of croaks which is the actual feed left after filtering and sorting
+  List feedPresented(){
+    List res = [];
+    switch (filterMethod){
+      case FilterMethod.query:
+        localCroaks.croaks.forEach((c){
+          if (localCroaks.satisfiesQuery(c['id'], store.state.query)) res.add(Map.from(c));
+          
+        });
+        break;
+      case FilterMethod.subs:
+        localCroaks.croaks.forEach((c){
+          if (c['listen']) res.add(Map.from(c));
+        });
+        break;
+      case FilterMethod.unread:
+        localCroaks.croaks.forEach((c){
+          if (c['has_unread']) res.add(Map.from(c));
+        });
+        break;
+    }
+    res.forEach((c){
+      c['vis'] = true;
+    });
+    return List.from(res);
+  }
+
   void notifyUnread(){
     Toast.show('You have unread comments', context);
     print('FEED HAS UNREAD');
@@ -402,7 +434,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
           else c['vis'] = false;  
         });
       //});
-      Toast.show('Showing Query Result', context);
+      //Toast.show('Showing Query Result', context);
     } else if (filterMethod == FilterMethod.subs){
       //setState((){
         localCroaks.croaks.forEach((c){
@@ -410,7 +442,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
           else c['vis'] = false;
         });
       //});
-      Toast.show('Showing Subscribed-To Croaks', context);
+      //Toast.show('Showing Subscribed-To Croaks', context);
     } else if (filterMethod == FilterMethod.unread){
       //setState(() {
         localCroaks.getHasUnread().forEach((c){
@@ -425,10 +457,10 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
           else c['vis'] = false;
         });
       //});
-      Toast.show('Showing Subscribed-To Croaks with new Replies', context);
+      //Toast.show('Showing Subscribed-To Croaks with new Replies', context);
     }
     //setState((){
-      feed = List.from(localCroaks.croaks.where((c)=>c['vis']));
+      feed = List.from(localCroaks.croaks.where((c)=>c['vis']).toList());
     //});
   }
 

@@ -46,22 +46,14 @@ Future<List> getTags(int n, LocationData location) async{
   return api.getTags(n, location.latitude, location.longitude);
 }
 
-Future<List> getCroaks(Query query, int lastUpdated, LocationData location) async{
-
-  if (lastUpdated == null || DateTime.now().millisecondsSinceEpoch - lastUpdated > CROAKS_GET_TIMEOUT){
-
+Future<List> getCroaks(Query query, LocationData location) async{
     List<String> tags;
     if (query.localTags != null) tags = query.localTags.getActiveTagsLabels();
     print('querying api for croaks');
-    List crks =  await queryCroaks(location, tags, query.tagsIncludeAll, query.radius);
+    List crks =  await queryCroaks(location, tags, query.tagsIncludeAll, query.radius).timeout(Duration(seconds: 16), onTimeout: (){
+      return null;
+    });
     return crks;
-  } else {
-    print('last got croaks ' + lastUpdated.toString() + '. loading croaks from shared prefs');
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String croaksStr = prefs.getString('local_croaks');
-    List<dynamic> cs = LocalCroaksStore.fromJSON(croaksStr).getFeed().toList(); //i think there is some redundance going on here
-    return cs;
-  }
 }
 
 Future<List> getReplies(dynamic pid) async{
