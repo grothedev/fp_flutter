@@ -27,6 +27,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:location/location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'consts.dart';
 import 'models.dart';
 import 'util.dart' as util;
 
@@ -299,6 +300,18 @@ class StateContainerState extends State<StateContainer>{
       });
     });
     prefs.setString('local_croaks', state.localCroaks.toJSON());
+  }
+
+  //get croaks, taking into account last fetched to decide if need api call, also based on filter method
+  Future<List> getFeed(bool forceAPI) async{ //TODO for replies too?
+    List res;
+    if (forceAPI || state.lastCroaksGet['0'] == null || DateTime.now().millisecondsSinceEpoch - state.lastCroaksGet['0'] > CROAKS_GET_TIMEOUT){
+      gotFeed( await util.getCroaks(state.query, state.location) );
+    }
+    res = List.from(state.localCroaks.croaks);
+    
+    //TODO apply filter logic
+    return res;
   }
 
   void gotReplies(List r){

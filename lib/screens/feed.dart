@@ -18,8 +18,12 @@ You should have received a copy of the GNU General Public License
 along with Frog Pond.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import 'package:FrogPond/helpers/croakfeed.dart';
+import 'package:FrogPond/state_container.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import '../consts.dart';
 
 //feed screen presents a CroakFeed widget which contains the desired croaks based on filter method and sort method
 class FeedScreen extends StatefulWidget {
@@ -32,10 +36,152 @@ class FeedScreen extends StatefulWidget {
   }
 }
 
+/*
+  responsibilities:
+    - use store function to get appropriate croaks from LCS, based on filter
+    - present a croak feed containing them
+    - 
+*/
 class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<FeedScreen>{
   
-  
-  
+  StateContainerState store;
+  bool loading = true; //waiting to get croaks from the store
+  List feed;
+  FilterMethod filterMethod = FilterMethod.query;
+
+  @override
+  void initState(){
+
+  }
+
+  @override
+  Widget build(BuildContext context){
+    store = StateContainer.of(context);
+    if (feed == null) {
+      refreshFeed(false);
+    }
+
+    Widget body;
+    if (loading){
+      body = Column(
+          children: [
+            Text("Fetching croaks..."),
+            Center(
+              child: Container(
+                width: 120, 
+                height: 120,
+                padding: EdgeInsets.all(24.0),
+                child: CircularProgressIndicator(
+                        value: null,
+                        semanticsLabel: 'Retreiving Croaks...',
+                        semanticsValue: 'Retreiving Croaks...',
+                    ),
+                )
+            ),
+          ]
+      );
+    } else {
+      body = Container(
+        child: CroakFeed(feed, ()=>refreshFeed(true)),
+      );
+    }
+    return Scaffold(
+      appBar: AppBar(
+          title: Text('The Pond'),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.refresh),
+              onPressed: () {
+                refreshFeed(true);
+              },
+            ),
+            PopupMenuButton( //feed filter settings
+              itemBuilder: (BuildContext context) => <PopupMenuEntry<FilterMethod>>[
+                PopupMenuItem(
+                  child: Text('Filter your feed')
+                ),
+                PopupMenuItem( //only show subs or non-subs
+                  value: FilterMethod.subs,
+                  child: Wrap( children: [ Icon(Icons.subscriptions), Text('  Subscribed-To', style: Theme.of(context).textTheme.body1) ] ),
+                ),
+                PopupMenuItem( //show all croaks or use query tags?
+                  value: FilterMethod.query,
+                  child: Wrap( children: [ Icon(Icons.category), Text('  Query', style: Theme.of(context).textTheme.body1) ] ),
+                ),
+                PopupMenuItem( //only show croaks with unread comments
+                  value: FilterMethod.unread,
+                  child: Wrap( children: [ Icon(Icons.mail), Text('  Unread Replies', style: Theme.of(context).textTheme.body1) ] ),
+                )
+              ],
+              icon: Icon(Icons.filter_list),
+              onSelected: (fm){
+                filterMethod = fm;
+                refreshFeed(false); //TODO should filter be handled in refresh or done separately, in feedscreen or store?
+              },
+
+              
+            ),
+            PopupMenuButton( //feed sort settings
+              itemBuilder: (BuildContext context) => <PopupMenuEntry<SortMethod>>[
+                PopupMenuItem(
+                  child: Text('Sort your feed')
+                ),
+                PopupMenuItem<SortMethod>(
+                  value: SortMethod.date_asc,
+                  child: Wrap( children: [ Icon(Icons.arrow_upward), Text('Time') ] ),
+                ),
+                PopupMenuItem<SortMethod>(
+                  value: SortMethod.date_des,
+                  child: Wrap( children: [ Icon(Icons.arrow_downward), Text('Time') ] ),
+                ),
+                PopupMenuItem<SortMethod>(
+                  value: SortMethod.dist_asc,
+                  child: Wrap( children: [ Icon(Icons.arrow_upward), Text('Distance') ] ),
+                ),
+                PopupMenuItem<SortMethod>(
+                  value: SortMethod.dist_des,
+                  child: Wrap( children: [ Icon(Icons.arrow_downward), Text('Distance') ] ),
+                ),
+                PopupMenuItem<SortMethod>(
+                  value: SortMethod.score_asc,
+                  child: Wrap( children: [ Icon(Icons.arrow_upward), Text('Score') ] ),
+                ),
+                PopupMenuItem<SortMethod>(
+                  value: SortMethod.score_des,
+                  child: Wrap( children: [ Icon(Icons.arrow_downward), Text('Score') ] ),
+                ),
+                PopupMenuItem<SortMethod>(
+                  value: SortMethod.pop_asc,
+                  child: Wrap( children: [ Icon(Icons.arrow_upward), Text('Replies') ] ),
+                ),
+                PopupMenuItem<SortMethod>(
+                  value: SortMethod.pop_des,
+                  child: Wrap( children: [ Icon(Icons.arrow_downward), Text('Replies') ] ),
+                ),
+              ],
+              onSelected: (v){
+                //TODO
+              },
+              icon: Icon(Icons.sort),
+            ),
+          ],
+        ),
+        body: body
+    );
+  }
+
+  void refreshFeed(bool forceAPI){
+    setState(() {
+      loading = true;  
+    });
+    store.getFeed(forceAPI).then((f){
+      setState(() {
+        feed = f;
+        loading = false;
+      });
+    });
+  }
+
   @override
   bool get wantKeepAlive => true;
 }
