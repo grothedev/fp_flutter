@@ -302,15 +302,14 @@ class StateContainerState extends State<StateContainer>{
     prefs.setString('local_croaks', state.localCroaks.toJSON());
   }
 
-  //get croaks, taking into account last fetched to decide if need api call, also based on filter method
+  //get croaks, taking into account last fetched to decide if need api call
   Future<List> getFeed(bool forceAPI) async{ //TODO for replies too?
     List res;
     if (forceAPI || state.lastCroaksGet['0'] == null || DateTime.now().millisecondsSinceEpoch - state.lastCroaksGet['0'] > CROAKS_GET_TIMEOUT){
       gotFeed( await util.getCroaks(state.query, state.location) );
-    }
+    } 
     res = List.from(state.localCroaks.croaks);
     
-    //TODO apply filter logic
     return res;
   }
 
@@ -331,6 +330,7 @@ class StateContainerState extends State<StateContainer>{
     prefs.setString('last_croaks_get', jsonEncode(state.lastCroaksGet) ) ;
     prefs.setBool('feed_outdated', false);
     //prefs.setString('feed_croaks', jsonEncode(state.feed));
+    if (c==null) return;
     state.localCroaks.croaks.removeWhere((lc){
       return !c.map((e)=>e['id']).toList().contains(lc['id']);
     });

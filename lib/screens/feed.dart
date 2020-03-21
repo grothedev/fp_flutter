@@ -48,6 +48,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   bool loading = true; //waiting to get croaks from the store
   List feed;
   FilterMethod filterMethod = FilterMethod.query;
+  Widget croakListWidget;
 
   @override
   void initState(){
@@ -60,7 +61,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
     if (feed == null) {
       refreshFeed(false);
     }
-
+    croakListWidget = new CroakFeed(feed, ()=>refreshFeed(true));
     Widget body;
     if (loading){
       body = Column(
@@ -82,7 +83,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
       );
     } else {
       body = Container(
-        child: CroakFeed(feed, ()=>refreshFeed(true)),
+        child: croakListWidget,
       );
     }
     return Scaffold(
@@ -95,11 +96,13 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
                 refreshFeed(true);
               },
             ),
+            /* filter functionality under construction
             PopupMenuButton( //feed filter settings
               itemBuilder: (BuildContext context) => <PopupMenuEntry<FilterMethod>>[
                 PopupMenuItem(
                   child: Text('Filter your feed')
                 ),
+                
                 PopupMenuItem( //only show subs or non-subs
                   value: FilterMethod.subs,
                   child: Wrap( children: [ Icon(Icons.subscriptions), Text('  Subscribed-To', style: Theme.of(context).textTheme.body1) ] ),
@@ -115,12 +118,12 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
               ],
               icon: Icon(Icons.filter_list),
               onSelected: (fm){
-                filterMethod = fm;
-                refreshFeed(false); //TODO should filter be handled in refresh or done separately, in feedscreen or store?
-              },
+                this.filterMethod = fm;
+                refreshFeed(false);
 
-              
-            ),
+              },
+            ),*/
+            /* sorting under construction
             PopupMenuButton( //feed sort settings
               itemBuilder: (BuildContext context) => <PopupMenuEntry<SortMethod>>[
                 PopupMenuItem(
@@ -163,7 +166,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
                 //TODO
               },
               icon: Icon(Icons.sort),
-            ),
+            ),*/
           ],
         ),
         body: body
@@ -173,13 +176,27 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   void refreshFeed(bool forceAPI){
     setState(() {
       loading = true;  
+      croakListWidget = Text("test2");
     });
     store.getFeed(forceAPI).then((f){
       setState(() {
-        feed = f;
+        feed = filterFeed(f); 
+        croakListWidget = new CroakFeed(f, ()=>refreshFeed(true));
         loading = false;
+
       });
     });
+  }
+
+  List filterFeed(List f){
+    switch (filterMethod){
+      case FilterMethod.query:
+        return f; //TODO
+      case FilterMethod.subs:
+        return [{'content': 'ay yo'}]; //List.from(f.where((c) => c['listen']));
+      case FilterMethod.unread:
+        return f.where((c) => c['has_unread']).toList();
+    }
   }
 
   @override
