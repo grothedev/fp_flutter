@@ -103,8 +103,12 @@ class FrogPondApp extends StatelessWidget {
             fontWeight: FontWeight.bold,
           )
         ),
-        dividerColor: Colors.black38,
-        
+        dividerColor: Colors.black38,        
+        iconTheme: IconThemeData(
+          size: 6,
+          color: Colors.white70,
+
+        )
       ),
       
       home: RootView(),

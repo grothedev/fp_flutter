@@ -85,7 +85,7 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
     return Scaffold(
       //appBar: ScreenTitle('Croak with your fellow tadpoles'),
       appBar: AppBar(
-        title: Text('Croak with your fellow frogs and tadpoles'),
+        title: Text('Croak'),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(8.0),
