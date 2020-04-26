@@ -96,7 +96,6 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
                 refreshFeed(true);
               },
             ),
-            /* filter functionality under construction
             PopupMenuButton( //feed filter settings
               itemBuilder: (BuildContext context) => <PopupMenuEntry<FilterMethod>>[
                 PopupMenuItem(
@@ -122,8 +121,8 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
                 refreshFeed(false);
 
               },
-            ),*/
-            /* sorting under construction
+            ),
+            
             PopupMenuButton( //feed sort settings
               itemBuilder: (BuildContext context) => <PopupMenuEntry<SortMethod>>[
                 PopupMenuItem(
@@ -166,7 +165,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
                 //TODO
               },
               icon: Icon(Icons.sort),
-            ),*/
+            ),
           ],
         ),
         body: body

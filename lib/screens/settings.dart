@@ -52,6 +52,7 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
   double radius;
   double radiusSlider = 30; //used just for the slider UI component
   String motd; //message from the dev, used for important info i want users to see
+  bool lefthand = false; //left handed user
 
   EdgeInsets formPadding = EdgeInsets.all(6.0);
   EdgeInsets formElemMargin = EdgeInsets.all(8.0);
@@ -86,6 +87,12 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
         radText.text = radius.toString();
       });
     } 
+    if (store.state.notifyCheckInterval != null){
+      setState(() {
+        notifyInterval = store.state.notifyCheckInterval;
+        notifyIntervalTC.text = notifyInterval.toString();
+      });
+    }
     if (store.state.lat == null || store.state.lon == null){
       store.getLocation();
       locStr = 'Getting Location...';
@@ -95,6 +102,7 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
     if (store.state.query.localTags.tags == null || store.state.query.localTags.tags.isEmpty){
       store.getSuggestedTags();
     }
+    lefthand = store.state.lefthand;
 
     if (motd == null){
       getMOTD();
@@ -123,6 +131,7 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
       ),
       body:  SingleChildScrollView(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Form(
               key: fk,
@@ -130,107 +139,132 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                 padding: EdgeInsets.all(12.0),
                 
                   child: Column(
-
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Here are some options to refine your search query',
-                        style: Theme.of(context).textTheme.title
+                        ' Refine your search query     ',
+                        style: Theme.of(context).textTheme.headline2                        
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text('Search Radius '),
-                          Container(
-                            constraints: BoxConstraints(
-                              maxWidth: .2 * MediaQuery.of(context).size.width
-                            ),
-                            child: TextFormField(
-                              keyboardType: TextInputType.number,
-                              controller: radText,
-                              onChanged: (rad){
-                                radius = double.parse(radText.text);
-                                print('got rad ' + radius.toString());
-                                SharedPreferences.getInstance().then((pref){
-                                  pref.setInt('radius', radius.toInt());
-                                });
-                                store.setRadius(radius.toInt());              
-                              },
-                              decoration: InputDecoration(
-                                labelText: 'Radius',  
+                      Padding(
+                        padding: EdgeInsets.only(left: 6, top: 12, right: 32),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(' Search Radius  ', style: Theme.of(context).textTheme.headline3),
+                            Container(
+                              constraints: BoxConstraints(
+                                maxWidth: .2 * MediaQuery.of(context).size.width
                               ),
-                              maxLines: 1,
-                              minLines: 1,
-                              expands: false,
-                              //initialValue: '0 = infinity',
+                              child: TextFormField(
+                                keyboardType: TextInputType.number,
+                                controller: radText,
+                                onChanged: (rad){
+                                  radius = double.parse(radText.text);
+                                  print('got rad ' + radius.toString());
+                                  SharedPreferences.getInstance().then((pref){
+                                    pref.setInt('radius', radius.toInt());
+                                  });
+                                  store.setRadius(radius.toInt());              
+                                },
+                                decoration: InputDecoration(
+                                  hintText: 'Radius',
+                                  labelText: 'kilometers',
+                                  contentPadding: EdgeInsets.all(0),
+                                  isDense: true,
+                                ),
+                                textAlign: TextAlign.left,
+                                style: Theme.of(context).textTheme.subtitle1,
+
+                                maxLines: 1,
+                                minLines: 1,
+                                expands: false,
+                                //initialValue: '0 = infinity',
+                              ),
+                              //margin: formElemMargin
                             ),
-                            margin: formElemMargin
-                          ),
-                          Text('km'),
-                        ]
+                          ]
+                        )
                       ),
                       Container(
                         padding: EdgeInsets.all(8)
                       ),
-                      /* should the slider be used?
-                      Expanded(
-                        child: Slider(
-                          onChanged: (v){
-                            double r = v;
-                            setState(() {
-                              radius = r;
-                              radText.text = radius.toString();
-                              SharedPreferences.getInstance().then((pref){
-                                pref.setInt('radius', r.toInt());
-                              });
-                              store.setRadius(r.toInt());
-                              radiusSlider = v;
-                            });
-                          },
-                          label: 'Distance',
-                          value: radiusSlider,
-                          min: 2,
-                          max: 100,
-                          divisions: 40,
-                          
-                        ),
-                      ),
-                      */
-                      Text('Popular Tags: '), //SUGGEST TAGS
-                      Container(
-                        margin: formElemMargin,
-                        child: (store.state.location == null || store.state.query.localTags.tags == null) ? Text('Loading Tags...') 
-                                        : LocalTags(store.state.query.localTags, store.useTag), //tell it what to do when one of its chips is selected (deprecated)
-                        padding: formPadding,
-                        decoration: BoxDecoration(
-                          //border: Border.all(color: Colors.black, width: 1, style: BorderStyle.solid)
-                          border: Border(
-                            bottom: BorderSide(color: Theme.of(context).dividerColor),
-                            top: BorderSide(color: Theme.of(context).dividerColor)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          lefthand ? Container() : Text(' Tags:   ', style: Theme.of(context).textTheme.headline3),
+                          Container(
+                            child: CheckboxListTile(
+                              title: Text('Require all tags'),
+                              dense: true,
+                              value: store.state.query.tagsIncludeAll,
+                              onChanged: (v){
+                                store.tagsIncludeAll(v);
+                                Toast.show(v ? "Only croaks containing all of these tags will be in your pond" : "Croaks containing any of these tags will be in your pond", context);
+                              },
+                              activeColor: Colors.green,
+                              controlAffinity: lefthand ? ListTileControlAffinity.leading : ListTileControlAffinity.trailing,
+                            ),
+                            constraints: BoxConstraints(
+                              maxWidth: .5 * MediaQuery.of(context).size.width,
+                            ),
                           ),
-                        ),
+                          lefthand ? Text(' Tags:   ', style: Theme.of(context).textTheme.headline3) : Container(), 
+                        ]
                       ),
                       
-                      TextFormField( //CUSTOM TAGS INPUT
-                        controller: tagsText,
-                        decoration: InputDecoration(
-                          icon: Icon(Icons.category),
-                          labelText: 'Add some tags of your own'
+                      Container(
+                        child: (store.state.location == null || store.state.query.localTags.tags == null) ? Text('Loading Tags...') 
+                                        : LocalTags(store.state.query.localTags, store.useTag), //tell it what to do when one of its chips is selected (deprecated)
+                        padding: EdgeInsets.all(8),
+                        margin: EdgeInsets.only(top: 12, bottom: 12),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.black54, width: 1),
+                          borderRadius: BorderRadius.circular(24),
                         ),
-                        maxLines: 3,
-                        minLines: 1,
                       ),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisSize: MainAxisSize.max,
                         children: [
-                          RaisedButton(
+                          lefthand ? RaisedButton(
                             child: Icon(MdiIcons.plus, semanticLabel: 'Add Tag'),
                             onPressed: (){
                               store.addTag(tagsText.text, 0);
                               Toast.show('Croaks related to "' + tagsText.text + '" will appear in your pond', context, duration: 2);
                               tagsText.clear();
                             },
+                            shape: CircleBorder(),
+                          ) : Container(),
+                          lefthand ? Container() : Container(
+                            child: TextFormField( //CUSTOM TAGS INPUT
+                              controller: tagsText,
+                              decoration: InputDecoration(
+                                icon: Icon(Icons.category),
+                                labelText: 'Add some tags of your own',
+                                isDense: true,
+                              ),
+                              maxLines: 3,
+                              minLines: 1,
+                            ),
+                            constraints: BoxConstraints(
+                              maxWidth: .65 * MediaQuery.of(context).size.width,
+                              maxHeight: MediaQuery.of(context).size.height
+                            ),
+                            margin: EdgeInsets.only(right: 8, left: 6),
                           ),
-                          /* TODO exclude posts related to tags
+                          lefthand ? Container() : RaisedButton(
+                            child: Icon(MdiIcons.plus, semanticLabel: 'Add Tag'),
+                            onPressed: (){
+                              store.addTag(tagsText.text, 0);
+                              Toast.show('Croaks related to "' + tagsText.text + '" will appear in your pond', context, duration: 2);
+                              tagsText.clear();
+                            },
+                            shape: CircleBorder(),
+                          ),
+                        ]
+                      ),
+                      /*// TODO exclude posts related to tags
                           RaisedButton(
                             child: Icon(MdiIcons.minus, semanticLabel: 'Exclude'),
                             onPressed: (){
@@ -239,25 +273,71 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                               tagsText.clear();
                             },
                           ),
-                          */
+                          
+                        ]
+                      ),*/
+                      Container(
+                        child: RaisedButton(
+                          child: Text('Clear Tags'),
+                          onPressed: (){ 
+                            store.removeLocalTags();
+                            store.getSuggestedTags();
+                            Toast.show("Your custom added tags have been removed", context);
+                          },
+                        ),
+                        alignment: lefthand ? Alignment.centerLeft : Alignment.centerRight,
+                        margin: EdgeInsets.only(top: 12, right: 24, left: 24)
+                      ),
+                      Container( //DIVIDER
+                        decoration: BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(color: Theme.of(context).dividerColor),
+                          )
+                        ),
+                        margin: EdgeInsets.only(top: 10, bottom: 2),
+                      ),
+                      Row(  //NOTIFY INTERVAL
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(' Notification Interval: ', style: Theme.of(context).textTheme.headline3),
+                          Container(
+                            constraints: BoxConstraints(
+                              maxWidth: .2 * MediaQuery.of(context).size.width
+                            ),
+                            child: TextFormField(
+                              keyboardType: TextInputType.number,
+                              controller: notifyIntervalTC,
+                              onEditingComplete: (){
+                                notifyInterval = int.parse(notifyIntervalTC.text);
+                                if (notifyInterval > 15) notifyInterval = 15;
+                                store.setNotificationInterval(notifyInterval);   
+                                Focus.of(context).requestFocus(new FocusNode());           
+                              },
+                              maxLines: 1,
+                              minLines: 1,
+                              expands: false,
+                                decoration: InputDecoration(
+                                  labelText: 'Minutes',
+                                  hintText: 'Minutes',
+                                  contentPadding: EdgeInsets.all(0),
+                                  isDense: true,
+                                ),
+                                textAlign: TextAlign.left,
+                                style: Theme.of(context).textTheme.subtitle1,
+                            ),
+                            margin: formElemMargin
+                          ),
                         ]
                       ),
-                      CheckboxListTile(
-                        title: Text('See croaks with all (on) or some (off) of these tags?'),
-                        dense: true,
-                        value: store.state.query.tagsIncludeAll,
-                        onChanged: (v){
-                          store.tagsIncludeAll(v);
-                        },
-                        activeColor: Colors.green,
-                        
-                      ),
-                      RaisedButton(
-                        child: Text('Remove Your Tags'),
-                        onPressed: (){ 
-                          store.removeLocalTags();
-                          store.getSuggestedTags();
-                        },
+                      Container(
+                        child: RaisedButton( //UNSUB ALL
+                          child: Text('UnSubscribe from all croaks'),
+                          onPressed: (){
+                            store.unsubAll();
+                          },
+                        ),
+                        margin: EdgeInsets.only(top: 6, left: 12, right: 12),
+                        alignment: lefthand ? Alignment.centerLeft : Alignment.centerRight,
                       ),
                       Container( //DIVIDER
                         decoration: BoxDecoration(
@@ -278,47 +358,6 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                         margin: EdgeInsets.all(6),
                         padding: EdgeInsets.all(6)
                       ) : Container(),
-                      Container( //DIVIDER
-                        decoration: BoxDecoration(
-                          border: Border(
-                            bottom: BorderSide(color: Theme.of(context).dividerColor),
-                          )
-                        ),
-                        margin: EdgeInsets.only(top: 10, bottom: 2),
-                      ),
-                      Row(  //NOTIFY INTERVAL
-                        children: [
-                          Text('Notification interval: '),
-                          Container(
-                            constraints: BoxConstraints(
-                              maxWidth: .2 * MediaQuery.of(context).size.width
-                            ),
-                            child: TextFormField(
-                              keyboardType: TextInputType.number,
-                              controller: notifyIntervalTC,
-                              onEditingComplete: (){
-                                notifyInterval = int.parse(notifyIntervalTC.text);
-                                if (notifyInterval > 15) notifyInterval = 15;
-                                store.setNotificationInterval(notifyInterval);   
-                                Focus.of(context).requestFocus(new FocusNode());           
-                              },
-                              decoration: InputDecoration(
-                                labelText: 'minutes',  
-                              ),
-                              maxLines: 1,
-                              minLines: 1,
-                              expands: false,
-                            ),
-                            margin: formElemMargin
-                          ),
-                        ]
-                      ),
-                      RaisedButton( //UNSUB ALL
-                        child: Text('UnSubscribe from all croaks'),
-                        onPressed: (){
-                          store.unsubAll();
-                        },
-                      ),
                     ],
                     
                   ),

@@ -7,6 +7,11 @@ TODO:
   - loading animation (croaking)
   - why does it ask for location permission 3 times?
   - refresh suggested tags
+* UI notes
+  - more spacing between text and underline
+  - is border around tag selection necessary?
+  - make sure all left hand cases are handled
+* decouple prefs categories (UI, sort/filter, query)? 
 * have croaks get deleted after time of inactivity
 * save sort preferences
 * implement data analysis (show locations of croaks w/ tags etc. )
@@ -46,6 +51,7 @@ SharedPreferences:
   * feed_croaks (string) : a json string representing all of the croaks of the most recent feed the user was presented with
   * local_tags (string) : a json string representing the LocalTagsStore
   * has_unread (bool) : are there new comments on any of the croaks to which the user is subscribed?
+  * left_hand (bool) : is the user left handed? 
 
 Data Structure Descriptions: (found in 'models.dart', see file for more detail on variables)
   - AppState: flags and other data that widgets would want to access that can change in real time

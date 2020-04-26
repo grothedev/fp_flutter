@@ -44,7 +44,8 @@ class AppState {
   bool newReplies = false;
   Map<String, int> lastCroaksGet; //milliseconds since epoch since last time croaks were fetched for each p_id (0=root). String -> int to keep w/ JSON format; would be ideal to have int -> int
   FlutterLocalNotificationsPlugin notificationsPlugin;
-  int notifyCheckInterval; //minutes between checking for conditions which trigger notification
+  int notifyCheckInterval = 0; //minutes between checking for conditions which trigger notification
+  bool lefthand = false; //left handed user
 
   AppState(){
     lastCroaksGet = Map<String, int>();
