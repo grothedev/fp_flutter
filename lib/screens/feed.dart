@@ -104,15 +104,15 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
                 
                 PopupMenuItem( //only show subs or non-subs
                   value: FilterMethod.subs,
-                  child: Wrap( children: [ Icon(Icons.subscriptions), Text('  Subscribed-To', style: Theme.of(context).textTheme.body1) ] ),
+                  child: Wrap( children: [ Icon(Icons.subscriptions), Text('  Subscribed-To', style: Theme.of(context).textTheme.bodyText1) ] ),
                 ),
                 PopupMenuItem( //show all croaks or use query tags?
                   value: FilterMethod.query,
-                  child: Wrap( children: [ Icon(Icons.category), Text('  Query', style: Theme.of(context).textTheme.body1) ] ),
+                  child: Wrap( children: [ Icon(Icons.category), Text('  Query', style: Theme.of(context).textTheme.bodyText1) ] ),
                 ),
                 PopupMenuItem( //only show croaks with unread comments
                   value: FilterMethod.unread,
-                  child: Wrap( children: [ Icon(Icons.mail), Text('  Unread Replies', style: Theme.of(context).textTheme.body1) ] ),
+                  child: Wrap( children: [ Icon(Icons.mail), Text('  Unread Replies', style: Theme.of(context).textTheme.bodyText1) ] ),
                 )
               ],
               icon: Icon(Icons.filter_list),

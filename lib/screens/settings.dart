@@ -174,7 +174,7 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                                   isDense: true,
                                 ),
                                 textAlign: TextAlign.left,
-                                style: Theme.of(context).textTheme.subtitle1,
+                                style: Theme.of(context).textTheme.subtitle2,
 
                                 maxLines: 1,
                                 minLines: 1,
@@ -323,7 +323,7 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                                   isDense: true,
                                 ),
                                 textAlign: TextAlign.left,
-                                style: Theme.of(context).textTheme.subtitle1,
+                                style: Theme.of(context).textTheme.subtitle2,
                             ),
                             margin: formElemMargin
                           ),
