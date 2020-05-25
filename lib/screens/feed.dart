@@ -119,8 +119,8 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
               icon: Icon(Icons.filter_list),
               onSelected: (fm){
                 this.filterMethod = fm;
-                refreshFeed(false);
-
+                //refreshFeed(false);
+                filterFeed();
               },
             ),
             
@@ -180,24 +180,36 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
     });
     store.getFeed(forceAPI).then((f){
       setState(() {
-        feed = filterFeed(f); 
-        croakListWidget = new CroakFeed(f, ()=>refreshFeed(true));
+        feed = f; 
+        //croakListWidget = new CroakFeed(f, ()=>refreshFeed(true));
         loading = false;
-
       });
     });
   }
 
-  List filterFeed(List f){
-    switch (filterMethod){
-      case FilterMethod.query:
-        return f; //TODO
-      case FilterMethod.subs:
-        return [{'content': 'ay yo'}]; //List.from(f.where((c) => c['listen']));
-      case FilterMethod.unread:
-        return f.where((c) => c['has_unread']).toList();
-    }
+  /**
+ * use global filtermethod. 
+ */
+  List filterFeed(){
+    setState(() {
+      switch (filterMethod){
+        case FilterMethod.query: //only show croaks that would match the search query
+          feed = store.state.localCroaks.ofQuery(store.state.query); 
+          croakListWidget = new CroakFeed(feed, ()=>refreshFeed(true));
+          break;
+        case FilterMethod.subs: //only show croaks that the user is subscribed to
+          feed = [{'content': 'ay yo'}]; //List.from(f.where((c) => c['listen']));
+          croakListWidget = new CroakFeed(feed, null);
+          break;
+        case FilterMethod.unread: //only show croaks that the user is subscribed to that have new replies
+          feed = store.state.localCroaks.getUnread();//feed.where((c) => c['has_unread']).toList();
+          croakListWidget = new CroakFeed(feed, ()=>refreshFeed(true));
+          break;
+      }  
+    });
+    
   }
+
 
 
   void sortFeed(SortMethod sm){
