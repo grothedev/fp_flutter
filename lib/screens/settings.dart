@@ -55,6 +55,7 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
   bool lefthand = false; //left handed user
 
   EdgeInsets formPadding = EdgeInsets.all(6.0);
+  EdgeInsets inputRowPadding = EdgeInsets.only(left: 16, right: 16, top: 8);
   EdgeInsets formElemMargin = EdgeInsets.all(8.0);
 
   initState(){
@@ -146,10 +147,13 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                         ' Refine your search query     ',
                         style: Theme.of(context).textTheme.headline2                        
                       ),
-                      Padding(
-                        padding: EdgeInsets.only(left: 6, top: 12, right: 32),
+                      Container(
+                        padding: inputRowPadding.add(EdgeInsets.only(bottom: 6)),
+                        /*decoration: BoxDecoration(
+                          border: Border(bottom: BorderSide(color: Colors.black87, width: .5)),
+                        ),*/
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             Text(' Search Radius  ', style: Theme.of(context).textTheme.headline3),
                             Container(
@@ -174,7 +178,7 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                                   isDense: true,
                                 ),
                                 textAlign: TextAlign.left,
-                                style: Theme.of(context).textTheme.subtitle2,
+                                style: Theme.of(context).textTheme.subtitle1,
 
                                 maxLines: 1,
                                 minLines: 1,
@@ -189,28 +193,32 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                       Container(
                         padding: EdgeInsets.all(8)
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          lefthand ? Container() : Text(' Tags:   ', style: Theme.of(context).textTheme.headline3),
-                          Container(
-                            child: CheckboxListTile(
-                              title: Text('Require all tags'),
-                              dense: true,
-                              value: store.state.query.tagsIncludeAll,
-                              onChanged: (v){
-                                store.tagsIncludeAll(v);
-                                Toast.show(v ? "Only croaks containing all of these tags will be in your pond" : "Croaks containing any of these tags will be in your pond", context);
-                              },
-                              activeColor: Colors.green,
-                              controlAffinity: lefthand ? ListTileControlAffinity.leading : ListTileControlAffinity.trailing,
+                      Padding(
+                        padding: inputRowPadding,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(' Tags:   ', style: Theme.of(context).textTheme.headline3),
+                            Container(
+                              child: CheckboxListTile(
+                                title: Text('Require all tags'),
+                                dense: true,
+                                value: store.state.query.tagsIncludeAll,
+                                onChanged: (v){
+                                  store.tagsIncludeAll(v);
+                                  Toast.show(v ? "Only croaks containing all of these tags will be in your pond" : "Croaks containing any of these tags will be in your pond", context,
+                                              duration: 4);
+                                },
+                                activeColor: Colors.green,
+                                controlAffinity: lefthand ? ListTileControlAffinity.leading : ListTileControlAffinity.trailing,
+                              ),
+                              constraints: BoxConstraints(
+                                maxWidth: .5 * MediaQuery.of(context).size.width,
+                              ),
                             ),
-                            constraints: BoxConstraints(
-                              maxWidth: .5 * MediaQuery.of(context).size.width,
-                            ),
-                          ),
-                          lefthand ? Text(' Tags:   ', style: Theme.of(context).textTheme.headline3) : Container(), 
-                        ]
+                            //lefthand ? Text(' Tags:   ', style: Theme.of(context).textTheme.headline3) : Container(), 
+                          ]
+                        ),
                       ),
                       
                       Container(
@@ -224,19 +232,10 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                         ),
                       ),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                       // mainAxisSize: MainAxisSize.max,
                         children: [
-                          lefthand ? RaisedButton(
-                            child: Icon(MdiIcons.plus, semanticLabel: 'Add Tag'),
-                            onPressed: (){
-                              store.addTag(tagsText.text, 0);
-                              Toast.show('Croaks related to "' + tagsText.text + '" will appear in your pond', context, duration: 2);
-                              tagsText.clear();
-                            },
-                            shape: CircleBorder(),
-                          ) : Container(),
-                          lefthand ? Container() : Container(
+                          Container(
                             child: TextFormField( //CUSTOM TAGS INPUT
                               controller: tagsText,
                               decoration: InputDecoration(
@@ -253,14 +252,15 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                             ),
                             margin: EdgeInsets.only(right: 8, left: 6),
                           ),
-                          lefthand ? Container() : RaisedButton(
-                            child: Icon(MdiIcons.plus, semanticLabel: 'Add Tag'),
+                          RaisedButton(
+                            child: Icon(MdiIcons.plus, semanticLabel: 'Add Tag', size: 18),
                             onPressed: (){
                               store.addTag(tagsText.text, 0);
                               Toast.show('Croaks related to "' + tagsText.text + '" will appear in your pond', context, duration: 2);
                               tagsText.clear();
                             },
                             shape: CircleBorder(),
+                            
                           ),
                         ]
                       ),
@@ -296,38 +296,41 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                         ),
                         margin: EdgeInsets.only(top: 10, bottom: 2),
                       ),
-                      Row(  //NOTIFY INTERVAL
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(' Notification Interval: ', style: Theme.of(context).textTheme.headline3),
-                          Container(
-                            constraints: BoxConstraints(
-                              maxWidth: .2 * MediaQuery.of(context).size.width
+                      Padding(
+                        padding: inputRowPadding,
+                        child: Row(  //NOTIFY INTERVAL
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Text(' Notification Interval: ', style: Theme.of(context).textTheme.headline3),
+                            Container(
+                              constraints: BoxConstraints(
+                                maxWidth: .2 * MediaQuery.of(context).size.width
+                              ),
+                              child: TextFormField(
+                                keyboardType: TextInputType.number,
+                                controller: notifyIntervalTC,
+                                onEditingComplete: (){
+                                  notifyInterval = int.parse(notifyIntervalTC.text);
+                                  if (notifyInterval > 15) notifyInterval = 15;
+                                  store.setNotificationInterval(notifyInterval);   
+                                  Focus.of(context).requestFocus(new FocusNode());           
+                                },
+                                maxLines: 1,
+                                minLines: 1,
+                                expands: false,
+                                  decoration: InputDecoration(
+                                    labelText: 'Minutes',
+                                    hintText: 'Minutes',
+                                    contentPadding: EdgeInsets.all(0),
+                                    isDense: true,
+                                  ),
+                                  textAlign: TextAlign.left,
+                                  style: Theme.of(context).textTheme.subtitle1,
+                              ),
+                              margin: formElemMargin
                             ),
-                            child: TextFormField(
-                              keyboardType: TextInputType.number,
-                              controller: notifyIntervalTC,
-                              onEditingComplete: (){
-                                notifyInterval = int.parse(notifyIntervalTC.text);
-                                if (notifyInterval > 15) notifyInterval = 15;
-                                store.setNotificationInterval(notifyInterval);   
-                                Focus.of(context).requestFocus(new FocusNode());           
-                              },
-                              maxLines: 1,
-                              minLines: 1,
-                              expands: false,
-                                decoration: InputDecoration(
-                                  labelText: 'Minutes',
-                                  hintText: 'Minutes',
-                                  contentPadding: EdgeInsets.all(0),
-                                  isDense: true,
-                                ),
-                                textAlign: TextAlign.left,
-                                style: Theme.of(context).textTheme.subtitle2,
-                            ),
-                            margin: formElemMargin
-                          ),
-                        ]
+                          ]
+                        ), 
                       ),
                       Container(
                         child: RaisedButton( //UNSUB ALL

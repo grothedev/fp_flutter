@@ -132,8 +132,7 @@ class LocalTagsStore{
       if (tags[0].containsKey('label') && tags[0].containsKey('mode') && tags[0].containsKey('use')){
         this.tags = List.from(tags);
       }
-    }
-    
+    } 
   }
 
   void set(String label, int mode){

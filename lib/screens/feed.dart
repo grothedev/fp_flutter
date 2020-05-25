@@ -22,6 +22,7 @@ import 'package:FrogPond/helpers/croakfeed.dart';
 import 'package:FrogPond/state_container.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../consts.dart';
 
@@ -130,39 +131,39 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
                 ),
                 PopupMenuItem<SortMethod>(
                   value: SortMethod.date_asc,
-                  child: Wrap( children: [ Icon(Icons.arrow_upward), Text('Time') ] ),
+                  child: Wrap( children: [ Icon(Icons.arrow_upward, color: Colors.green), Text('Time') ] ),
                 ),
                 PopupMenuItem<SortMethod>(
                   value: SortMethod.date_des,
-                  child: Wrap( children: [ Icon(Icons.arrow_downward), Text('Time') ] ),
+                  child: Wrap( children: [ Icon(Icons.arrow_downward, color: Colors.green), Text('Time') ] ),
                 ),
                 PopupMenuItem<SortMethod>(
                   value: SortMethod.dist_asc,
-                  child: Wrap( children: [ Icon(Icons.arrow_upward), Text('Distance') ] ),
+                  child: Wrap( children: [ Icon(Icons.arrow_upward, color: Colors.green), Text('Distance') ] ),
                 ),
                 PopupMenuItem<SortMethod>(
                   value: SortMethod.dist_des,
-                  child: Wrap( children: [ Icon(Icons.arrow_downward), Text('Distance') ] ),
+                  child: Wrap( children: [ Icon(Icons.arrow_downward, color: Colors.green), Text('Distance') ] ),
                 ),
                 PopupMenuItem<SortMethod>(
                   value: SortMethod.score_asc,
-                  child: Wrap( children: [ Icon(Icons.arrow_upward), Text('Score') ] ),
+                  child: Wrap( children: [ Icon(Icons.arrow_upward, color: Colors.green), Text('Score') ] ),
                 ),
                 PopupMenuItem<SortMethod>(
                   value: SortMethod.score_des,
-                  child: Wrap( children: [ Icon(Icons.arrow_downward), Text('Score') ] ),
+                  child: Wrap( children: [ Icon(Icons.arrow_downward, color: Colors.green), Text('Score') ] ),
                 ),
                 PopupMenuItem<SortMethod>(
                   value: SortMethod.pop_asc,
-                  child: Wrap( children: [ Icon(Icons.arrow_upward), Text('Replies') ] ),
+                  child: Wrap( children: [ Icon(Icons.arrow_upward, color: Colors.green), Text('Replies') ] ),
                 ),
                 PopupMenuItem<SortMethod>(
                   value: SortMethod.pop_des,
-                  child: Wrap( children: [ Icon(Icons.arrow_downward), Text('Replies') ] ),
+                  child: Wrap( children: [ Icon(Icons.arrow_downward, color: Colors.green), Text('Replies') ] ),
                 ),
               ],
               onSelected: (v){
-                //TODO
+                sortFeed(v);
               },
               icon: Icon(Icons.sort),
             ),
@@ -197,6 +198,50 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
         return f.where((c) => c['has_unread']).toList();
     }
   }
+
+
+  void sortFeed(SortMethod sm){
+    setState(() {
+      switch(sm){
+      case SortMethod.date_asc:
+        feed.sort((a,b){
+          DateTime da = DateFormat('yyyy-MM-d HH:mm').parse(a['created_at']).toLocal();
+          DateTime db = DateFormat('yyyy-MM-d HH:mm').parse(b['created_at']).toLocal();
+          return da.compareTo(db);
+        });
+        break;
+      case SortMethod.date_des:
+        feed.sort((a,b){
+          DateTime da = DateFormat('yyyy-MM-d HH:mm').parse(a['created_at']).toLocal();
+          DateTime db = DateFormat('yyyy-MM-d HH:mm').parse(b['created_at']).toLocal();
+          return db.compareTo(da);
+        });
+        break;
+      case SortMethod.dist_asc:
+        if (store.state.query.radius == null || store.state.location == null) break;
+        feed.sort((a,b)=>a['distance']-b['distance']);
+        break;
+      case SortMethod.dist_des:
+        if (store.state.query.radius == null || store.state.location == null) break;
+        feed.sort((a,b)=>b['distance']-a['distance']);
+        break;
+      case SortMethod.pop_asc:
+        feed.sort((a,b)=>a['replies'] - b['replies']);
+        break;
+      case SortMethod.pop_des:
+        feed.sort((a,b)=>b['replies'] - a['replies']);
+        break;
+      case SortMethod.score_asc:
+        feed.sort((a,b)=>a['score']-b['score']);
+        break;
+      case SortMethod.score_des:
+        feed.sort((a,b)=>b['score']-a['score']);
+        break;
+      }  
+    });
+    
+ }
+  
 
   @override
   bool get wantKeepAlive => true;
