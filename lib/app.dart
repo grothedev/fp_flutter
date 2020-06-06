@@ -45,25 +45,32 @@ class FrogPondApp extends StatelessWidget {
         accentColor: Colors.green,
         backgroundColor: Color(0xFFEDEDED),
         textTheme: TextTheme(
-          title: TextStyle(
-            fontSize: 18
+          headline2: TextStyle(
+            fontSize: 22,
+            color: Colors.black87,
+            decoration: TextDecoration.underline,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 2,
+            height: 1.5,
+            decorationThickness: 1
           ),
-          body1: TextStyle(
+          bodyText1: TextStyle(
             fontFamily: 'Roboto',
             fontSize: 16,
             color: Colors.black
           ),
-          body2: TextStyle(
+          bodyText2: TextStyle(
             fontFamily: 'Roboto',
-            fontSize: 13,
-            color: Colors.black87,
-            fontWeight: FontWeight.w500
-          ),
-          subhead: TextStyle(
-            fontSize: 14,
-          ),
-          subtitle: TextStyle(
             fontSize: 12,
+            color: Colors.black87,
+            fontWeight: FontWeight.w500,
+            letterSpacing: 1.05
+          ),
+          subtitle1: TextStyle(
+            fontSize: 10,
+          ),
+          subtitle2: TextStyle(
+            fontSize: 8,
             fontWeight: FontWeight.w300,
           ),
           caption: TextStyle(
@@ -71,23 +78,36 @@ class FrogPondApp extends StatelessWidget {
             color: Colors.black87,
             letterSpacing: .3
           ),
-          display3: TextStyle(
+          headline3: TextStyle(
+            decoration: TextDecoration.underline,
+            decorationStyle: TextDecorationStyle.dashed, 
+            fontSize: 20, 
+            letterSpacing: 2,
+            color: Colors.black87
+          ),
+          headline4: TextStyle(
             fontSize: 12,
             color: Colors.green,
             fontWeight: FontWeight.bold
           ),
-          display4: TextStyle(
+          headline5: TextStyle(
             fontFamily: 'Roboto',
             fontSize: 9,
             color: Color(0xFF000000),
             fontWeight: FontWeight.w400,
             letterSpacing: .4,
           ),
-          headline: TextStyle(
+          headline6: TextStyle(
             fontSize: 16,
             fontFamily: 'Roboto',
             fontWeight: FontWeight.bold,
           )
+        ),
+        dividerColor: Colors.black38,        
+        iconTheme: IconThemeData(
+          size: 12,
+          color: Colors.white70,
+
         ),
         
       ),

@@ -44,7 +44,8 @@ class AppState {
   bool newReplies = false;
   Map<String, int> lastCroaksGet; //milliseconds since epoch since last time croaks were fetched for each p_id (0=root). String -> int to keep w/ JSON format; would be ideal to have int -> int
   FlutterLocalNotificationsPlugin notificationsPlugin;
-  int notifyCheckInterval; //minutes between checking for conditions which trigger notification
+  int notifyCheckInterval = 0; //minutes between checking for conditions which trigger notification
+  bool lefthand = false; //left handed user
 
   AppState(){
     lastCroaksGet = Map<String, int>();
@@ -131,8 +132,7 @@ class LocalTagsStore{
       if (tags[0].containsKey('label') && tags[0].containsKey('mode') && tags[0].containsKey('use')){
         this.tags = List.from(tags);
       }
-    }
-    
+    } 
   }
 
   void set(String label, int mode){
@@ -291,33 +291,48 @@ class LocalCroaksStore{
     return croaks.where( (c) => c['has_unread']==true ).toList();
   }
 
-  //returns the croaks that satisfy given query
+  /**
+   * returns the croaks that satisfy given query. used to modify the stored croaks list, but now just return a new sublist
+   */
   List ofQuery(Query q){
+    List res = [];
     croaks.forEach((c){
+      bool hasTags;
+      bool inRange=false;
       if (c['p_id'] != null && c['p_id'] > 0){ //comments are never results of a query
         c['vis'] = false;
       } else {
         List cTags = c['tags'] == null ? [] : c['tags'].map((t) => t['label']).toList();
         if (q.tagsIncludeAll){
           //check that all of the tags of this croak are contained within localTags active tags
-          c['vis'] = true;
+          //c['vis'] = true;
+          hasTags=true;
           cTags.forEach((t){
             if (!q.localTags.getActiveTagsLabels().contains(t)){
-              c['vis'] = false;
+              //c['vis'] = false;
+              hasTags = false;
             }
           });
         } else {
+          hasTags=false;
           //check that at least one tag of this croak is contained within localTags active tags
           cTags.forEach((t){
             if (q.localTags.getActiveTagsLabels().contains(t)){
-              c['vis'] = true;
+              //c['vis'] = true;
+              hasTags = true;
             }
           });
         }
+        if (q.radius != null && q.radius > 0){
+          if (c['distance'] != null && c['distance'] < q.radius) inRange = true;
+          //TODO if c['distance']==null calculate dist here (this means the croak was downloaded with any-radius query)
+        }
+        if (hasTags && inRange) res.add(c);
       }
+      
     });
-    
-    return croaks;
+    return res;
+    //return croaks;
   }
 
   bool satisfiesQuery(int id, Query q){

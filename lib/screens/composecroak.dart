@@ -23,6 +23,7 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:toast/toast.dart';
 //import 'sugtags.dart';
 import '../models.dart';
@@ -85,7 +86,7 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
     return Scaffold(
       //appBar: ScreenTitle('Croak with your fellow tadpoles'),
       appBar: AppBar(
-        title: Text('Croak with your fellow frogs and tadpoles'),
+        title: Text('Croak'),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(8.0),
@@ -113,35 +114,43 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                         maxLines: 8,
                         minLines: 3, 
                       ),
-                    ), 
-                    Container(
-                      padding: formPadding,
-                      margin: formElemMargin,
-                      child: TextFormField( //TAGS INPUT
-                        controller: tagsText,
-                        decoration: InputDecoration(
-                          icon: Icon(Icons.category),
-                          labelText: 'Tags',
-                          //helperText: 'Seperated by Spaces'
-                        ),
-                        maxLines: 1,
-                        minLines: 1,
-                      ),
                     ),
-                    Center(
-                      child: RaisedButton(
-                        child: Icon(Icons.add, semanticLabel: 'Add Tag'),
-                        onPressed: (){
-                          setState(() {
-                            if (composeTags.getActiveTagsLabels().length > 14){
-                              Toast.show('That is enough tags', context);
-                            } else {
-                              composeTags.add(tagsText.text, true); 
-                            }
-                          });
-                          tagsText.clear();
-                        },
-                      ),
+                    Row( 
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          padding: formPadding,
+                          margin: formElemMargin,
+                          child: TextFormField( //TAGS INPUT
+                            controller: tagsText,
+                            decoration: InputDecoration(
+                              icon: Icon(Icons.category),
+                              labelText: 'Tags',
+                              //helperText: 'Seperated by Spaces'
+                            ),
+                            maxLines: 1,
+                            minLines: 1,
+                          ),
+                          constraints: BoxConstraints(
+                            maxWidth: .65 * MediaQuery.of(context).size.width,
+                            maxHeight: MediaQuery.of(context).size.height
+                          ),
+                        ),
+                        RaisedButton(
+                          child: Icon(MdiIcons.plus, semanticLabel: 'Add Tag', size: 18),
+                          onPressed: (){
+                            setState(() {
+                              if (composeTags.getActiveTagsLabels().length > 14){
+                                Toast.show('That is enough tags', context);
+                              } else {
+                                composeTags.add(tagsText.text, true); 
+                              }
+                            });
+                            tagsText.clear();
+                          },
+                        ),
+                      
+                      ]
                     ),
                     Container(
                       alignment: Alignment.center,
@@ -165,7 +174,7 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                         //border: Border(bottom: BorderSide(color: Theme.of(context).dividerColor)),
                       ),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           RaisedButton(
                             onPressed: () => { 
@@ -183,18 +192,18 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                                   });
                                 });
                             }) },
-                            child: Text('Attach File'),
-                            padding: EdgeInsets.all(8),
+                            child: Text('Attach File', style: Theme.of(context).textTheme.caption),
+                            padding: EdgeInsets.all(4),
                           ),
                           Container(
                             padding: EdgeInsets.only(left: 6),
                             child: file == null ? Text('no file') 
-                                      : ConstrainedBox(
-                                          constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * .6),
-                                          child: Text( file.toString(), style: Theme.of(context).textTheme.subtitle, overflow: TextOverflow.ellipsis),
+                                      : Container(
+                                          constraints: BoxConstraints(maxWidth: .5 * MediaQuery.of(context).size.width ),
+                                          child: Text(file.toString(), style: Theme.of(context).textTheme.subtitle1, overflow: TextOverflow.ellipsis),
                                           
                                       ),
-                                      constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * .6),
+                                      //constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * .6),
                             ),
                           IconButton(
                             icon: Icon(Icons.cancel),

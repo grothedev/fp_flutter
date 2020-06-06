@@ -37,6 +37,7 @@ import '../api.dart' as api;
 
 import '../helpers/composecroakdialog.dart';
 import '../helpers/croakfeed.dart';
+import '../helpers/customwidgets.dart';
 
 final String ro_url_pre = 'http://' + api.host + ':' + api.port.toString() + '/c/'; //prefix of url for fancy read-only webview
 
@@ -64,6 +65,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
   String subToggleText;
   StateContainerState store;
   bool updateReplies = true; 
+  double appbarIconSize = 16;
 
   //this stuff is now in the compose croak dialog
   //final replyController = TextEditingController();
@@ -101,7 +103,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
     String croakURL = ro_url_pre+c['id'].toString();
     return Scaffold( 
         appBar: AppBar(
-          title: c['p_id'] == null || c['p_id'] == 0 ? Text(c['timestampStr']) 
+          title: c['p_id'] == null || c['p_id'] == 0 ? Text(c['timestampStr'], style: TextStyle(fontSize: 12)) 
           : Row(
             children: [
               IconButton(
@@ -123,18 +125,21 @@ class CroakDetailState extends State<CroakDetailScreen>{
                 Clipboard.setData(ClipboardData(text: croakURL));
                 Toast.show('URL copied to clipboard', context);
               },
+              iconSize: appbarIconSize,
             ),
             IconButton(
               icon: Icon(Icons.refresh),
               onPressed: (){
                 fetchReplies(true);
               },
+              iconSize: appbarIconSize,
             ),
             IconButton(
               icon: Icon(Icons.report),
               onPressed: (){
                 reportCroak();
-              },
+              },  
+              iconSize: appbarIconSize,
               tooltip: 'Report Illegal Content or Spam',
             ),
             IconButton( //TODO fix initial switch position
@@ -142,6 +147,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
               onPressed:(){
                 toggleSubscribe();
               },
+              iconSize: appbarIconSize,
               tooltip: c['listen'] ? 'UnSubscribe' : 'Subscribe',      
             )
           ],
@@ -196,26 +202,28 @@ class CroakDetailState extends State<CroakDetailScreen>{
                 children: [
                   
                   RaisedButton(
-                    child: Icon(Icons.arrow_downward),
+                    child: Icon(Icons.arrow_downward, size: 16),
                     onPressed: () => util.vote(false, c['id']).then((s){
                       if (s==null) return;
                       setState(() {
                         c['score'] = s;
                       });
                     }),
+                    shape: CircleBorder(),
                   ),
                   Container(
                     padding: EdgeInsets.only(left: 10, right: 10),
-                    child: Text(c['score'].toString(), style: Theme.of(context).textTheme.body1),
+                    child: Text(c['score'].toString(), style: Theme.of(context).textTheme.bodyText1),
                   ),
                   RaisedButton(
-                    child: Icon(Icons.arrow_upward),
+                    child: Icon(Icons.arrow_upward, size: 16),
                     onPressed: () => util.vote(true, c['id']).then((s){
                       setState(() {
                         if (s==null) return;
                         c['score'] = s;
                       });
                     }),
+                    shape: CircleBorder(),
                   ),
                 ]
               )

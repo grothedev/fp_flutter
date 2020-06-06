@@ -114,6 +114,7 @@ class StateContainerState extends State<StateContainer>{
       state.hasUnread = prefs.containsKey('has_unread') ? prefs.getBool('has_unread') : false;
       if (!prefs.containsKey('notify_check_interval')) prefs.setInt('notify_check_interval', 15);
       state.notifyCheckInterval = prefs.getInt('notify_check_interval');
+      state.lefthand = prefs.getBool('left_hand') == null ? false : prefs.get('left_hand');
     } else {
       prefs.setBool('ran_before', true);   
       prefs.setBool('feed_outdated', true);
@@ -125,6 +126,7 @@ class StateContainerState extends State<StateContainer>{
       state.localCroaks = new LocalCroaksStore(null);
       prefs.setString('local_croaks', state.localCroaks.toJSON());
       prefs.setInt('notify_check_interval', 15);
+      prefs.setBool('left_hand', false);
     }
     
     if (state.lat == null || state.lon == null){

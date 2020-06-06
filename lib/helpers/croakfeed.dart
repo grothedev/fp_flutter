@@ -124,8 +124,8 @@ class CroakFeedState extends State<CroakFeed>{
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              c['has_unread'] ? Text( '!', style: Theme.of(context).textTheme.display3) : Text( c['replies'].toString(), style: Theme.of(context).textTheme.caption),
-              Text('replies', style: Theme.of(context).textTheme.display4,)
+              c['has_unread'] ? Text( '!', style: Theme.of(context).textTheme.subtitle2) : Text( c['replies'].toString(), style: Theme.of(context).textTheme.caption),
+              Text('replies', style: Theme.of(context).textTheme.subtitle2,)
             ],
             crossAxisAlignment: CrossAxisAlignment.center,
           ),
@@ -133,7 +133,7 @@ class CroakFeedState extends State<CroakFeed>{
         title: RichText(
           text: TextSpan( 
             text: c['content'],
-            style: Theme.of(context).textTheme.body2,
+            style: Theme.of(context).textTheme.bodyText2,
           ),
           maxLines: 8,
           overflow: TextOverflow.clip,
@@ -150,7 +150,7 @@ class CroakFeedState extends State<CroakFeed>{
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text( c['score'].toString(), style: Theme.of(context).textTheme.caption),
-              Text('points', style: Theme.of(context).textTheme.display4)
+              Text('points', style: Theme.of(context).textTheme.subtitle2)
             ],
             crossAxisAlignment: CrossAxisAlignment.center,
           ),
@@ -160,8 +160,8 @@ class CroakFeedState extends State<CroakFeed>{
           child: Row(
             children: <Widget>[
               c.containsKey('distance') ? 
-                                Text(c['timestampStr'] + '; ' + c['distance'].toInt().toString() + ' km', style: Theme.of(context).textTheme.subtitle,)
-                                : Text(c['timestampStr'], style: Theme.of(context).textTheme.subtitle),
+                                Text(c['timestampStr'] + '; ' + c['distance'].toInt().toString() + ' km', style: Theme.of(context).textTheme.subtitle1,)
+                                : Text(c['timestampStr'], style: Theme.of(context).textTheme.subtitle1),
               Spacer(
                 flex: 2
               ),
