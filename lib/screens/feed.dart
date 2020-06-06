@@ -22,6 +22,7 @@ import 'package:FrogPond/helpers/croakfeed.dart';
 import 'package:FrogPond/state_container.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../consts.dart';
 
@@ -96,7 +97,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
                 refreshFeed(true);
               },
             ),
-            /* filter functionality under construction
+            /*
             PopupMenuButton( //feed filter settings
               itemBuilder: (BuildContext context) => <PopupMenuEntry<FilterMethod>>[
                 PopupMenuItem(
@@ -105,25 +106,25 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
                 
                 PopupMenuItem( //only show subs or non-subs
                   value: FilterMethod.subs,
-                  child: Wrap( children: [ Icon(Icons.subscriptions), Text('  Subscribed-To', style: Theme.of(context).textTheme.body1) ] ),
+                  child: Wrap( children: [ Icon(Icons.subscriptions), Text('  Subscribed-To', style: Theme.of(context).textTheme.bodyText1) ] ),
                 ),
                 PopupMenuItem( //show all croaks or use query tags?
                   value: FilterMethod.query,
-                  child: Wrap( children: [ Icon(Icons.category), Text('  Query', style: Theme.of(context).textTheme.body1) ] ),
+                  child: Wrap( children: [ Icon(Icons.category), Text('  Query', style: Theme.of(context).textTheme.bodyText1) ] ),
                 ),
                 PopupMenuItem( //only show croaks with unread comments
                   value: FilterMethod.unread,
-                  child: Wrap( children: [ Icon(Icons.mail), Text('  Unread Replies', style: Theme.of(context).textTheme.body1) ] ),
+                  child: Wrap( children: [ Icon(Icons.mail), Text('  Unread Replies', style: Theme.of(context).textTheme.bodyText1) ] ),
                 )
               ],
               icon: Icon(Icons.filter_list),
               onSelected: (fm){
                 this.filterMethod = fm;
-                refreshFeed(false);
-
+                //refreshFeed(false);
+                filterFeed();
               },
-            ),*/
-            /* sorting under construction
+            ),
+            */
             PopupMenuButton( //feed sort settings
               itemBuilder: (BuildContext context) => <PopupMenuEntry<SortMethod>>[
                 PopupMenuItem(
@@ -131,42 +132,42 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
                 ),
                 PopupMenuItem<SortMethod>(
                   value: SortMethod.date_asc,
-                  child: Wrap( children: [ Icon(Icons.arrow_upward), Text('Time') ] ),
+                  child: Wrap( children: [ Icon(Icons.arrow_upward, color: Colors.green), Text('Time') ] ),
                 ),
                 PopupMenuItem<SortMethod>(
                   value: SortMethod.date_des,
-                  child: Wrap( children: [ Icon(Icons.arrow_downward), Text('Time') ] ),
+                  child: Wrap( children: [ Icon(Icons.arrow_downward, color: Colors.green), Text('Time') ] ),
                 ),
                 PopupMenuItem<SortMethod>(
                   value: SortMethod.dist_asc,
-                  child: Wrap( children: [ Icon(Icons.arrow_upward), Text('Distance') ] ),
+                  child: Wrap( children: [ Icon(Icons.arrow_upward, color: Colors.green), Text('Distance') ] ),
                 ),
                 PopupMenuItem<SortMethod>(
                   value: SortMethod.dist_des,
-                  child: Wrap( children: [ Icon(Icons.arrow_downward), Text('Distance') ] ),
+                  child: Wrap( children: [ Icon(Icons.arrow_downward, color: Colors.green), Text('Distance') ] ),
                 ),
                 PopupMenuItem<SortMethod>(
                   value: SortMethod.score_asc,
-                  child: Wrap( children: [ Icon(Icons.arrow_upward), Text('Score') ] ),
+                  child: Wrap( children: [ Icon(Icons.arrow_upward, color: Colors.green), Text('Score') ] ),
                 ),
                 PopupMenuItem<SortMethod>(
                   value: SortMethod.score_des,
-                  child: Wrap( children: [ Icon(Icons.arrow_downward), Text('Score') ] ),
+                  child: Wrap( children: [ Icon(Icons.arrow_downward, color: Colors.green), Text('Score') ] ),
                 ),
                 PopupMenuItem<SortMethod>(
                   value: SortMethod.pop_asc,
-                  child: Wrap( children: [ Icon(Icons.arrow_upward), Text('Replies') ] ),
+                  child: Wrap( children: [ Icon(Icons.arrow_upward, color: Colors.green), Text('Replies') ] ),
                 ),
                 PopupMenuItem<SortMethod>(
                   value: SortMethod.pop_des,
-                  child: Wrap( children: [ Icon(Icons.arrow_downward), Text('Replies') ] ),
+                  child: Wrap( children: [ Icon(Icons.arrow_downward, color: Colors.green), Text('Replies') ] ),
                 ),
               ],
               onSelected: (v){
-                //TODO
+                sortFeed(v);
               },
               icon: Icon(Icons.sort),
-            ),*/
+            ),
           ],
         ),
         body: body
@@ -180,24 +181,80 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
     });
     store.getFeed(forceAPI).then((f){
       setState(() {
-        feed = filterFeed(f); 
-        croakListWidget = new CroakFeed(f, ()=>refreshFeed(true));
+        feed = f; 
+        //croakListWidget = new CroakFeed(f, ()=>refreshFeed(true));
         loading = false;
-
       });
     });
   }
 
-  List filterFeed(List f){
-    switch (filterMethod){
-      case FilterMethod.query:
-        return f; //TODO
-      case FilterMethod.subs:
-        return [{'content': 'ay yo'}]; //List.from(f.where((c) => c['listen']));
-      case FilterMethod.unread:
-        return f.where((c) => c['has_unread']).toList();
-    }
+  /**
+ * use global filtermethod. 
+ */
+  List filterFeed(){
+    setState(() {
+      switch (filterMethod){
+        case FilterMethod.query: //only show croaks that would match the search query
+          feed = store.state.localCroaks.ofQuery(store.state.query); 
+          croakListWidget = new CroakFeed(feed, ()=>refreshFeed(true));
+          break;
+        case FilterMethod.subs: //only show croaks that the user is subscribed to
+          feed = [{'content': 'ay yo'}]; //List.from(f.where((c) => c['listen']));
+          croakListWidget = new CroakFeed(feed, null);
+          break;
+        case FilterMethod.unread: //only show croaks that the user is subscribed to that have new replies
+          feed = store.state.localCroaks.getUnread();//feed.where((c) => c['has_unread']).toList();
+          croakListWidget = new CroakFeed(feed, ()=>refreshFeed(true));
+          break;
+      }  
+    });
+    
   }
+
+
+
+  void sortFeed(SortMethod sm){
+    setState(() {
+      switch(sm){
+      case SortMethod.date_asc:
+        feed.sort((a,b){
+          DateTime da = DateFormat('yyyy-MM-d HH:mm').parse(a['created_at']).toLocal();
+          DateTime db = DateFormat('yyyy-MM-d HH:mm').parse(b['created_at']).toLocal();
+          return da.compareTo(db);
+        });
+        break;
+      case SortMethod.date_des:
+        feed.sort((a,b){
+          DateTime da = DateFormat('yyyy-MM-d HH:mm').parse(a['created_at']).toLocal();
+          DateTime db = DateFormat('yyyy-MM-d HH:mm').parse(b['created_at']).toLocal();
+          return db.compareTo(da);
+        });
+        break;
+      case SortMethod.dist_asc:
+        if (store.state.query.radius == null || store.state.location == null) break;
+        feed.sort((a,b)=>(a['distance']-b['distance']).round());
+        break;
+      case SortMethod.dist_des:
+        if (store.state.query.radius == null || store.state.location == null) break;
+        feed.sort((a,b)=>(b['distance']-a['distance']).round());
+        break;
+      case SortMethod.pop_asc:
+        feed.sort((a,b)=>a['replies'] - b['replies']);
+        break;
+      case SortMethod.pop_des:
+        feed.sort((a,b)=>b['replies'] - a['replies']);
+        break;
+      case SortMethod.score_asc:
+        feed.sort((a,b)=>a['score']-b['score']);
+        break;
+      case SortMethod.score_des:
+        feed.sort((a,b)=>b['score']-a['score']);
+        break;
+      }  
+    });
+    
+ }
+  
 
   @override
   bool get wantKeepAlive => true;
