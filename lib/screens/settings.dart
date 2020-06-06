@@ -76,17 +76,18 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
         );
       }
     });
-
+    radius = store.state.query.radius.toDouble();
+    radText.text = radius.toString();
   }
 
   @override
   Widget build(BuildContext context){
     store = StateContainer.of(context);
     if (store.state.query.radius != null) {
-      setState(() {
+      /*setState(() {
         radius = store.state.query.radius.toDouble();
         radText.text = radius.toString();
-      });
+      });*/
     } 
     if (store.state.notifyCheckInterval != null){
       setState(() {
@@ -158,14 +159,13 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                             Text(' Search Radius  ', style: Theme.of(context).textTheme.headline3),
                             Container(
                               constraints: BoxConstraints(
-                                maxWidth: .2 * MediaQuery.of(context).size.width
+                                maxWidth: .25 * MediaQuery.of(context).size.width,
                               ),
                               child: TextFormField(
                                 keyboardType: TextInputType.number,
                                 controller: radText,
                                 onChanged: (rad){
                                   radius = double.parse(radText.text);
-                                  print('got rad ' + radius.toString());
                                   SharedPreferences.getInstance().then((pref){
                                     pref.setInt('radius', radius.toInt());
                                   });
@@ -175,7 +175,7 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                                   hintText: 'Radius',
                                   labelText: 'kilometers',
                                   contentPadding: EdgeInsets.all(0),
-                                  isDense: true,
+                                  isDense: false,
                                 ),
                                 textAlign: TextAlign.left,
                                 style: Theme.of(context).textTheme.subtitle1,
@@ -225,11 +225,12 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                         child: (store.state.location == null || store.state.query.localTags.tags == null) ? Text('Loading Tags...') 
                                         : LocalTags(store.state.query.localTags, store.useTag), //tell it what to do when one of its chips is selected (deprecated)
                         padding: EdgeInsets.all(8),
-                        margin: EdgeInsets.only(top: 12, bottom: 12),
-                        decoration: BoxDecoration(
+                        margin: EdgeInsets.only(top: 12, bottom: 12, right: 24),
+                        alignment: Alignment.centerRight,
+                        /*decoration: BoxDecoration(
                           border: Border.all(color: Colors.black54, width: 1),
-                          borderRadius: BorderRadius.circular(24),
-                        ),
+                          borderRadius: BorderRadius.circular(24)
+                        ),*/
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -241,9 +242,9 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                               decoration: InputDecoration(
                                 icon: Icon(Icons.category),
                                 labelText: 'Add some tags of your own',
-                                isDense: true,
+                                isDense: false,
                               ),
-                              maxLines: 3,
+                              maxLines: 1,
                               minLines: 1,
                             ),
                             constraints: BoxConstraints(
@@ -304,7 +305,7 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                             Text(' Notification Interval: ', style: Theme.of(context).textTheme.headline3),
                             Container(
                               constraints: BoxConstraints(
-                                maxWidth: .2 * MediaQuery.of(context).size.width
+                                maxWidth: .3 * MediaQuery.of(context).size.width
                               ),
                               child: TextFormField(
                                 keyboardType: TextInputType.number,
@@ -322,7 +323,7 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                                     labelText: 'Minutes',
                                     hintText: 'Minutes',
                                     contentPadding: EdgeInsets.all(0),
-                                    isDense: true,
+                                    isDense: false,
                                   ),
                                   textAlign: TextAlign.left,
                                   style: Theme.of(context).textTheme.subtitle1,

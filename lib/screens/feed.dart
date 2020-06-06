@@ -97,6 +97,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
                 refreshFeed(true);
               },
             ),
+            /*
             PopupMenuButton( //feed filter settings
               itemBuilder: (BuildContext context) => <PopupMenuEntry<FilterMethod>>[
                 PopupMenuItem(
@@ -123,7 +124,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
                 filterFeed();
               },
             ),
-            
+            */
             PopupMenuButton( //feed sort settings
               itemBuilder: (BuildContext context) => <PopupMenuEntry<SortMethod>>[
                 PopupMenuItem(
@@ -231,11 +232,11 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
         break;
       case SortMethod.dist_asc:
         if (store.state.query.radius == null || store.state.location == null) break;
-        feed.sort((a,b)=>a['distance']-b['distance']);
+        feed.sort((a,b)=>(a['distance']-b['distance']).round());
         break;
       case SortMethod.dist_des:
         if (store.state.query.radius == null || store.state.location == null) break;
-        feed.sort((a,b)=>b['distance']-a['distance']);
+        feed.sort((a,b)=>(b['distance']-a['distance']).round());
         break;
       case SortMethod.pop_asc:
         feed.sort((a,b)=>a['replies'] - b['replies']);
