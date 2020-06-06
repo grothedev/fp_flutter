@@ -240,6 +240,7 @@ class StateContainerState extends State<StateContainer>{
         state.feedOutdated = true;
       });
       prefs.setBool('feed_outdated', true);
+      prefs.setInt('radius', r);                            
     }
   }
 

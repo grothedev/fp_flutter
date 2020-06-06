@@ -76,18 +76,17 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
         );
       }
     });
-    radius = store.state.query.radius.toDouble();
-    radText.text = radius.toString();
+    
   }
 
   @override
   Widget build(BuildContext context){
     store = StateContainer.of(context);
-    if (store.state.query.radius != null) {
-      /*setState(() {
+    if (store.state.query.radius != null && radius == null) {
+      setState(() {
         radius = store.state.query.radius.toDouble();
         radText.text = radius.toString();
-      });*/
+      });
     } 
     if (store.state.notifyCheckInterval != null){
       setState(() {
@@ -101,7 +100,7 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
     
     } else locStr = 'Your Location: ' + store.state.lat.toString() + ', ' + store.state.lon.toString();
     
-    if (store.state.query.localTags.tags == null || store.state.query.localTags.tags.isEmpty){
+    if (store.state.query.localTags.tags == null){
       store.getSuggestedTags();
     }
     lefthand = store.state.lefthand;
@@ -166,9 +165,6 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                                 controller: radText,
                                 onChanged: (rad){
                                   radius = double.parse(radText.text);
-                                  SharedPreferences.getInstance().then((pref){
-                                    pref.setInt('radius', radius.toInt());
-                                  });
                                   store.setRadius(radius.toInt());              
                                 },
                                 decoration: InputDecoration(

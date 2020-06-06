@@ -63,7 +63,7 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
   @override
   Widget build(BuildContext context){
     store = StateContainer.of(context);
-    if (composeTags == null || composeTags.tags.isEmpty){
+    if (composeTags == null || composeTags.tags.length != store.state.query.localTags.tags.length){
       print('compose screen making composetagstore copy of query tags');
       setState(() {
         composeTags = new LocalTagsStore(store.state.query.localTags.getLabels()); //copying from query tags  
@@ -107,6 +107,7 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                         validator: (value){
                           if (value.isEmpty) return 'Enter some text';
                         },
+                        style: Theme.of(context).textTheme.bodyText1,
                         decoration: InputDecoration(
                           icon: Icon(Icons.message),
                           labelText: 'Post'
@@ -128,6 +129,7 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                               labelText: 'Tags',
                               //helperText: 'Seperated by Spaces'
                             ),
+                            style: Theme.of(context).textTheme.bodyText2,
                             maxLines: 1,
                             minLines: 1,
                           ),
@@ -142,8 +144,10 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                             setState(() {
                               if (composeTags.getActiveTagsLabels().length > 14){
                                 Toast.show('That is enough tags', context);
-                              } else {
+                              } else if (tagsText.text.length > 0 || tagsText.text.length < 128){
                                 composeTags.add(tagsText.text, true); 
+                              } else {
+                                Toast.show('Tag does not meet length requirement', context);
                               }
                             });
                             tagsText.clear();
