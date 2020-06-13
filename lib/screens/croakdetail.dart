@@ -103,7 +103,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
     String croakURL = ro_url_pre+c['id'].toString();
     return Scaffold( 
         appBar: AppBar(
-          title: c['p_id'] == null || c['p_id'] == 0 ? Text(c['timestampStr'], style: TextStyle(fontSize: 12)) 
+          title: c['p_id'] == null || c['p_id'] == 0 ? Text(c['timestampStr'], style: TextStyle(fontSize: 16))
           : Row(
             children: [
               IconButton(
@@ -115,7 +115,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
                   ));
                 },
               ),
-              Text(c['timestampStr']),
+              Text(c['timestampStr'], style: TextStyle(fontSize: 16),),
             ]
           ),
           actions: [
@@ -171,7 +171,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
                   maxHeight: MediaQuery.of(context).size.height * .5
                 ),
                 child: SingleChildScrollView(
-                  child: Linkify(text: c['content'], onOpen: (link)=>{ launch(link.url) }, )
+                  child: Linkify(text: c['content'], onOpen: (link)=>{ launch(link.url) }, style: Theme.of(context).textTheme.bodyText1,)
                 )
               ),                                                                                                                                                                          
             ),
@@ -310,7 +310,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
       
     }*/
     
-    if (fn.endsWith('.png') || fn.endsWith('.jpg') || fn.endsWith('.gif')){
+    if (fn.endsWith('.png') || fn.endsWith('.jpg') || fn.endsWith('.gif') || fn.endsWith('.jpeg')){
       return Container(
         height: MediaQuery.of(context).size.height * .16, //was gonna try to figure out how to adjust the size based on resolution of image
         child: Center(

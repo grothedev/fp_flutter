@@ -54,6 +54,7 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
   EdgeInsets formElemMargin = EdgeInsets.all(8.0);
 
   void initState(){
+    super.initState();
     SharedPreferences.getInstance().then((p){
       prefs = p;
     });
@@ -62,8 +63,9 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
 
   @override
   Widget build(BuildContext context){
+    super.build(context);
     store = StateContainer.of(context);
-    if (composeTags == null || composeTags.tags.isEmpty || composeTags.tags.length != store.state.query.localTags.tags.length){
+    if (composeTags == null || composeTags.tags.isEmpty){// || composeTags.tags.length != store.state.query.localTags.tags.length){
       print('compose screen making composetagstore copy of query tags');
       setState(() {
         composeTags = new LocalTagsStore(store.state.query.localTags.getLabels()); //copying from query tags  
@@ -145,7 +147,9 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                               if (composeTags.getActiveTagsLabels().length > 14){
                                 Toast.show('That is enough tags', context);
                               } else if (tagsText.text.length > 0 || tagsText.text.length < 128){
-                                composeTags.add(tagsText.text, true); 
+                                setState((){
+                                  composeTags.add(tagsText.text, true);
+                                });
                               } else {
                                 Toast.show('Tag does not meet length requirement', context);
                               }
@@ -249,8 +253,12 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                           child: RaisedButton(
                             
                             onPressed: (){
+                              if (composeTags.getActiveTagsLabels().isEmpty){
+                                Scaffold.of(context).showSnackBar(SnackBar(content: Text('Croak needs tags')));
+                                return;
+                              }
                               if (fk.currentState.validate()){
-
+                                
                                 Scaffold.of(context).showSnackBar(SnackBar(content: Text('Croaking...')));
                                 store.croaking();
 

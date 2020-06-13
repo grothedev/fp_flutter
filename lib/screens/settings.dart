@@ -374,9 +374,11 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
 
   void getMOTD(){
     api.getMOTD().then((r){
-      setState(() {
-        motd = r;
-      });
+      if (this.mounted){
+        setState(() {
+          motd = r;
+        });
+      }
     });
   }
 }

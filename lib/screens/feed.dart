@@ -49,7 +49,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   bool loading = true; //waiting to get croaks from the store
   List feed;
   FilterMethod filterMethod = FilterMethod.query;
-  Widget croakListWidget;
+  CroakFeed croakListWidget;
 
   @override
   void initState(){
@@ -62,7 +62,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
     if (feed == null) {
       refreshFeed(false);
     }
-    croakListWidget = new CroakFeed(feed, ()=>refreshFeed(true));
+    //croakListWidget = new CroakFeed(feed, ()=>refreshFeed(true));
     Widget body;
     if (loading){
       body = Column(
@@ -177,12 +177,11 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   void refreshFeed(bool forceAPI){
     setState(() {
       loading = true;  
-      croakListWidget = Text("test2");
     });
     store.getFeed(forceAPI).then((f){
       setState(() {
         feed = f; 
-        //croakListWidget = new CroakFeed(f, ()=>refreshFeed(true));
+        croakListWidget = new CroakFeed(f, ()=>refreshFeed(true));
         loading = false;
       });
     });
@@ -195,12 +194,12 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
     setState(() {
       switch (filterMethod){
         case FilterMethod.query: //only show croaks that would match the search query
-          feed = store.state.localCroaks.ofQuery(store.state.query); 
-          croakListWidget = new CroakFeed(feed, ()=>refreshFeed(true));
-          break;
+          //feed = store.state.localCroaks.ofQuery(store.state.query); 
+          croakListWidget = new CroakFeed(store.state.localCroaks.ofQuery(store.state.query), ()=>refreshFeed(true));
+          break;  
         case FilterMethod.subs: //only show croaks that the user is subscribed to
-          feed = [{'content': 'ay yo'}]; //List.from(f.where((c) => c['listen']));
-          croakListWidget = new CroakFeed(feed, null);
+          //feed = List.from(feed.where((c) => c['listen'])); 
+          croakListWidget = new CroakFeed(List.from(feed.where((c) => c['listen'])), null);
           break;
         case FilterMethod.unread: //only show croaks that the user is subscribed to that have new replies
           feed = store.state.localCroaks.getUnread();//feed.where((c) => c['has_unread']).toList();

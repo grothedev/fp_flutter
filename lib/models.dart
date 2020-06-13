@@ -165,12 +165,16 @@ class LocalTagsStore{
     return res;
   }
 
+  /**
+   * get the labels of the currently active tags
+   */
   List<String> getActiveTagsLabels(){ //might as well combine filtering and mapping since that's the only use case so far
     return tags.where((t){ return t['use']; }).map((t){ return t['label'].toString(); }).toList();
   }
 
   dynamic add(dynamic label, bool use){
     if (label is String){
+      if (label=='') return null; 
       if ( tags.where((t){ return t['label'].toLowerCase() == label.toLowerCase(); }).isNotEmpty ) return null;
       print('lts receiving string: ' + label);
       this.tags.add({

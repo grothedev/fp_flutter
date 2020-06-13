@@ -231,6 +231,12 @@ class CroakFeedState extends State<CroakFeed>{
       );
   }
 
+  void updateFeed(List f){
+    setState(() {
+      this.croaks = List.from(f);
+    });
+  }
+
   //toggles "favorite" or normal for a croak  
   void fav(int id){
     setState((){

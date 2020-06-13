@@ -49,9 +49,10 @@ class ComposeCroakDialog extends Dialog{
     store = StateContainer.of(context);
     if (loading) {
       return SimpleDialog(
-        contentPadding: EdgeInsets.all(6),
+        contentPadding: EdgeInsets.all(12),
         titlePadding: EdgeInsets.all(4),
-        title: Text('Croakin...')
+        title: Text('Croakin...'),
+        useMaterialBorderRadius: true,
       );
     }
     return SimpleDialog( 
