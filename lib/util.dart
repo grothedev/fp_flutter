@@ -19,7 +19,7 @@ along with Frog Pond.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 import 'dart:convert';
-import 'dart:io';
+import 'package:universal_io/io.dart';
 import 'dart:math';
 
 import 'package:background_fetch/background_fetch.dart';

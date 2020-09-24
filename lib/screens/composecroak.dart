@@ -18,7 +18,7 @@ You should have received a copy of the GNU General Public License
 along with Frog Pond.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import 'dart:io';
+import 'package:universal_io/io.dart';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
@@ -29,6 +29,7 @@ import 'package:toast/toast.dart';
 import '../models.dart';
 import '../state_container.dart';
 import '../util.dart' as util;
+import '../consts.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -186,20 +187,23 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                         children: [
                           RaisedButton(
                             onPressed: () => { 
-                              FilePicker.getFile(type: FileType.ANY).then((f){
-                                f.stat().then((s){
-                                  print('filesize = ' + s.size.toString()); 
-                                  if (s.size > 134217728) { //128MB max file size
+                              FilePicker.platform.pickFiles().then((files){
+                                if (files.isSinglePick){
+                                  PlatformFile f = files.files[0];
+                                  if (f.size > MAX_FILESIZE){
                                     setState((){
                                       f = null;
                                       Toast.show('File too big ( >128MB )', context, duration: 4);
                                     });
                                   }
                                   setState(() {
-                                    file = f;
+                                    file = new File(f.path);
                                   });
-                                });
-                            }) },
+                                } else {
+
+                                }
+                              })
+                            },
                             child: Text('Attach File', style: Theme.of(context).textTheme.caption),
                             padding: EdgeInsets.all(4),
                           ),

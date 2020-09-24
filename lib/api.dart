@@ -18,7 +18,7 @@ You should have received a copy of the GNU General Public License
 along with Frog Pond.  If not, see <https://www.gnu.org/licenses/>.
 */
  
-import 'dart:io';
+import 'package:universal_io/io.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart';

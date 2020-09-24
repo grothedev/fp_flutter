@@ -22,6 +22,7 @@ along with Frog Pond.  If not, see <https://www.gnu.org/licenses/>.
 final int CROAKS_GET_TIMEOUT = 1200000;
 final int KM = 0;
 final int MI = 1;
+final int MAX_FILESIZE = 134217728; //max upload size (128MB))
 
 enum SortMethod{
   date_asc, dist_asc, score_asc, pop_asc, sub_asc,

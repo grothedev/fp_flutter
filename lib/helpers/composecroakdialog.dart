@@ -52,7 +52,7 @@ class ComposeCroakDialog extends Dialog{
         contentPadding: EdgeInsets.all(12),
         titlePadding: EdgeInsets.all(4),
         title: Text('Croakin...'),
-        useMaterialBorderRadius: true,
+        //useMaterialBorderRadius: true,
       );
     }
     return SimpleDialog( 
