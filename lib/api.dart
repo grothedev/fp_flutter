@@ -26,10 +26,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:dio/dio.dart';
 
-//String host = 'grothe.ddns.net';
-//String host = '192.168.1.9'; //tmp local
-String host = '96.231.237.53';
-int port = 8090;
+String host = 'grothe.ddns.net';
+//String host = '96.231.237.53';
+int port = 8090;//90;
 String api_url = 'http://' + host + ':' + port.toString() + '/api/'; 
 
 //tl = taglist ; at = should get croaks with all(true) or some(false) given tags ; p_id = parent id
@@ -45,7 +44,7 @@ Future<List> getCroaks(double x, double y, dynamic p_id, List<String> tl, bool a
   if (at){
     reqURL += 'mode=1&';
   }
-  if (rad != null){
+  if (rad != null && x != null && y != null){
     rad == 0 ? reqURL += 'x='+x.toString() + '&y='+y.toString() + '&' 
               : reqURL += 'x='+x.toString() + '&y='+y.toString() + '&radius='+rad.toString() + '&';
   }
@@ -56,7 +55,13 @@ Future<List> getCroaks(double x, double y, dynamic p_id, List<String> tl, bool a
     print('api: response retrieval error: ' + res.toString());
     return null;
   }
-  return json.decode(res.body);
+  List result;
+  try {
+    result = json.decode(res.body);
+  } catch (e){
+    print("exception: $e");
+  }
+  return result;
 }
 
 //takes file separately because Croak.toMap() had to give string representations of all of its instance vars

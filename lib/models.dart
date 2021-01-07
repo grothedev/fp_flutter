@@ -46,7 +46,8 @@ class AppState {
   FlutterLocalNotificationsPlugin notificationsPlugin;
   int notifyCheckInterval = 0; //minutes between checking for conditions which trigger notification
   bool lefthand = false; //left handed user
-
+  bool loading = true; //is the application still loading?
+  
   AppState(){
     lastCroaksGet = Map<String, int>();
     fetchingCroaks = false;
@@ -248,7 +249,8 @@ class LocalCroaksStore{
       add['feed'] = feed; //is this croak in the feed?
       add['listen'] = listen; //is the user currently subscribed to this croak? (will receive notifications if it gets new replies)
       add['has_unread'] = false; //are there new replies to this croak which the user has not yet seen?
-      add['vis'] = add['p_id'] != null && add['p_id'] > 0 ? false : true; //replies not visible by default
+      if (add['p_id'] == null) add['p_id'] = 0;
+      add['vis'] = add['p_id'] == 0; //replies not visible by default
       if (add['replies'] == null) add['replies'] = 0;
       DateTime dt = DateFormat('yyyy-MM-d HH:mm').parse(add['created_at']).toLocal();
       add['timestampStr'] = dt.year.toString() + '/' + dt.month.toString() + '/' + dt.day.toString() + ' - ' + dt.hour.toString() + ':' + dt.minute.toString();
@@ -263,7 +265,8 @@ class LocalCroaksStore{
         c['feed'] = feed;
         c['listen'] = listen;
         c['has_unread'] = false;
-        c['vis'] = c['p_id'] != null && c['p_id'] > 0 ? false : true; //replies not visible by default
+        if (c['p_id'] == null) c['p_id'] = 0;
+        c['vis'] = c['p_id'] == 0; //replies not visible by default
         if (c['replies'] == null) c['replies'] = 0;
         DateTime dt = DateFormat('yyyy-MM-d HH:mm').parse(c['created_at']).toLocal();
         c['timestampStr'] = dt.year.toString() + '/' + dt.month.toString() + '/' + dt.day.toString() + ' - ' + dt.hour.toString() + ':' + dt.minute.toString();
@@ -337,6 +340,11 @@ class LocalCroaksStore{
     });
     return res;
     //return croaks;
+  }
+
+  //make all croaks invisible to the feed
+  void hideAll(){
+    croaks.forEach((c) => c['vis'] = false);
   }
 
   bool satisfiesQuery(int id, Query q){

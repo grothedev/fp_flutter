@@ -49,8 +49,7 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
   String locStr;
   StateContainerState store;
   int notifyInterval; //minute interval for background checking of responses 
-  double radius;
-  double radiusSlider = 30; //used just for the slider UI component
+  int radius = 0;
   String motd; //message from the dev, used for important info i want users to see
   bool lefthand = false; //left handed user
 
@@ -60,6 +59,7 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
 
   initState(){
 
+    //TODO this should be retrieved from state
     SharedPreferences.getInstance().then((p){
       this.prefs = p;
       if (!prefs.containsKey('ran_before')){
@@ -82,9 +82,9 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
   @override
   Widget build(BuildContext context){
     store = StateContainer.of(context);
-    if (store.state.query.radius != null && radius == null) {
+    if (store.state.query.radius != null) {
       setState(() {
-        radius = store.state.query.radius.toDouble();
+        radius = store.state.query.radius;
         radText.text = radius.toString();
       });
     } 
@@ -97,9 +97,10 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
     if (store.state.lat == null || store.state.lon == null){
       store.getLocation();
       locStr = 'Getting Location...';
-    
-    } else locStr = 'Your Location: ' + store.state.lat.toString() + ', ' + store.state.lon.toString();
-    
+    } else {
+      locStr = 'Your Location: ' + store.state.lat.toString() + ', ' + store.state.lon.toString();
+    }
+
     if (store.state.query.localTags.tags == null){
       store.getSuggestedTags();
     }
@@ -161,11 +162,11 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                                 maxWidth: .25 * MediaQuery.of(context).size.width,
                               ),
                               child: TextFormField(
-                                keyboardType: TextInputType.number,
+                                keyboardType: TextInputType.numberWithOptions(decimal: false, signed: false),
                                 controller: radText,
-                                onChanged: (rad){
-                                  radius = double.parse(radText.text);
-                                  store.setRadius(radius.toInt());              
+                                onEditingComplete: (){
+                                  radius = int.parse(radText.text);
+                                  store.setRadius(radius);              
                                 },
                                 decoration: InputDecoration(
                                   hintText: 'Radius',

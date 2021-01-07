@@ -37,7 +37,6 @@ import '../api.dart' as api;
 
 import '../helpers/composecroakdialog.dart';
 import '../helpers/croakfeed.dart';
-import '../helpers/customwidgets.dart';
 
 final String ro_url_pre = 'http://' + api.host + ':' + api.port.toString() + '/c/'; //prefix of url for fancy read-only webview
 
@@ -280,10 +279,10 @@ class CroakDetailState extends State<CroakDetailScreen>{
         store.gotReplies(r);
         print('got ' + r.length.toString() + ' replies');
       });
+      store.getCroaks(false, c['id']).then((replies) => store.gotReplies(replies));
     }
     replies = new List.from( store.state.localCroaks.repliesOf(c['id']).toList() );
     //replies.forEach((r) => r['vis'] = true);
-    print(replies);
   }
 
   void copyURL(){
@@ -349,9 +348,9 @@ class CroakDetailState extends State<CroakDetailScreen>{
     store.toggleSubscribe(c['id']);
     c = store.state.localCroaks.get(c['id']);
     if (c['listen']){
-      Toast.show('You will receive notifications when this croak is replied to', context);
+      Toast.show('You will receive notifications when this croak is replied to', context, duration: 3);
     } else {
-      Toast.show('You will not receive notifications when this croak is replied to', context);
+      Toast.show('You will not receive notifications when this croak is replied to', context, duration: 3);
     }
   }
 
