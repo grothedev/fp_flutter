@@ -24,19 +24,17 @@ import 'package:flutter/material.dart';
 import 'screens/notifications.dart';
 import 'state_container.dart';
 import 'screens/settings.dart';
-import 'screens/feed.dart';
+import 'screens/feed2.dart';
 import 'screens/composecroak.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'utilwidg.dart' as uw;
 
 class FrogPondApp extends StatelessWidget {
 
   FrogPondApp();
 
   @override
-  Widget build(BuildContext context) {
-    bool intro = !File('databases/fp.db').existsSync();
-    print('db found? ' + intro.toString());
+  Widget build(BuildContext context) {  
     
     return MaterialApp(
       title: 'FrogPond',
@@ -127,10 +125,9 @@ class FrogPondApp extends StatelessWidget {
 //APP START
 /*
   things that need to happen when the app launches:
-    set up sqlite stuff and check if database exists
-    check if it has been ran before (sqlite flag). if so, restore preferences (tags, radius)
+    check if it has been ran before. if so, restore preferences (tags, radius)
     check last feed update time. if passed timeout, redownload some croaks, with updated location
-    check if user has made any posts. if so and there are responses, notify
+    start background fetch process to get replies of croaks that user is subscribed to
 
 */
 
@@ -182,29 +179,41 @@ class RootState extends State<RootView> with SingleTickerProviderStateMixin, Aut
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     store = StateContainer.of(context);
     
-    return new Scaffold(
-      /*appBar: new AppBar(
-        title: new Text("FrogPond"),
-      ),*/
-      body: new TabBarView(
-        children: <Widget>[ new FeedScreen(), new SettingsScreen(), new ComposeScreen()],
-        controller: controller,
-      ),
-      bottomNavigationBar: new Material(
-        child: new TabBar(
-          tabs: <Tab>[
-            new Tab(icon: new Icon(Icons.rss_feed)),
-            new Tab(icon: new Icon(Icons.settings)),
-            new Tab(icon: new Icon(Icons.add_box))
-          ],
-          controller: controller,
-          labelColor: Colors.green,
-        ),
-        type: MaterialType.canvas
-      ),
-
+    return FutureBuilder(
+      future: store.restoreState(),
+      builder: (BuildContext bc, AsyncSnapshot<bool> res){
+        print(res.data); //for dbg to see how often this gets called
+        if (!res.hasData || !res.data ){
+          return uw.loadingWidget("Loading Application");
+        } else {
+          return Scaffold(
+            /*appBar: new AppBar(
+              title: new Text("FrogPond"),
+            ),*/
+            body: new TabBarView(
+              children: <Widget>[ new FeedScreen(), new SettingsScreen(), new ComposeScreen()],
+              controller: controller,
+            ),
+            bottomNavigationBar: new Material(
+              child: new TabBar(
+                tabs: <Tab>[
+                  new Tab(icon: new Icon(Icons.rss_feed)),
+                  new Tab(icon: new Icon(Icons.settings)),
+                  new Tab(icon: new Icon(Icons.add_box))
+                ],
+                controller: controller,
+                labelColor: Colors.green,
+              ),
+              type: MaterialType.canvas
+            ),
+            
+          );
+        }
+      },
+      initialData: false,
     );
   }
 

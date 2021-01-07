@@ -19,7 +19,6 @@ along with Frog Pond.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 
-import 'package:background_fetch/background_fetch.dart';
 
 import 'app.dart';
 import 'package:flutter/material.dart';

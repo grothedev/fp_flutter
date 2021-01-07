@@ -1,6 +1,9 @@
 FrogPond mobile application, made with flutter. https://flutter.dev/
 
 TODO:
+* NOTES FROM 2021/1/6 compatibility update:
+  * fix duplicate notification code
+  * possibly reduce number of requests made
 * first priority 
   - refactor making replies. fix showing up in root feed. 
   - more options for creating replies
@@ -11,7 +14,20 @@ TODO:
   - more spacing between text and underline
   - is border around tag selection necessary?
   - make sure all left hand cases are handled
-* decouple prefs categories (UI, sort/filter, query)? 
+* FIX bugs discovered 11/11
+  - when vote on croak then go back to list, score not updated. (same for voting on replies)
+  - comments still in root feed sometimes
+  - replies mysteriously got deleted. now they're back
+    - currently refactoring the way feed gets croaks a bit. remember to update replies methodology
+  - sorting not working and bringing up keyboard
+  - go to correct page upon click notification
+  - keep an eye on feedOutdated and needsUpdate vars. are they necessary?
+    - remove store.needsUpdate() if not needed
+* questions
+  * should AppState.lastCroaksGet be each croak instead a parent croak of a list of hypothetical replies?
+    * this would probably help with score and reply # display in list
+  * decouple prefs categories (UI, sort/filter, query)? 
+  * when should croaks be deleted from croak-store? to refresh data if any have been deleted
 * have croaks get deleted after time of inactivity
 * save sort preferences
 * implement data analysis (show locations of croaks w/ tags etc. )

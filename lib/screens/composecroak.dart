@@ -18,9 +18,11 @@ You should have received a copy of the GNU General Public License
 along with Frog Pond.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import 'package:filesystem_picker/filesystem_picker.dart';
 import 'package:universal_io/io.dart';
 
-import 'package:file_picker/file_picker.dart';
+//import 'package:file_picker/file_picker.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -187,7 +189,7 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                         children: [
                           RaisedButton(
                             onPressed: () => { 
-                              FilePicker.platform.pickFiles().then((files){
+                              /*FilePicker.platform.pickFiles().then((files){
                                 if (files.isSinglePick){
                                   PlatformFile f = files.files[0];
                                   if (f.size > MAX_FILESIZE){
@@ -202,7 +204,16 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                                 } else {
 
                                 }
+                              })*/
+                              FilesystemPicker.open(
+                                title: "Select File",
+                                context: context,
+                                fsType: FilesystemType.file,
+                                rootDirectory: Directory('/sdcard')
+                              ).then((String path){
+                                print(path);
                               })
+                              
                             },
                             child: Text('Attach File', style: Theme.of(context).textTheme.caption),
                             padding: EdgeInsets.all(4),
@@ -289,7 +300,7 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                                     Scaffold.of(context).removeCurrentSnackBar();
                                     Scaffold.of(context).showSnackBar(SnackBar(content: Text('Failed to Croak')));
                                   }
-                                  store.croaked(r); //TODO add to LCS with tags
+                                  store.croaked(r);
                                 }).catchError((e){
                                   print('compose croak error: ' + e.toString());
                                   store.croaked(null);

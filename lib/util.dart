@@ -22,7 +22,6 @@ import 'dart:convert';
 import 'package:universal_io/io.dart';
 import 'dart:math';
 
-import 'package:background_fetch/background_fetch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:location/location.dart';
@@ -136,13 +135,18 @@ Future<LocationData> initLocation() async{
     }
     
    
-    Location().hasPermission().then((p){
-      if (!p) Location().requestPermission().then((r){
-        if (!r) {
-          print('permission denied');
-          return null;
-        }
-      });
+    Location().hasPermission().then((permStatus){
+      if (permStatus == PermissionStatus.denied) {
+        Location().requestPermission().then((permStatus2){ //retry to ask for permission again
+          if (permStatus == PermissionStatus.denied || permStatus == PermissionStatus.deniedForever) {
+            print('permission denied');
+            return null;
+          }
+        });
+      } else if (permStatus == PermissionStatus.deniedForever){
+        print('permission denied forever');
+        return null;
+      }
     });
 
     try{
@@ -198,7 +202,7 @@ void checkNotifications() async{
       }
     });
   });
-  BackgroundFetch.finish();
+  //BackgroundFetch.finish();
 }
 
 void notify(List ids) async{
@@ -206,14 +210,14 @@ void notify(List ids) async{
   // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
   var initializationSettingsAndroid = new AndroidInitializationSettings('@mipmap/ic_launcher');
   var initializationSettingsIOS = new IOSInitializationSettings( ); //onDidReceiveLocalNotification: onDidReceiveLocalNotification);
-  var initializationSettings = new InitializationSettings( initializationSettingsAndroid, initializationSettingsIOS);
+  var initializationSettings = new InitializationSettings( android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
   notificationsPlugin.initialize(initializationSettings, onSelectNotification: handleSelectNotification);
 
   //var scheduledNotificationDateTime = new DateTime.now().add(new Duration(seconds: 5));
   var androidPlatformChannelSpecifics = new AndroidNotificationDetails('your other channel id',
-      'your other channel name', 'your other channel description', priority: Priority.High);
+      'your other channel name', 'your other channel description', priority: Priority.high);
   var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
-  NotificationDetails platformChannelSpecifics = new NotificationDetails(androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+  NotificationDetails platformChannelSpecifics = new NotificationDetails(android: androidPlatformChannelSpecifics, iOS: iOSPlatformChannelSpecifics);
   //await store.state.notificationsPlugin.schedule(0, 'someone has replied to you', '# frogs have croaked back since [time]', scheduledNotificationDateTime, platformChannelSpecifics);
   notificationsPlugin.show(1, 'You have new replies!', ids.toString(), platformChannelSpecifics, payload: ids.toString());
 
