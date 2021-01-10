@@ -5,6 +5,7 @@ TODO:
   * going to use different state management: flutterredux, getx, riverpod, provider
   * fix duplicate notification code
   * possibly reduce number of requests made
+  * remove redundant/unused variables: AppState.loading
 * first priority 
   - refactor making replies. fix showing up in root feed. 
   - more options for creating replies
@@ -57,10 +58,8 @@ SharedPreferences:
   * lat (double) : latitude of user
   * lon (double) : longitude of user
   * exclusive (bool) : get croaks by contain all(1) or some(0) of given tags
-  * tags (List<String>) : tags to query for 
   * radius (int) : geographical radius of query (km)
   * dist_unit (int) : 0 = kilometers ; 1 = miles
-  * needs_update (bool) : do some UI elements need to be updated?
   * feed_outdated (bool) : do main feed croaks need to be fetched again?
   * ran_before (bool) : if the app has been run on the device before
   * notify_check_interval (int) : minutes between checking for conditions which send device notification 

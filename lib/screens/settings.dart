@@ -20,9 +20,14 @@ along with Frog Pond.  If not, see <https://www.gnu.org/licenses/>.
 
 import 'dart:convert';
 
+import 'package:FrogPond/controllers/controller.dart';
+import 'package:FrogPond/controllers/croakcontroller.dart';
+import 'package:FrogPond/controllers/tagcontroller.dart';
+import 'package:FrogPond/models/appstate.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:get/get.dart';
 import '../state_container.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -45,7 +50,6 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
   List tagsE;
   SharedPreferences prefs;
   String locStr;
-  StateContainerState store;
   int notifyInterval; //minute interval for background checking of responses 
   int radius = 0;
   String motd; //message from the dev, used for important info i want users to see
@@ -55,54 +59,53 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
   EdgeInsets inputRowPadding = EdgeInsets.only(left: 16, right: 16, top: 8);
   EdgeInsets formElemMargin = EdgeInsets.all(8.0);
 
+  Controller mainCtrlr = Get.find<Controller>();
+  TagController tagController = Get.find<TagController>();
+  CroakController croakController = Get.find<CroakController>();
+  AppState state;
+  
   initState(){
-
-    //TODO this should be retrieved from state
-    SharedPreferences.getInstance().then((p){
-      this.prefs = p;
-      if (!prefs.containsKey('ran_before')){
-        Scaffold.of(context).showSnackBar(
-          SnackBar(
-            content: Text('First time?'), 
-            action: SnackBarAction(
-                label: 'Tap here to learn',
-                onPressed: ()=>launch('http://gooob.bitbucket.io'),
-
-              ),
-              duration: Duration(seconds: 8),  
-          )
-        );
-      }
-    });
-    
+    super.initState();
+    state = mainCtrlr.state();
+    if (!mainCtrlr.prefs.containsKey('ran_before')){
+      Scaffold.of(context).showSnackBar(
+        SnackBar(
+          content: Text('First time?'), 
+          action: SnackBarAction(
+              label: 'Tap here to learn',
+              onPressed: ()=>launch('http://gooob.bitbucket.io'),
+            ),
+            duration: Duration(seconds: 8),  
+        )
+      );
+    }    
   }
 
   @override
   Widget build(BuildContext context){
-    store = StateContainer.of(context);
-    if (store.state.query.radius != null) {
+    if (state.query.radius != null) {
       setState(() {
-        radius = store.state.query.radius;
+        radius = state.query.radius;
         radText.text = radius.toString();
       });
     } 
-    if (store.state.notifyCheckInterval != null){
+    if (state.notifyCheckInterval != null){
       setState(() {
-        notifyInterval = store.state.notifyCheckInterval;
+        notifyInterval = state.notifyCheckInterval;
         notifyIntervalTC.text = notifyInterval.toString();
       });
     }
-    if (store.state.lat == null || store.state.lon == null){
-      store.getLocation();
+    if (state.lat == null || state.lon == null){
+      mainCtrlr.getLocation();
       locStr = 'Getting Location...';
     } else {
-      locStr = 'Your Location: ' + store.state.lat.toString() + ', ' + store.state.lon.toString();
+      locStr = 'Your Location: ' + state.lat.toString() + ', ' + state.lon.toString();
     }
 
-    if (store.state.query.localTags.tags == null){
-      store.getSuggestedTags();
+    if (tagController.tagStore.tags == null){
+      tagController.getSuggestedTags();
     }
-    lefthand = store.state.lefthand;
+    lefthand = state.lefthand;
 
     if (motd == null){
       getMOTD();
@@ -164,7 +167,7 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                                 controller: radText,
                                 onEditingComplete: (){
                                   radius = int.parse(radText.text);
-                                  store.setRadius(radius);              
+                                  mainCtrlr.setRadius(radius);              
                                 },
                                 decoration: InputDecoration(
                                   hintText: 'Radius',
@@ -198,9 +201,9 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                               child: CheckboxListTile(
                                 title: Text('Require all tags'),
                                 dense: true,
-                                value: store.state.query.tagsIncludeAll,
+                                value: state.query.tagsIncludeAll,
                                 onChanged: (v){
-                                  store.tagsIncludeAll(v);
+                                  tagController.setExclusive(v);
                                   Toast.show(v ? "Only croaks containing all of these tags will be in your pond" : "Croaks containing any of these tags will be in your pond", context,
                                               duration: 4);
                                 },
@@ -217,8 +220,8 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                       ),
                       
                       Container(
-                        child: (store.state.location == null || store.state.query.localTags.tags == null) ? Text('Loading Tags...') 
-                                        : LocalTags(store.state.query.localTags, store.useTag), //tell it what to do when one of its chips is selected (deprecated)
+                        child: (state.query.localTags.tags == null) ? Text('Loading Tags...') 
+                                  : LocalTags(state.query.localTags, tagController.useTag), //tell it what to do when one of its chips is selected (deprecated)
                         padding: EdgeInsets.all(8),
                         margin: EdgeInsets.only(top: 12, bottom: 12, right: 24),
                         alignment: Alignment.centerRight,
@@ -251,7 +254,7 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                           RaisedButton(
                             child: Icon(MdiIcons.plus, semanticLabel: 'Add Tag', size: 18),
                             onPressed: (){
-                              store.addTag(tagsText.text, 0);
+                              tagController.addTag(tagsText.text, 0);
                               Toast.show('Croaks related to "' + tagsText.text + '" will appear in your pond', context, duration: 2);
                               tagsText.clear();
                             },
@@ -276,8 +279,8 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                         child: RaisedButton(
                           child: Text('Clear Tags'),
                           onPressed: (){ 
-                            store.removeLocalTags();
-                            store.getSuggestedTags();
+                            tagController.removeLocalTags();
+                            tagController.getSuggestedTags();
                             Toast.show("Your custom added tags have been removed", context);
                           },
                         ),
@@ -308,7 +311,7 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                                 onEditingComplete: (){
                                   notifyInterval = int.parse(notifyIntervalTC.text);
                                   if (notifyInterval > 15) notifyInterval = 15;
-                                  store.setNotificationInterval(notifyInterval);   
+                                  mainCtrlr.setNotificationInterval(notifyInterval);   
                                   Focus.of(context).requestFocus(new FocusNode());           
                                 },
                                 maxLines: 1,
@@ -332,7 +335,7 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
                         child: RaisedButton( //UNSUB ALL
                           child: Text('UnSubscribe from all croaks'),
                           onPressed: (){
-                            store.unsubAll();
+                            croakController.unsubAll();
                           },
                         ),
                         margin: EdgeInsets.only(top: 6, left: 12, right: 12),

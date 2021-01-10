@@ -35,7 +35,7 @@ class LocalTagsStore{
   List<dynamic> tags = [];
   //might keep two lists of tags: include and exclude, then present two filter chip scrollables
 
-  LocalTagsStore(List<dynamic> tags){
+  LocalTagsStore({List<dynamic> tags}){
     if (tags == null || tags.length == 0) return;
     if (tags[0] is String){
       tags.forEach((t){
@@ -114,9 +114,9 @@ class LocalTagsStore{
 
   //returns a new LTS from the string representation stored in shared prefs
   static LocalTagsStore fromJSON(String str){
-    if (str.length == 0) return new LocalTagsStore(null);
+    if (str.length == 0) return new LocalTagsStore();
     List tags = List.from(jsonDecode(str));
-    return new LocalTagsStore(tags);
+    return new LocalTagsStore(tags: tags);
   }
 
   //returns string of json representation of this LocalTagsStore

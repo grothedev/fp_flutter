@@ -28,30 +28,27 @@ class AppState {
 
   //List<Map> feed;
   LocalCroaksStore localCroaks;
-  bool hasUnread; //if there are croaks to which the user is subscribed and that have new replies
-  bool gettingLocation;
-  bool fetchingCroaks;
+  bool hasUnread = false; //if there are croaks to which the user is subscribed and that have new replies
+  bool gettingLocation = false;
+  bool fetchingCroaks = false;
   int whenCroaksFetched;
-  bool croaking;
+  bool croaking = false;
   Query query; //specification of current croak-search query
   LocationData location;
   double lat, lon;
-  bool needsUpdate = true; //this is used for some UI updates
   bool feedOutdated = true; //has the query been modified since the last time the croaks were fetched from server?
   bool newReplies = false;
   Map<String, int> lastCroaksGet; //milliseconds since epoch since last time croaks were fetched for each p_id (0=root). String -> int to keep w/ JSON format; would be ideal to have int -> int
   FlutterLocalNotificationsPlugin notificationsPlugin;
-  int notifyCheckInterval = 0; //minutes between checking for conditions which trigger notification
+  int notifyCheckInterval = 15; //minutes between checking for conditions which trigger notification
   bool lefthand = false; //left handed user
   bool loading = true; //is the application still loading?
   
   AppState(){
     lastCroaksGet = Map<String, int>();
-    fetchingCroaks = false;
-    croaking = false;
-    hasUnread = false;
-    //needsUpdate = true;
     query = Query();
+    feedOutdated = true;     
+    localCroaks = new LocalCroaksStore();
   }
   
 }

@@ -18,6 +18,11 @@ You should have received a copy of the GNU General Public License
 along with Frog Pond.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import 'package:FrogPond/controllers/controller.dart';
+import 'package:FrogPond/controllers/croakcontroller.dart';
+import 'package:FrogPond/controllers/tagcontroller.dart';
+import 'package:FrogPond/models/appstate.dart';
+import 'package:get/get.dart';
 import 'package:universal_io/io.dart';
 
 import 'package:flutter/material.dart';
@@ -31,6 +36,10 @@ import 'utilwidg.dart' as uw;
 
 class FrogPondApp extends StatelessWidget {
 
+  Controller mainController = Get.put(Controller());
+  CroakController croakController = Get.put(CroakController());
+  TagController tagController = Get.put(TagController());
+  
   FrogPondApp();
 
   @override
@@ -141,39 +150,35 @@ class RootView extends StatefulWidget{
 }
 class RootState extends State<RootView> with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin<RootView>{
   
-  TabController controller;
+  TabController tabController;
   StateContainerState store;
+  Controller mainCtrlr = Get.find<Controller>();
+  
 
   @override
   void initState(){
     super.initState();
-    controller = new TabController(length: 3, vsync: this);
+    tabController = new TabController(length: 3, vsync: this);
     if (widget.tab != null){
-      controller.index = widget.tab;
+      tabController.index = widget.tab;
     }
     print("INIT ROOT STATE");
 
-    SharedPreferences.getInstance().then((p){
-        if (p.getInt('last_launch') == null){
-          p.setInt('last_launch', DateTime.now().millisecondsSinceEpoch);
-          p.setBool('firstrun', true);
-        }
-        if (p.getBool('query_all') == null) p.setBool('query_all', false);
-      
-    });
-    
-
+    SharedPreferences p = mainCtrlr.prefs;
+    if (p.getInt('last_launch') == null){
+      p.setInt('last_launch', DateTime.now().millisecondsSinceEpoch);
+    }
   }
 
   @override
   void deactivate(){
-    store.saveState();
+    mainCtrlr.saveStateToPrefs();
     super.deactivate();
   }
 
   @override
   void dispose(){
-    controller.dispose();
+    tabController.dispose();
     super.dispose();
   }
 
@@ -182,11 +187,10 @@ class RootState extends State<RootView> with SingleTickerProviderStateMixin, Aut
     super.build(context);
     store = StateContainer.of(context);
     
-    return FutureBuilder(
-      future: store.restoreState(),
-      builder: (BuildContext bc, AsyncSnapshot<bool> res){
-        print(res.data); //for dbg to see how often this gets called
-        if (!res.hasData || !res.data ){
+    return FutureBuilder<void>(
+      future: mainCtrlr.stateFuture,
+      builder: (BuildContext bc, AsyncSnapshot<void> res){
+        if (!res.hasData){
           return Scaffold(body: uw.loadingWidget("Loading Application"));
         } else {
           return Scaffold(
@@ -195,7 +199,7 @@ class RootState extends State<RootView> with SingleTickerProviderStateMixin, Aut
             ),*/
             body: new TabBarView(
               children: <Widget>[ new FeedScreen(), new SettingsScreen(), new ComposeScreen()],
-              controller: controller,
+              controller: tabController,
             ),
             bottomNavigationBar: new Material(
               child: new TabBar(
@@ -204,7 +208,7 @@ class RootState extends State<RootView> with SingleTickerProviderStateMixin, Aut
                   new Tab(icon: new Icon(Icons.settings)),
                   new Tab(icon: new Icon(Icons.add_box))
                 ],
-                controller: controller,
+                controller: tabController,
                 labelColor: Colors.green,
               ),
               type: MaterialType.canvas
@@ -213,7 +217,7 @@ class RootState extends State<RootView> with SingleTickerProviderStateMixin, Aut
           );
         }
       },
-      initialData: false,
+      initialData: null,
     );
   }
 

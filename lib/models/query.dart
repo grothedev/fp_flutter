@@ -30,6 +30,7 @@ class Query{
   //TODO add keywords
 
   Query(){
+    localTags = LocalTagsStore();
     tagsIncludeAll = false;
     radius = 0;
     distUnit = KM;

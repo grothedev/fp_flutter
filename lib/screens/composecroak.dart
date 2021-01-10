@@ -18,8 +18,11 @@ You should have received a copy of the GNU General Public License
 along with Frog Pond.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import 'package:FrogPond/controllers/croakcontroller.dart';
+import 'package:FrogPond/controllers/tagcontroller.dart';
 import 'package:FrogPond/models/tagstore.dart';
 import 'package:filesystem_picker/filesystem_picker.dart';
+import 'package:get/get.dart';
 import 'package:universal_io/io.dart';
 
 //import 'package:file_picker/file_picker.dart';
@@ -56,12 +59,15 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
   EdgeInsets formPadding = EdgeInsets.all(6.0);
   EdgeInsets formElemMargin = EdgeInsets.all(8.0);
 
+  TagController tagCtrlr = Get.find<TagController>();
+  CroakController croakCtrlr = Get.find<CroakController>();
+  
   void initState(){
     super.initState();
     SharedPreferences.getInstance().then((p){
       prefs = p;
     });
-    composeTags = new LocalTagsStore(null);
+    composeTags = new LocalTagsStore();
   }
 
   @override
@@ -71,7 +77,7 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
     if (composeTags == null || composeTags.tags.isEmpty){// || composeTags.tags.length != store.state.query.localTags.tags.length){
       print('compose screen making composetagstore copy of query tags');
       setState(() {
-        composeTags = new LocalTagsStore(store.state.query.localTags.getLabels()); //copying from query tags  
+        composeTags = new LocalTagsStore(tags: tagCtrlr.tagStore.getLabels()); //copying from query tags  
       });
     }
     print(composeTags.getLabels().toString());
@@ -263,7 +269,7 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                       padding: EdgeInsets.symmetric(vertical: 12.0),
                       child: Center(
                         child: IgnorePointer(
-                          ignoring: store.state.croaking,
+                          ignoring: croakCtrlr.state.croaking,
 
                           child: RaisedButton(
                             
@@ -275,7 +281,7 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                               if (fk.currentState.validate()){
                                 
                                 Scaffold.of(context).showSnackBar(SnackBar(content: Text('Croaking...')));
-                                store.croaking();
+                                croakCtrlr.state.croaking = true;
 
                                 tags.addAll(tagsText.text.split(' ')); // i have no idea why this would generate duplicate tags with no duplicate input
                                 tags.removeWhere((t) => t==''); //for some reason there are empty strings ending up in the list
@@ -300,10 +306,10 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
                                     Scaffold.of(context).removeCurrentSnackBar();
                                     Scaffold.of(context).showSnackBar(SnackBar(content: Text('Failed to Croak')));
                                   }
-                                  store.croaked(r);
+                                  croakCtrlr.submitCroak(r);
                                 }).catchError((e){
                                   print('compose croak error: ' + e.toString());
-                                  store.croaked(null);
+                                  croakCtrlr.state.croaking = false;
                                   Scaffold.of(context).removeCurrentSnackBar();
                                   Scaffold.of(context).showSnackBar(SnackBar(content: Text('Failed to Croak'),));
                                 });

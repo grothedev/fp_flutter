@@ -72,7 +72,6 @@ class StateContainerState extends State<StateContainer>{
   @override
   void initState(){
 
-    checkNotifications();
 
     if (widget.state != null){
       print('state container widget already has appstate');
@@ -92,59 +91,6 @@ class StateContainerState extends State<StateContainer>{
 
   
   Future<bool> restoreState() async{ //from saved session preferences
-    prefs = await SharedPreferences.getInstance();
-    print('FROGPOND RESTORING SHARED PREFS');
-
-    if (prefs.containsKey('ran_before')){
-      state.lastCroaksGet = Map<String, int>.from(jsonDecode( prefs.getString('last_croaks_get') ));
-      state.feedOutdated = prefs.getBool('feed_outdated');
-      state.localCroaks = LocalCroaksStore.fromJSON(prefs.getString('local_croaks'));
-
-      state.lat = prefs.getDouble('lat');
-      state.lon = prefs.getDouble('lon');
-      state.query.tagsIncludeAll = prefs.getBool('exclusive');
-      if (state.query.tagsIncludeAll == null) state.query.tagsIncludeAll = false;
-      //state.query.tags = prefs.getStringList('tags'); //tmp for dbging
-      state.query.radius = prefs.getInt('radius');
-      if (state.query.radius == null) state.query.radius = 15;
-      //state.query.localTags = new LocalTagsStore(prefs.getStringList('tags')); //NOTE: currently cant save if the tag is being used. can only save list of strings
-      state.query.localTags = LocalTagsStore.fromJSON(prefs.getString('local_tags'));
-
-      //state.feed = jsonDecode(prefs.getString('feed_croaks'));
-      state.notifyCheckInterval = prefs.getInt('notify_check_interval');
-      
-      state.needsUpdate = prefs.getBool('needs_update');
-      state.feedOutdated = prefs.getBool('feed_outdated') || false;
-      state.hasUnread = prefs.containsKey('has_unread') ? prefs.getBool('has_unread') : false;
-      if (!prefs.containsKey('notify_check_interval')) prefs.setInt('notify_check_interval', 15);
-      state.notifyCheckInterval = prefs.getInt('notify_check_interval');
-      state.lefthand = prefs.getBool('left_hand') == null ? false : prefs.get('left_hand');
-    } else {
-      prefs.setBool('ran_before', true);   
-      prefs.setBool('feed_outdated', true);
-      state.lastCroaksGet = Map<String, int>();
-      prefs.setString('last_croaks_get', jsonEncode(state.lastCroaksGet));
-      state.feedOutdated = true;    
-      state.query.localTags = new LocalTagsStore(null); 
-      prefs.setString('local_tags', '');
-      state.localCroaks = new LocalCroaksStore();
-      prefs.setString('local_croaks', state.localCroaks.toJSON());
-      prefs.setInt('notify_check_interval', 15);
-      prefs.setBool('left_hand', false);
-    }
-    
-    if (state.lat == null || state.lon == null){
-      getLocation();
-        //getSuggestedTags(); don't actually need to wait for location to be gotten because phase 1 is keeping global popular tags
-    } else {
-      print('restored lat lon from shared prefs');
-      state.location = LocationData.fromMap({'latitude': state.lat, 'longitude': state.lon});
-      print(state.location.latitude.toString());
-    }
-
-    if (state.needsUpdate == null) state.needsUpdate = true;
-    state.loading = false;
-    return true;
   }
 
   void setupBGFetch(){
@@ -186,13 +132,7 @@ class StateContainerState extends State<StateContainer>{
    * add tag to the local tag-store with the given mode
    */
   void addTag(String t, int mode){
-    setState(() {
-      state.query.localTags.add(t, true);
-      state.query.localTags.set(t, mode); 
-      state.feedOutdated = true;
-    });
-    prefs.setString('local_tags', state.query.localTags.toJSON());
-    prefs.setBool('feed_outdated', true);
+    
   }
 
   //doesn't actually remove the tag, but exludes it from query
@@ -235,40 +175,17 @@ class StateContainerState extends State<StateContainer>{
   }
 
   //set whether to retrieve croaks that have all (true) or any (false) of the tags of interest
-  void tagsIncludeAll(bool a){
-    setState(() {
-      state.query.tagsIncludeAll = a;
-      state.feedOutdated = true;
-    });
-    prefs.setString('local_tags', state.query.localTags.toJSON());
-    prefs.setBool('feed_outdated', true);
+  void tagsIncludeAll(bool a){  
   }
 
   //retrive the most commonly-used tags in this location and put them in the local tag-store
   void getSuggestedTags(){
-    util.getTags(10, state.location).then((r){
-      setState((){
-        List<String> tagLbls = r.map((t){ return t['label'].toString(); }).toList();
-        print('store gettin sugtags: ' + tagLbls.toString());
-        if (state.query.localTags == null) state.query.localTags = new LocalTagsStore(tagLbls);
-        else state.query.localTags.add(tagLbls, false);  
-      });
-      state.needsUpdate = true;
-      prefs.setString('local_tags', state.query.localTags.toJSON());
-    }); 
+     
   }
 
   //set the radius of the query
   void setRadius(int r){
-    print('store setting rad ' + r.toString());
-    if (state.query.radius != r){
-      setState((){
-        state.query.radius = r;
-        state.feedOutdated = true;
-      });
-      prefs.setBool('feed_outdated', true);
-      prefs.setInt('radius', r);                            
-    }
+    
   }
 
   //currently obsolete because only using km
@@ -282,40 +199,11 @@ class StateContainerState extends State<StateContainer>{
 
   //get the user's location and update its value in the app state
   void getLocation(){
-    util.initLocation().then((l){
-      setState(() {
-        state.location = l;
-        state.needsUpdate = true;
-        state.lat = l.latitude;
-        state.lon = l.longitude;
-        
-      });
-      SharedPreferences.getInstance().then((p){
-        p.setDouble('lat', l.latitude);
-        p.setDouble('lon', l.longitude);
-      });
-    });
-    
   }
 
-
-  void needsUpdate(){ //this is just for croaks and location. i should rename it. 2019/8/24: i've started using it for tags as well. i should figure out exactly how this flag is being used because i don't remember, but it seems to make some ui updates work
-    setState(() {
-      state.needsUpdate = true;
-    });
-  }
-  void needsNoUpdate(){
-    setState((){
-      state.needsUpdate = false;
-    });
-  }
 
   //set how long between e
   void setNotificationInterval(int ni){
-    setState(() {
-      state.notifyCheckInterval = ni;
-    });
-    prefs.setInt('notify_check_interval', ni);                       
   }
 
   //toggle if background process will check for replies of given croak to notify user
@@ -350,25 +238,6 @@ class StateContainerState extends State<StateContainer>{
 
   //retrive croaks from API or shared prefs, use pid=0 for main feed, otherwise the id of the croak of which you want to retrieve comments (parent id)
   Future<List> getCroaks(bool forceAPI, int pid) async {
-    List croaksResult;
-    if (forceAPI || state.lastCroaksGet['0'] == null || DateTime.now().millisecondsSinceEpoch - state.lastCroaksGet['0'] > CROAKS_GET_TIMEOUT){
-      if (pid == 0){
-        await util.getCroaks(state.query, state.location).then((List croaks){
-          gotCroaks(croaks);
-          croaksResult = croaks;
-        }).timeout(Duration(seconds: 8), onTimeout: ()=>null);
-      } else {
-        util.getReplies(pid).then((replies){
-          gotReplies(replies);
-          croaksResult = replies;
-        }).timeout(Duration(seconds: 8), onTimeout: ()=>null);
-      }
-    } else {
-      croaksResult = state.localCroaks.ofQuery(state.query);
-    }
-    return croaksResult;
-    //await Future.delayed(Duration(seconds: 10));
-    //return null;
   }
 
   /** 
@@ -376,13 +245,6 @@ class StateContainerState extends State<StateContainer>{
    * @param r = list of replies; parent id is derived from one element
    * */
   void gotReplies(List r){
-    if (r==null || r.length == 0) return;
-
-    state.localCroaks.add(r, false, false);
-    state.lastCroaksGet[r[0]['p_id']] = DateTime.now().millisecondsSinceEpoch;
-    print('got replies: ' + state.localCroaks.repliesOf(r[0]['p_id']).toList().map((c)=>c['id']).toString());
-    prefs.setString('local_croaks', state.localCroaks.toJSON());
-    prefs.setString('last_croaks_get', jsonEncode(state.lastCroaksGet));
   }
 
   //main croak feed has been retreived, so update local croak-store and shared prefs, and update when-last-updated
@@ -401,17 +263,7 @@ class StateContainerState extends State<StateContainer>{
 
   //croaks have been retrieved, either main feed or some replies, so update local croak-store, shared prefs, and update when-last-updated
   void gotCroaks(List croaks){
-    if (croaks == null) return;
-    state.localCroaks.hideAll();
-    state.localCroaks.add(croaks, true, false);
-    croaks.forEach((c){
-      if (c['p_id'] == null) c['p_id'] = 0;
-      state.lastCroaksGet[c['p_id'].toString()] = DateTime.now().millisecondsSinceEpoch;
-    });
-    //List<int> newCroakIDs = croaks.map((c)=>c['id']);
-    //state.localCroaks.croaks.removeWhere((lc) => !newCroakIDs.contains(lc['id']) );
-    prefs.setString('last_croaks_get', jsonEncode(state.lastCroaksGet));
-    prefs.setString('local_croaks', state.localCroaks.toJSON());
+
   }
 
   void croaking(){

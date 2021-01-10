@@ -19,9 +19,11 @@ along with Frog Pond.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 import 'package:FrogPond/consts.dart';
+import 'package:FrogPond/controllers/croakcontroller.dart';
 import 'package:FrogPond/helpers/croakfeed2.dart';
 import 'package:FrogPond/state_container.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class FeedScreen extends StatefulWidget {
   @override
@@ -34,15 +36,18 @@ class FeedScreen extends StatefulWidget {
 class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<FeedScreen>{
   
   StateContainerState store;
+  CroakController croakCtrlr = Get.find<CroakController>();
   Future<List<Map>> feedFuture;
   FilterMethod filterMethod = FilterMethod.query;
   CroakFeed croakFeedListView;
   Widget body;
   bool loading = true;
 
+
+
   @override
   void initState(){
-    feedFuture = store.getCroaks(false, 0);
+    feedFuture = croakCtrlr.getCroaks(false, 0);
   }
 
   @override

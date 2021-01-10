@@ -18,6 +18,8 @@ You should have received a copy of the GNU General Public License
 along with Frog Pond.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import 'package:FrogPond/controllers/croakcontroller.dart';
+import 'package:get/get.dart';
 import 'package:universal_io/io.dart';
 
 import 'package:FrogPond/consts.dart';
@@ -63,6 +65,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
   List replies;
   String subToggleText;
   StateContainerState store;
+  CroakController croakCtrlr = Get.find<CroakController>();
   bool updateReplies = true; 
   double appbarIconSize = 16;
 
@@ -262,26 +265,14 @@ class CroakDetailState extends State<CroakDetailScreen>{
     );
   }
 
-  void getReplies(){
-    util.getReplies(c['id']).then((r){
-        store.gotReplies(r);
-        
-        replies = new List.from( store.state.localCroaks.repliesOf(c['id']).toList() );
-        replies.forEach((c) => c['vis'] = true);
-    });
-    c['has_unread'] = false;
-  }
-
   void fetchReplies(bool force){
     print(store.state.lastCroaksGet[c['id'].toString()]);
     if (force || store.state.lastCroaksGet[c['id'].toString()] == null || DateTime.now().millisecondsSinceEpoch - store.state.lastCroaksGet[c['id'].toString()] > CROAKS_GET_TIMEOUT){
-      util.getReplies(c['id']).then((r){
-        store.gotReplies(r);
-        print('got ' + r.length.toString() + ' replies');
+      croakCtrlr.getCroaks(true, c['id']).then((r){
+        replies = new List.from( store.state.localCroaks.repliesOf(c['id']).toList() );
       });
-      store.getCroaks(false, c['id']).then((replies) => store.gotReplies(replies));
     }
-    replies = new List.from( store.state.localCroaks.repliesOf(c['id']).toList() );
+    
     //replies.forEach((r) => r['vis'] = true);
   }
 
@@ -345,7 +336,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
   }
 
   void toggleSubscribe(){
-    store.toggleSubscribe(c['id']);
+    croakCtrlr.toggleSubscribe(c['id']);
     c = store.state.localCroaks.get(c['id']);
     if (c['listen']){
       Toast.show('You will receive notifications when this croak is replied to', context, duration: 3);

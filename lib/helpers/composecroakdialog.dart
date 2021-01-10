@@ -112,7 +112,6 @@ class ComposeCroakDialog extends Dialog{
                               //Croak r = Croak();
                               print('replying ' + parent.toString());
                               loading = true;
-                              store.needsUpdate();
                               util.submitReply(parent['id'], contentController.text, parent['tags'], true, store.state.location).then((s){
                                 if (s){
                                   Navigator.pop(context);
