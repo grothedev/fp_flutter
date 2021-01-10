@@ -127,7 +127,7 @@ class StateContainerState extends State<StateContainer>{
       state.feedOutdated = true;    
       state.query.localTags = new LocalTagsStore(null); 
       prefs.setString('local_tags', '');
-      state.localCroaks = new LocalCroaksStore(null);
+      state.localCroaks = new LocalCroaksStore();
       prefs.setString('local_croaks', state.localCroaks.toJSON());
       prefs.setInt('notify_check_interval', 15);
       prefs.setBool('left_hand', false);

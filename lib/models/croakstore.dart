@@ -36,7 +36,7 @@ import 'package:intl/intl.dart';
 class LocalCroaksStore{
   List<Map> croaks = [];
 
-  LocalCroaksStore(List croaks){
+  LocalCroaksStore({List croaks}){
     if (croaks == null) return;
     croaks.forEach((c){
       if (!c.containsKey('listen')) c['listen'] = false;
@@ -176,9 +176,9 @@ class LocalCroaksStore{
   bool isEmpty() => croaks.isEmpty;
 
   static LocalCroaksStore fromJSON(String str){
-    if (str == null || str.length == 0) return new LocalCroaksStore(null);
+    if (str == null || str.length == 0) return new LocalCroaksStore();
     List croaks = jsonDecode(str).toList();
-    return new LocalCroaksStore(croaks);
+    return new LocalCroaksStore(croaks: croaks);
   }
 
   String toJSON(){

@@ -20,18 +20,14 @@ along with Frog Pond.  If not, see <https://www.gnu.org/licenses/>.
 
 
 
+import 'package:get/get.dart';
 import 'app.dart';
 import 'package:flutter/material.dart';
-
-import 'state_container.dart';
-import 'util.dart' as util;
 
 void main() {
       print('start of main');
       runApp(
-       StateContainer(
-         child: FrogPondApp(),
-        )
+        GetMaterialApp(home: FrogPondApp())
       );
       print('end of main()');
 }
