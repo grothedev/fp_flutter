@@ -19,6 +19,8 @@ along with Frog Pond.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 import 'dart:convert';
+import 'package:FrogPond/models/croakstore.dart';
+import 'package:FrogPond/models/query.dart';
 import 'package:universal_io/io.dart';
 import 'dart:math';
 
@@ -29,9 +31,9 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/services.dart';
 
-import 'models.dart';
 import 'api.dart' as api;
 import 'consts.dart';
+import 'models/croak.dart';
 
 //NOTE: util might not be the best name
 //these are helper functions to pass data to the api calls so that you don't have to worry about constructing the croak maps in event handlers

@@ -18,6 +18,7 @@ You should have received a copy of the GNU General Public License
 along with Frog Pond.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import 'package:FrogPond/models/tagstore.dart';
 import 'package:filesystem_picker/filesystem_picker.dart';
 import 'package:universal_io/io.dart';
 
@@ -28,7 +29,6 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:toast/toast.dart';
 //import 'sugtags.dart';
-import '../models.dart';
 import '../state_container.dart';
 import '../util.dart' as util;
 import '../consts.dart';

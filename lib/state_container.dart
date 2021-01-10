@@ -22,6 +22,9 @@ import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:FrogPond/models/appstate.dart';
+import 'package:FrogPond/models/croakstore.dart';
+import 'package:FrogPond/models/tagstore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:location/location.dart';
@@ -29,7 +32,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/foundation.dart';
 
 import 'consts.dart';
-import 'models.dart';
 import 'util.dart' as util;
 
 class StateContainer extends StatefulWidget{

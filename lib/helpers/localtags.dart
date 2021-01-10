@@ -19,12 +19,12 @@ along with Frog Pond.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 
+import 'package:FrogPond/models/tagstore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../state_container.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../models.dart';
 
 //"local" as in stored on the user's device and of concern to the user
 class LocalTags extends StatefulWidget{

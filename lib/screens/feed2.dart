@@ -34,11 +34,16 @@ class FeedScreen extends StatefulWidget {
 class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<FeedScreen>{
   
   StateContainerState store;
-  List<Map> feed;
+  Future<List<Map>> feedFuture;
   FilterMethod filterMethod = FilterMethod.query;
   CroakFeed croakFeedListView;
   Widget body;
   bool loading = true;
+
+  @override
+  void initState(){
+    feedFuture = store.getCroaks(false, 0);
+  }
 
   @override
   Widget build(BuildContext context){
@@ -153,7 +158,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
       );
     } else {*/
       return FutureBuilder<List>(
-        future: store.getCroaks(forceAPI, 0),
+        future: feedFuture,
         builder: (BuildContext bc, AsyncSnapshot<List> snapshot){
            if (snapshot.hasData){
             return Container(
