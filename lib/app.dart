@@ -187,7 +187,7 @@ class RootState extends State<RootView> with SingleTickerProviderStateMixin, Aut
       builder: (BuildContext bc, AsyncSnapshot<bool> res){
         print(res.data); //for dbg to see how often this gets called
         if (!res.hasData || !res.data ){
-          return uw.loadingWidget("Loading Application");
+          return Scaffold(body: uw.loadingWidget("Loading Application"));
         } else {
           return Scaffold(
             /*appBar: new AppBar(

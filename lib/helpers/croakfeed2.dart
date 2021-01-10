@@ -40,7 +40,7 @@ class CroakFeedState extends State<CroakFeed>{
 
   @override
   Widget build(BuildContext context) {
-    if (croaks.length == 0){
+    if (croaks == null || croaks.length == 0){
       return Text('No croaks were heard.');
     } else {
       return Flexible(
@@ -49,6 +49,7 @@ class CroakFeedState extends State<CroakFeed>{
             return FeedItem(context, croaks[i]);
           },
         ),
+        flex: 1
       );
     }
   }

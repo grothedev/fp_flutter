@@ -152,10 +152,10 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
         }
       );
     } else {*/
-      return FutureBuilder(
+      return FutureBuilder<List>(
         future: store.getCroaks(forceAPI, 0),
         builder: (BuildContext bc, AsyncSnapshot<List> snapshot){
-          if (snapshot.hasData){
+           if (snapshot.hasData){
             return Container(
               width: MediaQuery.of(bc).size.width,
               height: MediaQuery.of(bc).size.height,
@@ -165,7 +165,8 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
             return Container(
               child: Text('There was an error fetching data')
             );
-          } else return loadingWidget();
+          } 
+          return loadingWidget();
         },
         initialData: null
       );

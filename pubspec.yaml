@@ -1,5 +1,5 @@
-name: FrogPond
-description: An anonymous, tag-based, location-based, discussion board with threaded comments and file sharing capabilities. 
+name: FrogPond 
+description: fp 
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -11,7 +11,7 @@ description: An anonymous, tag-based, location-based, discussion board with thre
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.2.4
+version: 1.0.0
 
 environment:
   sdk: ">=2.2.0 <3.0.0"
@@ -29,7 +29,7 @@ dependencies:
   location:
   shared_preferences: 
   #image_picker:
-  file_picker: "^2.0.1+2"
+  filesystem_picker: 
   toast:
   scoped_model:
   dio: 3.0.2-dev.1
@@ -42,7 +42,7 @@ dependencies:
   flutter_local_notifications:
   flutter_launcher_icons: "^0.7.2"
   material_design_icons_flutter: 
-  background_fetch:
+  #background_fetch: 0.6.0
   path_provider:
   universal_io: ^1.0.1
   

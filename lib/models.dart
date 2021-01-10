@@ -304,7 +304,7 @@ class LocalCroaksStore{
   List ofQuery(Query q){
     List res = [];
     croaks.forEach((c){
-      bool hasTags;
+      bool hasTags; //satisfies the tag requirement
       bool inRange=false;
       if (c['p_id'] != null && c['p_id'] > 0){ //comments are never results of a query
         c['vis'] = false;
@@ -312,23 +312,22 @@ class LocalCroaksStore{
         List cTags = c['tags'] == null ? [] : c['tags'].map((t) => t['label']).toList();
         if (q.tagsIncludeAll){
           //check that all of the tags of this croak are contained within localTags active tags
-          //c['vis'] = true;
           hasTags=true;
-          cTags.forEach((t){
-            if (!q.localTags.getActiveTagsLabels().contains(t)){
-              //c['vis'] = false;
+          for (String at in q.localTags.getActiveTagsLabels()){
+            if (!cTags.contains(at)){
               hasTags = false;
+              break;
             }
-          });
+          }
         } else {
-          hasTags=false;
           //check that at least one tag of this croak is contained within localTags active tags
-          cTags.forEach((t){
-            if (q.localTags.getActiveTagsLabels().contains(t)){
-              //c['vis'] = true;
+          hasTags=false;
+          for (String at in q.localTags.getActiveTagsLabels()){
+            if (cTags.contains(at)){
               hasTags = true;
+              break;
             }
-          });
+          }
         }
         if (q.radius != null && q.radius > 0){
           if (c['distance'] != null && c['distance'] < q.radius) inRange = true;
@@ -336,10 +335,8 @@ class LocalCroaksStore{
         }
         if (hasTags && inRange) res.add(c);
       }
-      
     });
     return res;
-    //return croaks;
   }
 
   //make all croaks invisible to the feed

@@ -97,7 +97,6 @@ class StateContainerState extends State<StateContainer>{
       state.lastCroaksGet = Map<String, int>.from(jsonDecode( prefs.getString('last_croaks_get') ));
       state.feedOutdated = prefs.getBool('feed_outdated');
       state.localCroaks = LocalCroaksStore.fromJSON(prefs.getString('local_croaks'));
-      print(LocalCroaksStore.fromJSON(prefs.getString('local_croaks')));
 
       state.lat = prefs.getDouble('lat');
       state.lon = prefs.getDouble('lon');
@@ -349,19 +348,25 @@ class StateContainerState extends State<StateContainer>{
 
   //retrive croaks from API or shared prefs, use pid=0 for main feed, otherwise the id of the croak of which you want to retrieve comments (parent id)
   Future<List> getCroaks(bool forceAPI, int pid) async {
+    List croaksResult;
     if (forceAPI || state.lastCroaksGet['0'] == null || DateTime.now().millisecondsSinceEpoch - state.lastCroaksGet['0'] > CROAKS_GET_TIMEOUT){
       if (pid == 0){
-        List croaks = await util.getCroaks(state.query, state.location);
-        gotCroaks(croaks);
-        return croaks;
+        await util.getCroaks(state.query, state.location).then((List croaks){
+          gotCroaks(croaks);
+          croaksResult = croaks;
+        }).timeout(Duration(seconds: 8), onTimeout: ()=>null);
       } else {
         util.getReplies(pid).then((replies){
-
-        });
+          gotReplies(replies);
+          croaksResult = replies;
+        }).timeout(Duration(seconds: 8), onTimeout: ()=>null);
       }
+    } else {
+      croaksResult = state.localCroaks.ofQuery(state.query);
     }
-    await Future.delayed(Duration(seconds: 10));
-    return null;
+    return croaksResult;
+    //await Future.delayed(Duration(seconds: 10));
+    //return null;
   }
 
   /** 
@@ -398,6 +403,7 @@ class StateContainerState extends State<StateContainer>{
     state.localCroaks.hideAll();
     state.localCroaks.add(croaks, true, false);
     croaks.forEach((c){
+      if (c['p_id'] == null) c['p_id'] = 0;
       state.lastCroaksGet[c['p_id'].toString()] = DateTime.now().millisecondsSinceEpoch;
     });
     //List<int> newCroakIDs = croaks.map((c)=>c['id']);
