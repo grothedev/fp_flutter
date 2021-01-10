@@ -46,7 +46,6 @@ class ComposeCroakDialog extends Dialog{
   
   @override
   Widget build(BuildContext context){
-    store = StateContainer.of(context);
     if (loading) {
       return SimpleDialog(
         contentPadding: EdgeInsets.all(12),

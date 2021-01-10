@@ -2,6 +2,8 @@ FrogPond mobile application, made with flutter. https://flutter.dev/
 
 TODO:
 * NOTES FROM 2021/1/6 compatibility update:
+  * what should remain in util and what to controllers?
+  * notifications screen
   * going to use different state management: flutterredux, getx, riverpod, provider
   * fix duplicate notification code
   * possibly reduce number of requests made

@@ -10,36 +10,36 @@ class CroakController extends Controller {
   LocalCroaksStore croakStore;
 
   CroakController(){
-    croakStore = state.localCroaks;
+    croakStore = st.localCroaks;
   }
 
   Future<List> getCroaks(bool forceAPI, int pid) async {
     List result;
-    if (forceAPI || state.lastCroaksGet[pid.toString()] == null || DateTime.now().millisecondsSinceEpoch - state.lastCroaksGet[pid.toString()] > CROAKS_GET_TIMEOUT){
+    if (forceAPI || st.lastCroaksGet[pid.toString()] == null || DateTime.now().millisecondsSinceEpoch - st.lastCroaksGet[pid.toString()] > CROAKS_GET_TIMEOUT){
       if (pid == 0){
-        await util.getCroaks(state.query, state.location).then((List croaks){
+        await util.getCroaks(st.query, st.location).then((List croaks){
           if (croaks == null) return;
           croakStore.hideAll();
           croakStore.add(croaks, true, false);
           croaks.forEach((c){
             if (c['p_id'] == null) c['p_id'] = 0;
-            state.lastCroaksGet[c['p_id'].toString()] = DateTime.now().millisecondsSinceEpoch;
+            st.lastCroaksGet[c['p_id'].toString()] = DateTime.now().millisecondsSinceEpoch;
           });
-          prefs.setString('local_croaks', state.localCroaks.toJSON());
-          prefs.setString('last_croaks_get', jsonEncode(state.lastCroaksGet));
+          prefs.setString('local_croaks', st.localCroaks.toJSON());
+          prefs.setString('last_croaks_get', jsonEncode(st.lastCroaksGet));
           result = croaks;
         }).timeout(Duration(seconds: 8), onTimeout: ()=>null);
       } else {
         await util.getReplies(pid).then((replies){
           croakStore.add(replies, false, false);
-          state.lastCroaksGet[replies[0]['p_id']] = DateTime.now().millisecondsSinceEpoch;
-          prefs.setString('local_croaks', state.localCroaks.toJSON());
-          prefs.setString('last_croaks_get', jsonEncode(state.lastCroaksGet));
+          st.lastCroaksGet[replies[0]['p_id']] = DateTime.now().millisecondsSinceEpoch;
+          prefs.setString('local_croaks', st.localCroaks.toJSON());
+          prefs.setString('last_croaks_get', jsonEncode(st.lastCroaksGet));
           result = replies;
         }).timeout(Duration(seconds: 8), onTimeout: ()=>null);
       }
     } else {
-      result = croakStore.ofQuery(state.query);
+      result = croakStore.ofQuery(st.query);
     }
     return result;
   }
@@ -53,7 +53,7 @@ class CroakController extends Controller {
   }
 
   void submitCroak(Map croak){
-    state.croaking = false;
+    st.croaking = false;
     
     if (croak != null){
       croakStore.add(croak, false, true);

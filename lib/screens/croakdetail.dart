@@ -91,8 +91,6 @@ class CroakDetailState extends State<CroakDetailScreen>{
 
   @override
   Widget build(BuildContext context) {
-    store = StateContainer.of(context);
-    print(store.state.toString());
 
     print('files: ' + c['files'].toString());
     List tags = [];
@@ -113,7 +111,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
                 icon: Icon(Icons.arrow_upward),
                 onPressed: (){
                   Navigator.push(this.context, MaterialPageRoute(
-                    builder: (context) => CroakDetailScreen(store.state.localCroaks.get(c['p_id']))
+                    builder: (context) => CroakDetailScreen(croakCtrlr.croakStore.get(c['p_id']))
                   ));
                 },
               ),
@@ -266,10 +264,9 @@ class CroakDetailState extends State<CroakDetailScreen>{
   }
 
   void fetchReplies(bool force){
-    print(store.state.lastCroaksGet[c['id'].toString()]);
-    if (force || store.state.lastCroaksGet[c['id'].toString()] == null || DateTime.now().millisecondsSinceEpoch - store.state.lastCroaksGet[c['id'].toString()] > CROAKS_GET_TIMEOUT){
+    if (force || croakCtrlr.state().lastCroaksGet[c['id'].toString()] == null || DateTime.now().millisecondsSinceEpoch - croakCtrlr.state().lastCroaksGet[c['id'].toString()] > CROAKS_GET_TIMEOUT){
       croakCtrlr.getCroaks(true, c['id']).then((r){
-        replies = new List.from( store.state.localCroaks.repliesOf(c['id']).toList() );
+        replies = new List.from( croakCtrlr.state().localCroaks.repliesOf(c['id']).toList() );
       });
     }
     
@@ -337,7 +334,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
 
   void toggleSubscribe(){
     croakCtrlr.toggleSubscribe(c['id']);
-    c = store.state.localCroaks.get(c['id']);
+    c = croakCtrlr.croakStore.get(c['id']);
     if (c['listen']){
       Toast.show('You will receive notifications when this croak is replied to', context, duration: 3);
     } else {

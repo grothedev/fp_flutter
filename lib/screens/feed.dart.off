@@ -68,7 +68,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    store = StateContainer.of(context);
+    store = (context);
     localCroaks = store.state.localCroaks;
     filterFeed();
     print(store.state.localCroaks.toString());

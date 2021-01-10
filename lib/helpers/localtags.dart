@@ -108,7 +108,6 @@ class TagChipState extends State<TagChip>{
 
   @override
   Widget build(BuildContext context) {
-      store = StateContainer.of(context);
       Map t = widget.tag;
       sel = t['use'];
       

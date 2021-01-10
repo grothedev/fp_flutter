@@ -164,10 +164,12 @@ class RootState extends State<RootView> with SingleTickerProviderStateMixin, Aut
     }
     print("INIT ROOT STATE");
 
-    SharedPreferences p = mainCtrlr.prefs;
-    if (p.getInt('last_launch') == null){
-      p.setInt('last_launch', DateTime.now().millisecondsSinceEpoch);
-    }
+    SharedPreferences.getInstance().then((p){
+      if (!p.containsKey('last_launch') || p.getInt('last_launch') == null){
+        p.setInt('last_launch', DateTime.now().millisecondsSinceEpoch);
+      }
+    });
+    
   }
 
   @override
@@ -185,10 +187,9 @@ class RootState extends State<RootView> with SingleTickerProviderStateMixin, Aut
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    store = StateContainer.of(context);
     
     return FutureBuilder<void>(
-      future: mainCtrlr.stateFuture,
+      future: mainCtrlr.restoreState(),
       builder: (BuildContext bc, AsyncSnapshot<void> res){
         if (!res.hasData){
           return Scaffold(body: uw.loadingWidget("Loading Application"));

@@ -37,7 +37,7 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   
   StateContainerState store;
   CroakController croakCtrlr = Get.find<CroakController>();
-  Future<List<Map>> feedFuture;
+  Future<List> feedFuture;
   FilterMethod filterMethod = FilterMethod.query;
   CroakFeed croakFeedListView;
   Widget body;
@@ -52,7 +52,6 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
 
   @override
   Widget build(BuildContext context){
-    store = StateContainer.of(context);
 
     body = feedWidget(false);
     return Scaffold(

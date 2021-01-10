@@ -36,9 +36,8 @@ class NotificationsScreenState extends State<NotificationsScreen>{
 
   @override
   Widget build(BuildContext context) {
-    store = StateContainer.of(context);
     notifyIds.forEach((i){
-      croaks.add(store.state.localCroaks.get(i));
+      //croaks.add(store..get(i));
     });
     return CroakFeed(croaks, null);
   }

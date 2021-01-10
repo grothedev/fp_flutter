@@ -73,7 +73,6 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
   @override
   Widget build(BuildContext context){
     super.build(context);
-    store = StateContainer.of(context);
     if (composeTags == null || composeTags.tags.isEmpty){// || composeTags.tags.length != store.state.query.localTags.tags.length){
       print('compose screen making composetagstore copy of query tags');
       setState(() {
