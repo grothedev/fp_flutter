@@ -2,13 +2,13 @@ FrogPond mobile application, made with flutter. https://flutter.dev/
 
 TODO:
 * NOTES FROM 2021/1/6 compatibility update:
+  * going to use different state management: flutterredux, getx, riverpod, provider
   * fix duplicate notification code
   * possibly reduce number of requests made
 * first priority 
   - refactor making replies. fix showing up in root feed. 
   - more options for creating replies
   - loading animation (croaking)
-  - why does it ask for location permission 3 times?
   - refresh suggested tags
 * UI notes
   - more spacing between text and underline
@@ -69,7 +69,7 @@ SharedPreferences:
   * has_unread (bool) : are there new comments on any of the croaks to which the user is subscribed?
   * left_hand (bool) : is the user left handed? 
 
-Data Structure Descriptions: (found in 'models.dart', see file for more detail on variables)
+Data Structure Descriptions: (found in 'models/', see files for more detail on variables)
   - AppState: flags and other data that widgets would want to access that can change in real time
   - Query: everything needed for querying the API
   - Croak: provides toMap() to convert a newly made croak (from ComposeCroakScreen) to POST parameters compatible with API.
