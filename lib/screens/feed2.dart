@@ -23,7 +23,8 @@ import 'package:FrogPond/controllers/croakcontroller.dart';
 import 'package:FrogPond/helpers/croakfeed2.dart';
 import 'package:FrogPond/state_container.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:provider/provider.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class FeedScreen extends StatefulWidget {
   @override
@@ -36,7 +37,7 @@ class FeedScreen extends StatefulWidget {
 class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<FeedScreen>{
   
   StateContainerState store;
-  CroakController croakCtrlr = Get.find<CroakController>();
+  CroakController croakCtrlr;
   Future<List> feedFuture;
   FilterMethod filterMethod = FilterMethod.query;
   CroakFeed croakFeedListView;
@@ -44,16 +45,16 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
   bool loading = true;
 
 
-
   @override
   void initState(){
-    feedFuture = croakCtrlr.getCroaks(false, 0);
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context){
+    croakCtrlr = Provider.of<CroakController>(context);
+    body = feedWidget(false); //Obx(() => CroakFeed(croakCtrlr.feed()));
 
-    body = feedWidget(false);
     return Scaffold(
       
       appBar: AppBar(
@@ -62,7 +63,9 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
           IconButton(
             icon: Icon(Icons.refresh),
             onPressed: (){
-              refreshFeed(true);
+              setState(() {
+                body = feedWidget(true);
+              });
             },
           ),
           PopupMenuButton(
@@ -161,18 +164,29 @@ class FeedState extends State<FeedScreen> with AutomaticKeepAliveClientMixin<Fee
         }
       );
     } else {*/
+    feedFuture = null;
+    feedFuture = Future<List>(()=>croakCtrlr.getCroaks(false, 0));
       return FutureBuilder<List>(
         future: feedFuture,
         builder: (BuildContext bc, AsyncSnapshot<List> snapshot){
-           if (snapshot.hasData){
+           if (snapshot.hasData && snapshot.data != null){
             return Container(
               width: MediaQuery.of(bc).size.width,
               height: MediaQuery.of(bc).size.height,
-              child: CroakFeed(List<Map>.from(snapshot.data))
+              child: SmartRefresher(
+                child: CroakFeed(List<Map>.from(croakCtrlr.croakStore.ofQuery(croakCtrlr.state.query)) ),
+                controller: RefreshController(initialRefresh: false),
+                enablePullDown: true,
+                onRefresh: (){
+                  setState(() {
+                    body = feedWidget(true);
+                  });
+                },
+              )
             );
           } else if (snapshot.hasError){
             return Container(
-              child: Text('There was an error fetching data')
+              child: Text('Error: ' + snapshot.error.toString())
             );
           } 
           return loadingWidget();

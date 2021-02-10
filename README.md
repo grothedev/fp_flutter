@@ -1,10 +1,12 @@
 FrogPond mobile application, made with flutter. https://flutter.dev/
 
 TODO:
+* 2021/2/10: provider impl
+  * make sure that settings and state restored in RootView
+  * move MultiProvider to RootView
 * NOTES FROM 2021/1/6 compatibility update:
   * what should remain in util and what to controllers?
   * notifications screen
-  * going to use different state management: flutterredux, getx, riverpod, provider
   * fix duplicate notification code
   * possibly reduce number of requests made
   * remove redundant/unused variables: AppState.loading
@@ -33,7 +35,7 @@ TODO:
   * when should croaks be deleted from croak-store? to refresh data if any have been deleted
 * have croaks get deleted after time of inactivity
 * save sort preferences
-* implement data analysis (show locations of croaks w/ tags etc. )
+* implement data analysis (how locations of croaks w/ tags etc. )
 * tutorial mode?
 * UI stuff
   - show video or audio player based on file type.
@@ -57,6 +59,7 @@ TODO:
 
 SharedPreferences:
   * last_croaks_get (string) : JSON Map<int, int> ms since croaks were last retreived for each parent id (0=root feed, anything else is replies of some croak)
+  * prev_query_hash (int) : hashcode of the query used on the previous remote croak retrieval 
   * lat (double) : latitude of user
   * lon (double) : longitude of user
   * exclusive (bool) : get croaks by contain all(1) or some(0) of given tags

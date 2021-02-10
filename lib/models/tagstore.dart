@@ -20,6 +20,8 @@ along with Frog Pond.  If not, see <https://www.gnu.org/licenses/>.
 
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
+
 
 /*
 a type of repository that handles the tags that are of concern to the user.
@@ -31,7 +33,7 @@ decided to do it this way because i wanted a few things to happen:
 */
 
 
-class LocalTagsStore{
+class LocalTagsStore with ChangeNotifier{
   List<dynamic> tags = [];
   //might keep two lists of tags: include and exclude, then present two filter chip scrollables
 
@@ -50,25 +52,28 @@ class LocalTagsStore{
 
   void set(String label, int mode){
     get(label)['mode'] = mode;
+    notifyListeners();
   }
 
   //toggles whether or not to use this tag in query
   void toggleUse(String label){
     Map t = get(label);
     t['use'] = !t['use'];
+    notifyListeners();
   }
 
-  void use(String label, bool u){
+  void use(String label, bool  u){
     Map t = get(label);
     t['use'] = u;
+    notifyListeners();
   }
 
   Map<String, dynamic> get(String label){
-    var tag = tags.firstWhere((t){ return t['label'] == label; });
-    if (tag == null){
+    Map tag;
+    tag = tags.firstWhere((t){ return t['label'] == label; }, orElse: (){
       print('tag doesnt exist');
       tag = add(label, false);
-    }
+    });
     return tag;
   }
 
@@ -95,6 +100,7 @@ class LocalTagsStore{
         'mode': 0, //0=include, 1=exclude; using int because there might be more modes in future
         'use': use,
       });
+      notifyListeners();
       return this.tags.last;
     } else if (label is List<String>){
       print('lts receiving list: ' + label.toString());
@@ -103,6 +109,7 @@ class LocalTagsStore{
         added.add(add(l, use));
       });
       print('local tags store: ' + this.tags.toString());  
+      notifyListeners();
       return added;
     } else return null;
   }
@@ -110,6 +117,7 @@ class LocalTagsStore{
   void empty(){
     tags.clear();
     tags = [];
+    notifyListeners();
   }
 
   //returns a new LTS from the string representation stored in shared prefs

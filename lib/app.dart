@@ -22,7 +22,7 @@ import 'package:FrogPond/controllers/controller.dart';
 import 'package:FrogPond/controllers/croakcontroller.dart';
 import 'package:FrogPond/controllers/tagcontroller.dart';
 import 'package:FrogPond/models/appstate.dart';
-import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 import 'package:universal_io/io.dart';
 
 import 'package:flutter/material.dart';
@@ -35,10 +35,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'utilwidg.dart' as uw;
 
 class FrogPondApp extends StatelessWidget {
-
-  Controller mainController = Get.put(Controller());
-  CroakController croakController = Get.put(CroakController());
-  TagController tagController = Get.put(TagController());
   
   FrogPondApp();
 
@@ -152,12 +148,13 @@ class RootState extends State<RootView> with SingleTickerProviderStateMixin, Aut
   
   TabController tabController;
   StateContainerState store;
-  Controller mainCtrlr = Get.find<Controller>();
+  Controller mainCtrlr;
   
 
   @override
   void initState(){
     super.initState();
+    mainCtrlr = Provider.of<Controller>(context, listen: false);
     tabController = new TabController(length: 3, vsync: this);
     if (widget.tab != null){
       tabController.index = widget.tab;
@@ -189,7 +186,7 @@ class RootState extends State<RootView> with SingleTickerProviderStateMixin, Aut
     super.build(context);
     
     return FutureBuilder<void>(
-      future: mainCtrlr.restoreState(),
+      future: mainCtrlr.stateFuture,
       builder: (BuildContext bc, AsyncSnapshot<void> res){
         if (!res.hasData){
           return Scaffold(body: uw.loadingWidget("Loading Application"));

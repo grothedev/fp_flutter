@@ -21,6 +21,7 @@ along with Frog Pond.  If not, see <https://www.gnu.org/licenses/>.
 import 'dart:convert';
 
 import 'package:FrogPond/models/query.dart';
+import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 
 
@@ -33,7 +34,7 @@ import 'package:intl/intl.dart';
 */
 
 
-class LocalCroaksStore{
+class LocalCroaksStore with ChangeNotifier{
   List<Map> croaks = [];
 
   LocalCroaksStore({List croaks}){
@@ -52,6 +53,7 @@ class LocalCroaksStore{
       List d = croaks.where((d)=>d['id']==add['id']).toList();
       if ( d.isNotEmpty ){
         d[0] = add;
+        notifyListeners();
         return add;
       }
       add['feed'] = feed; //is this croak in the feed?
@@ -63,11 +65,13 @@ class LocalCroaksStore{
       DateTime dt = DateFormat('yyyy-MM-d HH:mm').parse(add['created_at']).toLocal();
       add['timestampStr'] = dt.year.toString() + '/' + dt.month.toString() + '/' + dt.day.toString() + ' - ' + dt.hour.toString() + ':' + dt.minute.toString();
       croaks.add(add);
+      notifyListeners();
     } else if (add is List){
       add.forEach((c){
         List d = croaks.where((d)=>d['id']==c['id']).toList();
         if ( d.isNotEmpty ){
           d[0] = c;
+          notifyListeners();
           return;
         }
         c['feed'] = feed;
@@ -79,6 +83,7 @@ class LocalCroaksStore{
         DateTime dt = DateFormat('yyyy-MM-d HH:mm').parse(c['created_at']).toLocal();
         c['timestampStr'] = dt.year.toString() + '/' + dt.month.toString() + '/' + dt.day.toString() + ' - ' + dt.hour.toString() + ':' + dt.minute.toString();
         croaks.add(c);
+        notifyListeners();
       });
     }
     return add;
@@ -109,11 +114,10 @@ class LocalCroaksStore{
   /**
    * returns the croaks that satisfy given query. used to modify the stored croaks list, but now just return a new sublist
    */
-  List ofQuery(Query q){
-    List res = [];
+  List<Map> ofQuery(Query q){
+    List<Map> res = [];
     croaks.forEach((c){
       bool hasTags; //satisfies the tag requirement
-      bool inRange=false;
       if (c['p_id'] != null && c['p_id'] > 0){ //comments are never results of a query
         c['vis'] = false;
       } else {
@@ -137,10 +141,11 @@ class LocalCroaksStore{
             }
           }
         }
-        if (q.radius != null && q.radius > 0){
-          if (c['distance'] != null && c['distance'] < q.radius) inRange = true;
-          //TODO if c['distance']==null calculate dist here (this means the croak was downloaded with any-radius query)
-        }
+
+        //check radius
+        bool inRange = q.radius == null || q.radius == 0  //any radius 
+                        || (c['distance'] != null && c['distance'] < q.radius) ; // or specified radius
+                      //TODO if c['distance']==null calculate dist here (this means the croak was downloaded with any-radius query, so it wasn't calculated on server)
         if (hasTags && inRange) res.add(c);
       }
     });
@@ -150,6 +155,7 @@ class LocalCroaksStore{
   //make all croaks invisible to the feed
   void hideAll(){
     croaks.forEach((c) => c['vis'] = false);
+    notifyListeners();
   }
 
   bool satisfiesQuery(int id, Query q){
@@ -160,14 +166,26 @@ class LocalCroaksStore{
     return croaks.where((r)=> (r['p_id'] == pid)).toList();
   }
 
-  void toggleSubscribe(int id) => get(id)['listen'] = !get(id)['listen'];
+  void toggleSubscribe(int id){
+    get(id)['listen'] = !get(id)['listen'];
+    notifyListeners();
+  }
 
-  void sub(int id) => get(id)['listen'] = true;
+  void sub(int id){
+    get(id)['listen'] = true;
+    notifyListeners();
+  }
 
-  void unsub(int id) => get(id)['listen'] = false;
+  void unsub(int id){
+    notifyListeners();
+    get(id)['listen'] = false;
+  }
 
   //declares that this croak has comments which the user hasn't seen
-  void setUnread(int id) => get(id)['has_unread'] = true;
+  void setUnread(int id){ 
+    get(id)['has_unread'] = true;
+    notifyListeners();
+  }
 
   bool hasUnread(int id) => get(id)['has_unread']; 
 

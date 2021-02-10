@@ -19,7 +19,7 @@ along with Frog Pond.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 import 'package:FrogPond/controllers/croakcontroller.dart';
-import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 import 'package:universal_io/io.dart';
 
 import 'package:FrogPond/consts.dart';
@@ -65,7 +65,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
   List replies;
   String subToggleText;
   StateContainerState store;
-  CroakController croakCtrlr = Get.find<CroakController>();
+  CroakController croakCtrlr;
   bool updateReplies = true; 
   double appbarIconSize = 16;
 
@@ -91,6 +91,7 @@ class CroakDetailState extends State<CroakDetailScreen>{
 
   @override
   Widget build(BuildContext context) {
+    croakCtrlr = Provider.of<CroakController>(context);
 
     print('files: ' + c['files'].toString());
     List tags = [];
@@ -264,9 +265,9 @@ class CroakDetailState extends State<CroakDetailScreen>{
   }
 
   void fetchReplies(bool force){
-    if (force || croakCtrlr.state().lastCroaksGet[c['id'].toString()] == null || DateTime.now().millisecondsSinceEpoch - croakCtrlr.state().lastCroaksGet[c['id'].toString()] > CROAKS_GET_TIMEOUT){
+    if (force || croakCtrlr.state.lastCroaksGet[c['id'].toString()] == null || DateTime.now().millisecondsSinceEpoch - croakCtrlr.state.lastCroaksGet[c['id'].toString()] > CROAKS_GET_TIMEOUT){
       croakCtrlr.getCroaks(true, c['id']).then((r){
-        replies = new List.from( croakCtrlr.state().localCroaks.repliesOf(c['id']).toList() );
+        replies = new List.from( croakCtrlr.state.localCroaks.repliesOf(c['id']).toList() );
       });
     }
     

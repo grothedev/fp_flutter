@@ -35,4 +35,15 @@ class Query{
     radius = 0;
     distUnit = KM;
   }
+
+  @override
+  bool operator ==(Object other) {
+    Query o;
+    if (other is Query){
+      o = other;
+    } else { return false; }
+    
+    return radius == o.radius && tagsIncludeAll == o.tagsIncludeAll && 
+              localTags.toJSON() == o.localTags.toJSON();
+  }
 }

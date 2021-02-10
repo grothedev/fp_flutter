@@ -4,44 +4,59 @@ import 'package:FrogPond/consts.dart';
 import 'package:FrogPond/controllers/controller.dart';
 import 'package:FrogPond/models/croakstore.dart';
 import 'package:FrogPond/util.dart' as util;
+import 'package:flutter/foundation.dart';
 
 class CroakController extends Controller {
 
   LocalCroaksStore croakStore;
+  //var feed;
 
   CroakController(){
-    croakStore = st.localCroaks;
+    
+    croakStore = state.localCroaks;
+    //feed = croakStore.ofQuery(state.query).obs;
   }
 
   Future<List> getCroaks(bool forceAPI, int pid) async {
+    await super.stateFuture;
     List result;
-    if (forceAPI || st.lastCroaksGet[pid.toString()] == null || DateTime.now().millisecondsSinceEpoch - st.lastCroaksGet[pid.toString()] > CROAKS_GET_TIMEOUT){
+    if (forceAPI || 
+          state.lastCroaksGet[pid.toString()] == null ||
+          (state.query != state.prevQuery && DateTime.now().millisecondsSinceEpoch - state.lastCroaksGet[pid.toString()] > CROAKS_GET_TIMEOUT)){
       if (pid == 0){
-        await util.getCroaks(st.query, st.location).then((List croaks){
+        await util.getCroaks(state.query, state.location).then((List croaks){
           if (croaks == null) return;
           croakStore.hideAll();
           croakStore.add(croaks, true, false);
           croaks.forEach((c){
             if (c['p_id'] == null) c['p_id'] = 0;
-            st.lastCroaksGet[c['p_id'].toString()] = DateTime.now().millisecondsSinceEpoch;
+            state.lastCroaksGet[c['p_id'].toString()] = DateTime.now().millisecondsSinceEpoch;
           });
-          prefs.setString('local_croaks', st.localCroaks.toJSON());
-          prefs.setString('last_croaks_get', jsonEncode(st.lastCroaksGet));
+          state.prevQueryHash = state.query.hashCode;
+          prefs.setString('local_croaks', state.localCroaks.toJSON());
+          prefs.setString('last_croaks_get', jsonEncode(state.lastCroaksGet));
+          prefs.setInt('prev_query_hash', state.prevQueryHash);
           result = croaks;
         }).timeout(Duration(seconds: 8), onTimeout: ()=>null);
       } else {
         await util.getReplies(pid).then((replies){
+          state.prevQueryHash = state.query.hashCode;
           croakStore.add(replies, false, false);
-          st.lastCroaksGet[replies[0]['p_id']] = DateTime.now().millisecondsSinceEpoch;
-          prefs.setString('local_croaks', st.localCroaks.toJSON());
-          prefs.setString('last_croaks_get', jsonEncode(st.lastCroaksGet));
+          state.lastCroaksGet[replies[0]['p_id'].toString()] = DateTime.now().millisecondsSinceEpoch;
+          prefs.setString('local_croaks', state.localCroaks.toJSON());
+          prefs.setString('last_croaks_get', jsonEncode(state.lastCroaksGet));
+          prefs.setInt('prev_query_hash', state.prevQueryHash);
           result = replies;
         }).timeout(Duration(seconds: 8), onTimeout: ()=>null);
       }
     } else {
-      result = croakStore.ofQuery(st.query);
-    }
+      result = croakStore.ofQuery(state.query);
+    }            
     return result;
+  }
+
+  List feed(){
+    return croakStore.ofQuery(state.query);
   }
 
   //unsubscribe from all croaks
@@ -53,7 +68,7 @@ class CroakController extends Controller {
   }
 
   void submitCroak(Map croak){
-    st.croaking = false;
+    state.croaking = false;
     
     if (croak != null){
       croakStore.add(croak, false, true);

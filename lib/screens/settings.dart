@@ -27,7 +27,7 @@ import 'package:FrogPond/models/appstate.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
-import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 import '../state_container.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -59,14 +59,22 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
   EdgeInsets inputRowPadding = EdgeInsets.only(left: 16, right: 16, top: 8);
   EdgeInsets formElemMargin = EdgeInsets.all(8.0);
 
-  Controller mainCtrlr = Get.find<Controller>();
-  TagController tagController = Get.find<TagController>();
-  CroakController croakController = Get.find<CroakController>();
+  Controller mainCtrlr;
+  TagController tagController;
+  CroakController croakController;
   AppState state;
   
   initState(){
     super.initState();
-    state = mainCtrlr.state();
+        
+  }
+
+  @override
+  Widget build(BuildContext context){
+    mainCtrlr = Provider.of<Controller>(context);
+    croakController = Provider.of<CroakController>(context);
+    tagController = Provider.of<TagController>(context);
+    state = mainCtrlr.state;
     if (!mainCtrlr.prefs.containsKey('ran_before')){
       Scaffold.of(context).showSnackBar(
         SnackBar(
@@ -78,11 +86,7 @@ class SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveC
             duration: Duration(seconds: 8),  
         )
       );
-    }    
-  }
-
-  @override
-  Widget build(BuildContext context){
+    }
     if (state.query.radius != null) {
       setState(() {
         radius = state.query.radius;

@@ -22,7 +22,7 @@ import 'package:FrogPond/controllers/croakcontroller.dart';
 import 'package:FrogPond/controllers/tagcontroller.dart';
 import 'package:FrogPond/models/tagstore.dart';
 import 'package:filesystem_picker/filesystem_picker.dart';
-import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 import 'package:universal_io/io.dart';
 
 //import 'package:file_picker/file_picker.dart';
@@ -59,9 +59,9 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
   EdgeInsets formPadding = EdgeInsets.all(6.0);
   EdgeInsets formElemMargin = EdgeInsets.all(8.0);
 
-  TagController tagCtrlr = Get.find<TagController>();
-  CroakController croakCtrlr = Get.find<CroakController>();
-  
+  TagController tagCtrlr;
+  CroakController croakCtrlr;
+
   void initState(){
     super.initState();
     SharedPreferences.getInstance().then((p){
@@ -73,6 +73,8 @@ class ComposeScreenState extends State<ComposeScreen> with AutomaticKeepAliveCli
   @override
   Widget build(BuildContext context){
     super.build(context);
+    tagCtrlr = Provider.of<TagController>(context);
+    croakCtrlr = Provider.of<CroakController>(context);
     if (composeTags == null || composeTags.tags.isEmpty){// || composeTags.tags.length != store.state.query.localTags.tags.length){
       print('compose screen making composetagstore copy of query tags');
       setState(() {

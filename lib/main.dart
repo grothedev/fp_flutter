@@ -20,14 +20,29 @@ along with Frog Pond.  If not, see <https://www.gnu.org/licenses/>.
 
 
 
-import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 import 'app.dart';
 import 'package:flutter/material.dart';
+
+import 'controllers/controller.dart';
+import 'controllers/croakcontroller.dart';
+import 'controllers/tagcontroller.dart';
+import 'models/croakstore.dart';
+import 'models/tagstore.dart';
 
 void main() {
       print('start of main');
       runApp(
-        GetMaterialApp(home: FrogPondApp())
+        MultiProvider(
+          providers: [ //TODO should the controllers or stores be the change notifiers?
+            ChangeNotifierProvider(create: (_)=>LocalCroaksStore()),
+            ChangeNotifierProvider(create: (_)=>LocalTagsStore()),
+            ChangeNotifierProvider(create: (_)=>Controller()),
+            //ChangeNotifierProvider(create: (_)=>CroakController()),
+            //ChangeNotifierProvider(create: (_)=>TagController()),
+          ],
+          child: FrogPondApp()
+        )
       );
       print('end of main()');
 }

@@ -34,6 +34,8 @@ class AppState {
   int whenCroaksFetched;
   bool croaking = false;
   Query query; //specification of current croak-search query
+  int prevQueryHash; //hashcode of the previous query, used to detect stale cached croaks
+  Query prevQuery;
   LocationData location;
   double lat, lon;
   bool feedOutdated = true; //has the query been modified since the last time the croaks were fetched from server?

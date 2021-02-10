@@ -1,4 +1,4 @@
-package com.example.test2_flutter
+package org.grothedev.frogpond
 
 import io.flutter.embedding.android.FlutterActivity
 
